@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+model User {
+  id            String         @id @default(cuid())
+  displayName   String
+  firstName     String?
+  lastName      String?
+  email         String         @unique
+  password      String
+  role          Role?          @default(USER)
+  companyId     String
+  company       Company        @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  // notifications UserNotification[]
+  // settings      UserSettings[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  deletedAt     DateTime?
+  sentKudos     Kudos[]        @relation(name: "SentKudos")
+  receivedKudos Kudos[]        @relation(name: "ReceivedKudos")
+  User_Like     User_Like[]
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Company {
+  id          String    @id @default(cuid())
+  name        String
+  address     String?
+  city        String?
+  state       String?
+  zip         String?
+  phone       String?
+  companyCode String    @unique
+  users       User[]
+  kudos       Kudos[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+}
+
+model Kudos {
+  id          String    @id @default(cuid())
+  senderId    String
+  recipientId String
+  companyId   String
+  message     String
+  title       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  likes       Int       @default(0)
+  isAnonymous Boolean   @default(false)
+  isHidden    Boolean   @default(false)
+
+  sender   User    @relation(fields: [senderId], references: [id], name: "SentKudos")
+  receiver User    @relation(fields: [recipientId], references: [id], name: "ReceivedKudos")
+  company  Company @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  User_Like User_Like[]
+}
+
+model User_Like {
+  userId  String
+  kudosId String
+  likedAt DateTime @default(now())
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  kudos   Kudos    @relation(fields: [kudosId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([userId, kudosId])
+}
+
+// model UserNotification {
+//   id        String    @id @default(cuid())
+//   userId    String
+//   user      User      @relation(fields: [userId], references: [id])
+//   message   String
+//   read      Boolean   @default(false)
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   deletedAt DateTime?
+// }
+
+// model UserSettings {
+//   id        String    @id @default(cuid())
+//   userId    String
+//   user      User      @relation(fields: [userId], references: [id])
+//   settings  Json
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   deletedAt DateTime?
+// }
