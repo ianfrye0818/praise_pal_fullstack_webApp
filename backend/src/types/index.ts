@@ -3,6 +3,9 @@ export interface JWTUser {
   userId: string;
   companyId: string;
   role: Role;
+  displayName: string;
+  firstName: string;
+  lastName: string;
 }
 
 export interface JWTPayload extends JWTUser {

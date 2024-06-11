@@ -34,6 +34,9 @@ export class AuthService {
       userId: user.id,
       companyId: user.companyId,
       role: user.role,
+      displayName: user.displayName,
+      firstName: user.firstName,
+      lastName: user.lastName,
     };
 
     const refreshToken = this.jwtService.sign(payload, {
@@ -44,41 +47,32 @@ export class AuthService {
       newToken: refreshToken,
       userId: user.id,
     });
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: '2m',
+      secret: process.env.JWT_SECRET,
+    });
 
     return {
-      id: user.id,
-      displayName: user.displayName,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role,
-      companyId: user.companyId,
-      accessToken: this.jwtService.sign(payload, {
-        expiresIn: '15m',
-        secret: process.env.JWT_SECRET,
-      }),
+      ...payload,
+      accessToken,
       refreshToken,
     };
   }
 
   async refreshToken(user: JWTUser, oldToken: string) {
+    console.log(user, oldToken);
     try {
       const dbRefreshToken =
         await this.refreshTokenService.getRefreshToken(oldToken);
-      if (!dbRefreshToken)
-        throw new UnauthorizedException('Invalid refresh token');
-      const payload = {
-        email: user.email,
-        userId: user.userId,
-        companyId: user.companyId,
-        role: user.role,
-      };
+      console.log({ oldToken, dbRefreshToken });
+      // if (!dbRefreshToken)
+      //   throw new UnauthorizedException('Invalid refresh token');
 
-      const accessToken = this.jwtService.sign(payload, {
-        expiresIn: '15m',
+      const accessToken = this.jwtService.sign(user, {
+        expiresIn: '2m',
         secret: process.env.JWT_SECRET,
       });
-      const refreshToken = this.jwtService.sign(payload, {
+      const refreshToken = this.jwtService.sign(user, {
         expiresIn: '7d',
         secret: process.env.JWT_REFRESH_SECRET,
       });
