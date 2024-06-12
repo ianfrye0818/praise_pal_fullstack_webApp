@@ -47,7 +47,6 @@ export class UserController {
   @UseGuards(UpdateUserGuard)
   @Patch(':companyId/:id')
   async updateUserById(@Param('id') id: string, @Body() data: updateUserDTO) {
-    console.log('Data from body: ', data);
     return await this.userService.updateUserById(id, data);
   }
 

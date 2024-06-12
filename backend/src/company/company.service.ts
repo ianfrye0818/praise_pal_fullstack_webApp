@@ -61,7 +61,6 @@ export class CompanyService {
     data: CreateCompanyDTO,
     retries: number,
   ): Promise<Company> {
-    console.log(data);
     try {
       const companyCode = generateCompanyCode();
       let company = await this.prismaService.company.findUnique({

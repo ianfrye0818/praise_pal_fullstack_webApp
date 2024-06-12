@@ -1,16 +1,10 @@
-import {
-  Controller,
-  Request,
-  UseGuards,
-  Post,
-  Body,
-  Redirect,
-} from '@nestjs/common';
+import { Controller, Request, UseGuards, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/(user)/user/user.service';
 import { LocalAuthGuard } from './guards/local.guard';
 import { createUserDTO } from 'src/(user)/user/dto/createUser.dto';
 import { RefreshJwtGuard } from './guards/refresh.guard';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -25,6 +19,7 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  @SkipThrottle()
   @UseGuards(RefreshJwtGuard)
   @Post('refresh')
   async refreshToken(@Request() req) {

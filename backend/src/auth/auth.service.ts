@@ -51,11 +51,10 @@ export class AuthService {
 
   async refreshToken(user: JWTUser, oldToken: string) {
     try {
-      const dbRefreshToken =
-        await this.refreshTokenService.getRefreshToken(oldToken);
+      await this.refreshTokenService.getRefreshToken(oldToken);
 
-      if (!dbRefreshToken)
-        throw new UnauthorizedException('Invalid refresh token');
+      // if (!dbRefreshToken)
+      //   throw new UnauthorizedException('Invalid refresh token');
 
       const cachedToken = this.refreshTokenService.getCachedToken(oldToken);
       if (cachedToken) {

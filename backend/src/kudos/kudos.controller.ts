@@ -16,6 +16,8 @@ import { SuperAdminGuard } from 'src/core-guards/super-admin.guard';
 import { createKudosDTO, UpdateKudosDTO } from './dto/createKudos.dto';
 import { KudosFilterDTO } from './dto/kudosFilter.dto';
 import { EditKudosGuard } from 'src/core-guards/update-kudos.guard';
+import { SkipThrottle } from '@nestjs/throttler';
+@SkipThrottle()
 @UseGuards(JwtGuard)
 @Controller('kudos')
 export class KudosController {

@@ -54,11 +54,9 @@ export class RefreshTokenService {
   }
 
   private scheduleOldTokenDeletion(oldToken: string) {
-    //create a timeout to delete the old token after 5 seconds - due to possible edge cases of concurrent requests
-    //will cache the token for 5 seconds to prevent concurrent requests from deleting the token - will send back same token
     setTimeout(async () => {
       try {
-        await this.deleteToken(oldToken);
+        const deleted = await this.deleteToken(oldToken);
         this.tokenCache.delete(oldToken);
       } catch (error) {
         console.error(`Error deleting old token ${oldToken}:`, error);

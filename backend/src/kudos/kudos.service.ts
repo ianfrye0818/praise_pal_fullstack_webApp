@@ -12,6 +12,18 @@ import { Kudos } from '@prisma/client';
 
 @Injectable()
 export class KudosService {
+  private readonly selectProps = {
+    select: {
+      id: true,
+      displayName: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      companyId: true,
+      role: true,
+    },
+  };
+
   constructor(
     private readonly prismaService: PrismaService,
     private emailService: EmailService,
@@ -19,7 +31,14 @@ export class KudosService {
 
   async getAllKudos(filter?: Partial<Kudos>): Promise<Kudos[]> {
     try {
-      return await this.prismaService.kudos.findMany({ where: filter });
+      return await this.prismaService.kudos.findMany({
+        where: filter,
+        include: {
+          sender: this.selectProps,
+          receiver: this.selectProps,
+          User_Like: true,
+        },
+      });
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Could not retreive Kudos');
@@ -28,7 +47,7 @@ export class KudosService {
 
   async getKudosByCompanyId(companyId: string): Promise<Kudos[]> {
     try {
-      return await this.prismaService.kudos.findMany({ where: { companyId } });
+      return await this.getAllKudos({ companyId });
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Could not retreive Kudos');
@@ -37,7 +56,7 @@ export class KudosService {
 
   async getKudosBySenderId(senderId: string): Promise<Kudos[]> {
     try {
-      return await this.prismaService.kudos.findMany({ where: { senderId } });
+      return await this.getAllKudos({ senderId });
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Could not retreive Kudos');
@@ -46,9 +65,7 @@ export class KudosService {
 
   async getKudosByRecipientId(recipientId: string): Promise<Kudos[]> {
     try {
-      return await this.prismaService.kudos.findMany({
-        where: { recipientId },
-      });
+      return this.getAllKudos({ recipientId });
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Could not retreive Kudos');
@@ -57,7 +74,15 @@ export class KudosService {
 
   async getKudoById(id: string): Promise<Kudos> {
     try {
-      const kudo = await this.prismaService.kudos.findUnique({ where: { id } });
+      const kudo = await this.prismaService.kudos.findUnique({
+        where: { id },
+        include: {
+          sender: this.selectProps,
+          receiver: this.selectProps,
+          User_Like: true,
+        },
+      });
+
       if (!kudo) throw new NotFoundException('Unable to locate Kudo ' + id);
       return kudo;
     } catch (error) {
