@@ -3,16 +3,16 @@ import { PrismaService } from './prisma.service';
 
 @Injectable()
 export class RefreshTokenService {
-  constructor(private prismaService: PrismaService) {}
+  private tokenCache: Map<string, string> = new Map();
+
+  constructor(private readonly prismaService: PrismaService) {}
 
   async getRefreshToken(token: string) {
     const refreshTokenRecord = await this.prismaService.refreshToken.findFirst({
-      where: {
-        token,
-      },
+      where: { token },
     });
-    if (refreshTokenRecord) return refreshTokenRecord;
-    return null;
+
+    return refreshTokenRecord || null;
   }
 
   async updateUserRefreshToken({
@@ -25,21 +25,48 @@ export class RefreshTokenService {
     oldToken?: string;
   }) {
     try {
-      await this.prismaService.refreshToken.create({
-        data: {
-          userId,
-          token: newToken,
-        },
-      });
+      this.cacheToken(oldToken, newToken);
+      await this.saveRefreshToken(userId, newToken);
 
       if (oldToken) {
-        await this.prismaService.refreshToken.deleteMany({
-          where: { token: oldToken },
-        });
+        this.scheduleOldTokenDeletion(oldToken);
       }
     } catch (error) {
       console.error(error);
       throw new HttpException('Something went wrong', 500);
     }
+  }
+
+  getCachedToken(oldToken: string): string | undefined {
+    return this.tokenCache.get(oldToken);
+  }
+
+  private cacheToken(oldToken?: string, newToken?: string) {
+    if (oldToken && newToken) {
+      this.tokenCache.set(oldToken, newToken);
+    }
+  }
+
+  private async saveRefreshToken(userId: string, newToken: string) {
+    await this.prismaService.refreshToken.create({
+      data: { userId, token: newToken },
+    });
+  }
+
+  private scheduleOldTokenDeletion(oldToken: string) {
+    //create a timeout to delete the old token after 5 seconds - due to possible edge cases of concurrent requests
+    //will cache the token for 5 seconds to prevent concurrent requests from deleting the token - will send back same token
+    setTimeout(async () => {
+      try {
+        await this.deleteToken(oldToken);
+        this.tokenCache.delete(oldToken);
+      } catch (error) {
+        console.error(`Error deleting old token ${oldToken}:`, error);
+      }
+    }, 5000);
+  }
+
+  async deleteToken(token: string) {
+    await this.prismaService.refreshToken.deleteMany({ where: { token } });
   }
 }

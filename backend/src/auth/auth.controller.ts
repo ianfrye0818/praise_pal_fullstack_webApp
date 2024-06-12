@@ -38,4 +38,10 @@ export class AuthController {
 
     return await this.authService.login(newUser);
   }
+
+  @Post('logout')
+  async logout(@Request() req) {
+    const refreshToken = req.headers.authorization.split(' ')[1];
+    return this.authService.logout(refreshToken);
+  }
 }

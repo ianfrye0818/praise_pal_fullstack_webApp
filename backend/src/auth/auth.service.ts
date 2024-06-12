@@ -27,30 +27,20 @@ export class AuthService {
     return null;
   }
 
-  async login(user: User) {
-    console.log({ loginUser: user });
-    const payload = {
-      email: user.email,
-      userId: user.id,
-      companyId: user.companyId,
-      role: user.role,
-      displayName: user.displayName,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    };
+  async logout(token: string) {
+    return this.refreshTokenService.deleteToken(token);
+  }
 
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_REFRESH_SECRET,
-      expiresIn: '7d',
-    });
+  async login(user: User) {
+    const payload = this.generatePayload(user);
+
+    const refreshToken = await this.generateRefreshToken(payload);
     await this.refreshTokenService.updateUserRefreshToken({
       newToken: refreshToken,
       userId: user.id,
     });
-    const accessToken = this.jwtService.sign(payload, {
-      expiresIn: '2m',
-      secret: process.env.JWT_SECRET,
-    });
+
+    const accessToken = this.generateAccessToken(payload);
 
     return {
       ...payload,
@@ -60,37 +50,65 @@ export class AuthService {
   }
 
   async refreshToken(user: JWTUser, oldToken: string) {
-    console.log(user, oldToken);
     try {
       const dbRefreshToken =
         await this.refreshTokenService.getRefreshToken(oldToken);
-      console.log({ oldToken, dbRefreshToken });
-      // if (!dbRefreshToken)
-      //   throw new UnauthorizedException('Invalid refresh token');
 
-      const accessToken = this.jwtService.sign(user, {
-        expiresIn: '2m',
-        secret: process.env.JWT_SECRET,
-      });
-      const refreshToken = this.jwtService.sign(user, {
-        expiresIn: '7d',
-        secret: process.env.JWT_REFRESH_SECRET,
-      });
+      if (!dbRefreshToken)
+        throw new UnauthorizedException('Invalid refresh token');
+
+      const cachedToken = this.refreshTokenService.getCachedToken(oldToken);
+      if (cachedToken) {
+        const accessToken = this.generateAccessToken(user);
+        return {
+          accessToken,
+          refreshToken: cachedToken,
+        };
+      }
+
+      const newRefreshToken = await this.generateRefreshToken(user);
+      const newAccessToken = this.generateAccessToken(user);
 
       await this.refreshTokenService.updateUserRefreshToken({
         userId: user.userId,
-        newToken: refreshToken,
+        newToken: newRefreshToken,
         oldToken,
       });
 
       return {
-        accessToken,
-        refreshToken,
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
       };
     } catch (error) {
       if (error instanceof UnauthorizedException) throw error;
       console.error(error);
       throw new InternalServerErrorException('Something went wrong');
     }
+  }
+
+  private generatePayload(user: User | JWTUser) {
+    return {
+      email: user.email,
+      userId: 'userId' in user ? user.userId : user.id, // Normalizing user ID
+      companyId: user.companyId,
+      role: user.role,
+      displayName: user.displayName,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
+  }
+
+  private generateAccessToken(payload: object) {
+    return this.jwtService.sign(payload, {
+      expiresIn: '2m',
+      secret: process.env.JWT_SECRET,
+    });
+  }
+
+  private async generateRefreshToken(payload: object) {
+    return this.jwtService.sign(payload, {
+      expiresIn: '7d',
+      secret: process.env.JWT_REFRESH_SECRET,
+    });
   }
 }
