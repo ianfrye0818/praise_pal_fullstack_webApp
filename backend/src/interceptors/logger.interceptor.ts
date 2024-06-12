@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Injectable,
   NestInterceptor,
@@ -11,6 +12,7 @@ import { tap } from 'rxjs/operators';
 export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const now = Date.now();
+    const currentTime = new Date().toLocaleTimeString();
     const route = context.switchToHttp().getRequest().url;
     const user = context.switchToHttp().getRequest().user;
     if (!user) return next.handle();
@@ -19,7 +21,7 @@ export class LoggingInterceptor implements NestInterceptor {
       .pipe(
         tap(() =>
           console.log(
-            `Route ${route}, User: ${user.email}, Request Time: ${Date.now() - now}ms`,
+            `${currentTime} Route ${route}, User: ${user.email}, Request Time: ${Date.now() - now}ms`,
           ),
         ),
       );
