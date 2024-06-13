@@ -10,14 +10,14 @@ async function fetchAllCompanyKudos(companyId: string): Promise<Kudo[]> {
     const response = await apiClient.get<Kudo[]>(`/kudos/${companyId}`);
     return response.data;
   } catch (error) {
-    console.log('an error occrured fetching kudos');
+    console.error('an error occrured fetching kudos');
     return [];
   }
 }
 
 export default async function HomePage() {
   const user = await getSessionUser();
-  console.log('serverside user', user);
+  console.error('serverside user', user);
   if (!user) redirect('/sign-in');
   const kudos = await fetchAllCompanyKudos(user.companyId);
   if (kudos.length === 0) return <NoKudos />;

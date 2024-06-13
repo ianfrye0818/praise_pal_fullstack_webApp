@@ -22,11 +22,9 @@ export default function KudosCard({ kudo }: Props) {
   if (status === 'loading') return <div>Loading...</div>;
   const { sender, receiver } = kudo;
 
-  console.log({ userid: user?.userId });
-  if (kudo.User_Like.length !== 0) console.log(kudo.User_Like[0].userId);
   const liked = kudo.User_Like.some((userLike) => userLike.userId === user?.userId);
-  console.log(liked);
-  const usersKudo = kudo.senderId !== user?.id;
+
+  const usersKudo = kudo.senderId !== user?.userId;
 
   return (
     <div className='flex items-center p-4 bg-white shadow-md rounded-lg my-8 dark:bg-gray-800 dark:text-gray-200'>

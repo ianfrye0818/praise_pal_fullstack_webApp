@@ -26,7 +26,6 @@ const callbacks = {
         expiresIn: expTime,
       });
     }
-    console.log('exp time', new Date(token.expiresIn).toLocaleTimeString());
 
     if (Date.now() < (token.expiresIn as number)) {
       return token;
