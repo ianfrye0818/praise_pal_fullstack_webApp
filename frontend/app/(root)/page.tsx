@@ -1,13 +1,13 @@
-import { Kudo } from '@/types';
+import { TKudos } from '@/types';
 import { redirect } from 'next/navigation';
 import { apiClient } from '@/axios-api/axios-clients';
 import KudosCard from '@/components/kudos-card';
-import NoKudos from './_components/no-kudos';
 import { getSessionUser } from '@/auth/auth-actions';
+import NoKudos from './_components/no-kudos';
 
-async function fetchAllCompanyKudos(companyId: string): Promise<Kudo[]> {
+async function fetchAllCompanyKudos(companyId: string): Promise<TKudos[]> {
   try {
-    const response = await apiClient.get<Kudo[]>(`/kudos/${companyId}`);
+    const response = await apiClient.get<TKudos[]>(`/kudos/${companyId}`);
     return response.data;
   } catch (error) {
     console.error('an error occrured fetching kudos');
@@ -17,7 +17,7 @@ async function fetchAllCompanyKudos(companyId: string): Promise<Kudo[]> {
 
 export default async function HomePage() {
   const user = await getSessionUser();
-  console.error('serverside user', user);
+
   if (!user) redirect('/sign-in');
   const kudos = await fetchAllCompanyKudos(user.companyId);
   if (kudos.length === 0) return <NoKudos />;

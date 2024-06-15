@@ -13,6 +13,7 @@ import { UserNotificationsModule } from './(user)/user-notifications/user-notifi
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './interceptors/logger.interceptor';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     UserSettingsModule,
     AuthModule,
     UserNotificationsModule,
+    SeedModule,
     ThrottlerModule.forRoot([
       {
         ttl: 60000,

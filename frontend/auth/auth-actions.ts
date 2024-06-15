@@ -1,6 +1,6 @@
 'use server';
 
-import { AuthTokens, SignInFormProps, SignUpFormProps } from '@/types';
+import { AuthTokens, SignInFormProps, SignUpFormProps, User } from '@/types';
 import { AxiosError } from 'axios';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { auth, signIn, signOut } from './auth';
@@ -57,7 +57,7 @@ export async function logout(refreshToken?: string) {
 export async function getSessionUser() {
   const session = await auth();
   if (session && session.user) {
-    return session.user;
+    return session.user as User;
   }
   return null;
 }

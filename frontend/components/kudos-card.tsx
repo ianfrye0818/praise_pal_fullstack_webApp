@@ -1,5 +1,5 @@
 'use client';
-import { Kudo, User } from '@/types';
+import { TKudos, User } from '@/types';
 import { Avatar, AvatarFallback } from '@radix-ui/react-avatar';
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import { Button } from './ui/button';
 import { useGetUser } from '@/hooks/getUser';
 
 type Props = {
-  kudo: Kudo;
+  kudo: TKudos;
 };
 
 export default function KudosCard({ kudo }: Props) {

@@ -1,5 +1,5 @@
 import KudosCard from '@/components/kudos-card';
-import { Kudo } from '@/types';
+import { TKudos } from '@/types';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
@@ -7,8 +7,8 @@ import { apiClient } from '@/axios-api/axios-clients';
 import { getSessionUser } from '@/auth/auth-actions';
 import NoKudos from '../../_components/no-kudos';
 
-async function fetchSentKudos(companyId: string, userId: string): Promise<Kudo[]> {
-  const response = await apiClient.get<Kudo[]>(`/kudos/${companyId}/sender/${userId}`);
+async function fetchSentKudos(companyId: string, userId: string): Promise<TKudos[]> {
+  const response = await apiClient.get<TKudos[]>(`/kudos/${companyId}/sender/${userId}`);
   return response.data;
 }
 

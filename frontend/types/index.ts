@@ -14,7 +14,12 @@ declare module 'next-auth' {
   }
 }
 
+export type SenderReceiverUser = Omit<User, 'accessToken' | 'refreshToken' | 'userId'> & {
+  id: string;
+};
+
 export interface User {
+  id?: string;
   email: string;
   userId: string;
   companyId: string;
@@ -57,19 +62,29 @@ export interface SidebarLink {
   icon: string;
 }
 
-export interface Kudo {
+export type TKudos = {
   id: string;
-  recipientId?: string;
   senderId: string;
-  receiver: User;
-  sender: User;
-  message: string;
-  title?: string;
-  likes: number;
+  recipientId: string;
   companyId: string;
-  createdAt: Date;
-  User_Like: {
-    kudoId: string;
-    userId: string;
-  }[];
-}
+  message: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null;
+  likes: number;
+  isAnonymous: boolean;
+  isHidden: boolean;
+  sender: Omit<User, 'accessToken' | 'refreshToken' | 'userId'> & {
+    id: string;
+  };
+  receiver: Partial<User>;
+  User_Like: TUserLike[];
+};
+
+export type TUserLike = {
+  id: string;
+  kudoId: string;
+  userId: string;
+  createdAt: string;
+};

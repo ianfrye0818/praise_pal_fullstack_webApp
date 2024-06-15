@@ -8,7 +8,7 @@ import { PrismaService } from 'src/core-services/prisma.service';
 import { createKudosDTO, UpdateKudosDTO } from './dto/createKudos.dto';
 import { Cron } from '@nestjs/schedule';
 import { EmailService } from 'src/core-services/email.service';
-import { Kudos } from '@prisma/client';
+import { Comment, Kudos } from '@prisma/client';
 
 @Injectable()
 export class KudosService {
@@ -23,6 +23,24 @@ export class KudosService {
       role: true,
     },
   };
+  private readonly commentSelectProps = {
+    select: {
+      id: true,
+      content: true,
+      createdAt: true,
+      updatedAt: true,
+      sender: this.selectProps,
+    },
+  };
+
+  private readonly kudosSelectiOptions = {
+    include: {
+      sender: this.selectProps,
+      receiver: this.selectProps,
+      comments: this.commentSelectProps,
+      userLikes: true,
+    },
+  };
 
   constructor(
     private readonly prismaService: PrismaService,
@@ -33,11 +51,7 @@ export class KudosService {
     try {
       return await this.prismaService.kudos.findMany({
         where: filter,
-        include: {
-          sender: this.selectProps,
-          receiver: this.selectProps,
-          User_Like: true,
-        },
+        ...this.kudosSelectiOptions,
       });
     } catch (error) {
       console.error(error);
@@ -76,11 +90,7 @@ export class KudosService {
     try {
       const kudo = await this.prismaService.kudos.findUnique({
         where: { id },
-        include: {
-          sender: this.selectProps,
-          receiver: this.selectProps,
-          User_Like: true,
-        },
+        ...this.kudosSelectiOptions,
       });
 
       if (!kudo) throw new NotFoundException('Unable to locate Kudo ' + id);

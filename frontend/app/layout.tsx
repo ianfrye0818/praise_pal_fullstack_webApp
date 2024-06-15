@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Providers from '@/providers/providers';
-import { auth } from '@/auth/auth';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,8 +18,6 @@ export default async function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        {/* todo - possibly fix this layout */}
-
         <Providers>{children}</Providers>
       </body>
     </html>

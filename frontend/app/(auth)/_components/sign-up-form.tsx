@@ -24,6 +24,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { signUpWithEmailAndPassword } from '@/auth/auth-actions';
+import { AxiosError } from 'axios';
 
 export default function SignUpForm() {
   const router = useRouter();
@@ -37,14 +38,26 @@ export default function SignUpForm() {
       companyCode: '',
     },
   });
+  const isSubmitting = form.formState.isSubmitting;
+  const globalError = form.formState.errors.root;
 
   async function onSubmit(data: z.infer<typeof signUpFormSchema>) {
     if (data.password !== data.confirmPassword) {
       form.setError('confirmPassword', { message: 'Passwords do not match' });
       return;
     }
-    await signUpWithEmailAndPassword(data);
-    router.push('/');
+    try {
+      await signUpWithEmailAndPassword(data);
+      router.push('/');
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        form.setError('root', {
+          message: error.response?.data.message ?? 'An error occurred. Please try again.',
+        });
+      } else {
+        form.setError('root', { message: 'An error occurred. Please try again.' });
+      }
+    }
   }
 
   return (
@@ -154,10 +167,13 @@ export default function SignUpForm() {
                 </FormItem>
               )}
             />
-            {form.formState.errors.root && (
-              <p className='italic text-lg text-red-500'>{form.formState.errors.root.message}</p>
-            )}
-            <Button className='w-full'>Register</Button>
+            {globalError && <p className='italic text-lg text-red-500'>{globalError?.message}</p>}
+            <Button
+              disabled={isSubmitting}
+              className='w-full'
+            >
+              {isSubmitting ? 'Submitting....' : 'Sign Up'}
+            </Button>
           </form>
         </Form>
       </CardContent>

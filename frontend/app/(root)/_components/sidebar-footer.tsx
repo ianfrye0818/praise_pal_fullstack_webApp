@@ -1,17 +1,13 @@
-'use client';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import Link from 'next/link';
-import { logout } from '@/auth/auth-actions';
-import { useGetUser } from '@/hooks/getUser';
+import LogoutButton from './logout-button';
+import { getSessionUser } from '@/auth/auth-actions';
 
-export default function SideBarFooter({ type }: { type: 'desktop' | 'mobile' }) {
-  const { user, status } = useGetUser();
-  const router = useRouter();
-  if (status === 'loading') return <div>Loading...</div>;
+export default async function SideBarFooter({ type }: { type: 'desktop' | 'mobile' }) {
+  const user = await getSessionUser();
+
+  if (!user) return null;
 
   return (
     <footer className='footer'>
@@ -26,21 +22,7 @@ export default function SideBarFooter({ type }: { type: 'desktop' | 'mobile' }) 
           <p className='text-sm text-gray-500 dark:text-gray-400'>{user?.email}</p>
         </div>
 
-        <Button
-          variant={'ghost'}
-          size='icon'
-          onClick={async () => {
-            await logout(user?.refreshToken);
-            router.push('/sign-in');
-          }}
-        >
-          <Image
-            src={'/icons/logout.svg'}
-            alt='logout'
-            width={24}
-            height={24}
-          />
-        </Button>
+        <LogoutButton refreshToken={user?.refreshToken} />
       </div>
     </footer>
   );
