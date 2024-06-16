@@ -29,7 +29,6 @@ export class KudosService {
       content: true,
       createdAt: true,
       updatedAt: true,
-      sender: this.selectProps,
     },
   };
 
