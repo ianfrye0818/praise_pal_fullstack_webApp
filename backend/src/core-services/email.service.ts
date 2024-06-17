@@ -14,7 +14,7 @@ export class EmailService {
     sgMail.setApiKey(this.SENDGRID_API_KEY);
   }
 
-  async sendCronErrorNotification(errorDetails: string) {
+  async sendCronErrorNotification(errorDetails: string, errorTitle: string) {
     const emailPath = path.resolve(
       __dirname,
       '..',
@@ -23,10 +23,9 @@ export class EmailService {
     );
     const emailTemplate = fs.readFileSync(emailPath, 'utf8');
 
-    const htmlContent = emailTemplate.replace(
-      '{{ errorDetails }}',
-      errorDetails,
-    );
+    const htmlContent = emailTemplate
+      .replace('{{ title }}', errorTitle)
+      .replace('{{ errorDetails }}', errorDetails);
 
     await this.sendEmail({
       to: 'ianfrye.dev@gmail.com',

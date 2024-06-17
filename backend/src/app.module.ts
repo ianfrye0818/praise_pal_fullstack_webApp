@@ -5,7 +5,6 @@ import { PrismaService } from './core-services/prisma.service';
 import { UserModule } from './(user)/user/user.module';
 import { CompanyModule } from './company/company.module';
 import { KudosModule } from './kudos/kudos.module';
-
 import { UserSettingsModule } from './(user)/user-settings/user-settings.module';
 import { AuthModule } from './auth/auth.module';
 import { UserLikesModule } from './(user)/user-likes/user-likes.module';
@@ -14,6 +13,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './interceptors/logger.interceptor';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { SeedModule } from './seed/seed.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -27,10 +27,11 @@ import { SeedModule } from './seed/seed.module';
     SeedModule,
     ThrottlerModule.forRoot([
       {
-        ttl: 60000,
+        ttl: 5000,
         limit: 10,
       },
     ]),
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [
