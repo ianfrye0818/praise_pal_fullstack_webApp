@@ -9,10 +9,9 @@ interface DeleteKudoProps {
 export default function useDeleteKudo({ companyId, kudoId }: DeleteKudoProps) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationKey: ['companyKudos', companyId],
     mutationFn: async () => await deleteSingleKudo(companyId, kudoId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['companyKudos', companyId] });
+      queryClient.invalidateQueries({ queryKey: ['companyKudos'] });
     },
   });
 

@@ -68,7 +68,7 @@ export type TKudos = {
   isHidden: boolean;
   sender: SenderReceiverUser;
   receiver?: SenderReceiverUser;
-  User_Like: UserLike[];
+  userLikes: UserLike[];
 };
 
 export type SenderReceiverUser = Omit<User, 'accessToken' | 'refreshToken' | 'userId'> & {

@@ -3,9 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 
 export default function useGetCompanyKudos(companyId: string) {
   const query = useQuery({
-    queryKey: ['companyKudos', companyId],
+    queryKey: ['kudos'],
     queryFn: async () => await getCompanyKudos(companyId),
     enabled: !!companyId,
+    _optimisticResults: 'optimistic',
   });
 
   return query;

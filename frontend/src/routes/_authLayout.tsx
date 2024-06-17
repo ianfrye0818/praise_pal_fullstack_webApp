@@ -2,7 +2,8 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authLayout')({
   beforeLoad: ({ context }) => {
-    if (context.auth.isAuthenticated) {
+    const { isAuthenticated, loading } = context.state;
+    if (!loading && isAuthenticated) {
       throw redirect({ to: '/' });
     }
   },

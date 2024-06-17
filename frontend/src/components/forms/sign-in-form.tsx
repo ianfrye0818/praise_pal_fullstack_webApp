@@ -23,8 +23,10 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { AxiosError } from 'axios';
-import { useAuth } from '@/hooks/useAuth';
+
 import { useNavigate } from '@tanstack/react-router';
+import { useAuth } from '@/hooks/useAuth';
+import { login } from '@/api/auth-actions';
 
 export default function SignInForm() {
   const navigate = useNavigate();
@@ -36,13 +38,13 @@ export default function SignInForm() {
     },
   });
   // const navigate = useNavigate();
-  const { login } = useAuth();
+  const { dispatch } = useAuth();
   const isSubmitting = form.formState.isSubmitting;
   const globalError = form.formState.errors.root;
 
   async function onSubmit(data: z.infer<typeof signInFormSchema>) {
     try {
-      await login(data);
+      await login(dispatch, data);
       await navigate({ to: '/' });
     } catch (error) {
       console.error(['signInFormError'], error);

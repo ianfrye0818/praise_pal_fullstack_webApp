@@ -19,7 +19,7 @@ export default function KudoCardDropDownMenu({ kudoId }: Props) {
       <DropdownMenuTrigger asChild>
         <Button
           variant='ghost'
-          size='icon'
+          size='sm'
           className='text-gray-400 hover:text-gray-900 dark:hover:text-gray-50'
         >
           <FlipVerticalIcon className='h-4 w-4' />

@@ -11,10 +11,9 @@ interface UpdateKudoProps {
 export default function useUpdateKudo({ companyId, kudoId, updatedKudo }: UpdateKudoProps) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationKey: ['singleKudo', kudoId],
     mutationFn: async () => await patchUpdateKudo(companyId, kudoId, updatedKudo),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['singleKudo', kudoId] });
+      queryClient.invalidateQueries({ queryKey: ['companyKudos'] });
     },
   });
 

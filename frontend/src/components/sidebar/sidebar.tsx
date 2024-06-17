@@ -1,14 +1,12 @@
 import { Link } from '@tanstack/react-router';
 import { adminSideBarLink, sidebarLinks } from '@/constants';
 import NavBarLink from '@/components/sidebar/nav-bar-link';
-
-// import { useAuth } from '@/hooks/useAuth';
 import SideBarFooter from './sidebar-footer';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function Sidebar() {
-  // TODO: update admin check
-  // const { isAdmin } = useAuth();
-  const isAdmin = true;
+  const { state } = useAuth();
+  const { isAdmin } = state;
 
   return (
     <section className='h-full fixed hidden lg:flex flex-col justify-between border-r border-zinc-200 p-3 bg-gray-100 md:w-60'>

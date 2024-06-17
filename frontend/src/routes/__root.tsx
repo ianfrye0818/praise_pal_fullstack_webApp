@@ -1,9 +1,9 @@
-import { AuthState } from '@/types';
+import { AuthState } from '@/providers/AuthReducerProvider';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 
 interface RouterContext {
-  auth: AuthState;
+  state: AuthState;
 }
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (

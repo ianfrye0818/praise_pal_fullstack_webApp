@@ -10,10 +10,9 @@ interface CreateKudoProps {
 export default function useCreateKudo({ companyId, payload }: CreateKudoProps) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationKey: ['companyKudos', companyId],
     mutationFn: async () => await postCreateKudo(companyId, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['companyKudos', companyId] });
+      queryClient.invalidateQueries({ queryKey: ['kudos'] });
     },
   });
 

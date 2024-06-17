@@ -1,18 +1,19 @@
+import { logout } from '@/api/auth-actions';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 
 import { useNavigate } from '@tanstack/react-router';
 
 export default function LogoutButton() {
-  const { logout } = useAuth();
+  const { dispatch } = useAuth();
   const navigate = useNavigate();
 
   return (
     <Button
       variant={'ghost'}
-      size='icon'
+      size='default'
       onClick={async () => {
-        await logout();
+        await logout(dispatch);
         await navigate({ to: '/sign-in' });
       }}
     >

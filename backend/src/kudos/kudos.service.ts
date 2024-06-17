@@ -50,6 +50,7 @@ export class KudosService {
     try {
       return await this.prismaService.kudos.findMany({
         where: filter,
+        orderBy: { id: 'desc' },
         ...this.kudosSelectiOptions,
       });
     } catch (error) {

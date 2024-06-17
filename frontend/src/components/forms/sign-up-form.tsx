@@ -23,8 +23,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useAuth } from '@/hooks/useAuth';
 import { AxiosError } from 'axios';
+import { useAuth } from '@/hooks/useAuth';
+import { register } from '@/api/auth-actions';
 
 export default function SignUpForm() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function SignUpForm() {
       companyCode: '',
     },
   });
-  const { register } = useAuth();
+  const { dispatch } = useAuth();
   const isSubmitting = form.formState.isSubmitting;
   const globalError = form.formState.errors.root;
 
@@ -48,7 +49,7 @@ export default function SignUpForm() {
       return;
     }
     try {
-      await register(data);
+      await register(dispatch, data);
       await navigate({ to: '/' });
     } catch (error) {
       if (error instanceof AxiosError) {
