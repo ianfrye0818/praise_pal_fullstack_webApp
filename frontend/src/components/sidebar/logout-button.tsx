@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 
 import { useNavigate } from '@tanstack/react-router';
+import { LogOutIcon } from 'lucide-react';
 
 export default function LogoutButton() {
   const { dispatch } = useAuth();
@@ -17,12 +18,7 @@ export default function LogoutButton() {
         await navigate({ to: '/sign-in' });
       }}
     >
-      <img
-        src={'/icons/logout.svg'}
-        alt='logout'
-        width={24}
-        height={24}
-      />
+      <LogOutIcon />
     </Button>
   );
 }

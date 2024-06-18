@@ -12,7 +12,7 @@ export default function SideBarFooter() {
 
   return (
     <footer className='footer'>
-      <div className='mt-auto flex items-center gap-2'>
+      <div className='mt-auto flex items-center gap-2 relative'>
         <Link href='/user-settings'>
           <Avatar>
             <AvatarFallback className='bg-blue-500 text-zinc-100'>

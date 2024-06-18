@@ -1,3 +1,6 @@
+import { LucideProps } from 'lucide-react';
+import { ForwardRefExoticComponent, ReactNode, RefAttributes } from 'react';
+
 export interface SignInFormProps {
   email: string;
   password: string;
@@ -47,11 +50,11 @@ export interface AuthTokens {
   refreshToken: string;
 }
 
-export interface SidebarLink {
+export type SidebarLink = {
   label: string;
   route: string;
-  icon: string;
-}
+  icon: ForwardRefExoticComponent<Omit<LucideProps, 'ref'> & RefAttributes<SVGSVGElement>>;
+};
 
 export type TKudos = {
   id: string;
