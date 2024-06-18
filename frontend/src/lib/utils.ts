@@ -45,19 +45,20 @@ function isObjEmpty(obj: object) {
 }
 
 export const createRefreshHeader = (refreshToken: string) => ({
-  headers: { Authorization: `Bearer ${refreshToken}` },
+  Authorization: `Bearer ${refreshToken}`,
 });
 
-export const handleApiError = (error: any, customMessage: string): never => {
+export const handleApiError = (error: unknown, customMessage: string): never => {
   console.error(customMessage, error);
+
   if (error instanceof AxiosError) {
-    if (error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message);
-    }
-    throw new Error(error.message || customMessage);
+    const errorMessage = error.response?.data?.message || error.message || customMessage;
+    throw new Error(errorMessage);
   }
 
-  if (error.message) throw new Error(error.message);
+  if (error instanceof Error) {
+    throw new Error(error.message);
+  }
 
   throw new Error(customMessage);
 };

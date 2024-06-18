@@ -1,6 +1,6 @@
 import { SignInFormProps, SignUpFormProps } from '@/types';
 import { Dispatch } from 'react';
-import { getLogout, getRefreshTokens, getRegisterUser, getUser } from './api-handlers';
+
 import {
   getAuthTokens,
   removeAuthTokens,
@@ -9,24 +9,25 @@ import {
   setUserToken,
 } from '@/lib/utils';
 import { ActionType, AuthAction } from '@/providers/AuthReducerProvider';
+import { postLogout, postRefreshTokens, postRegisterUser, postUser } from './api-handlers';
 
 // Simulate an API call for authentication
 const AuthActions = {
   login: async (signInPayload: SignInFormProps) => {
-    return await getUser(signInPayload);
+    return await postUser(signInPayload);
   },
   register: async (signUpPaylaod: SignUpFormProps) => {
-    return await getRegisterUser(signUpPaylaod);
+    return await postRegisterUser(signUpPaylaod);
   },
   logout: async () => {
     const { refreshToken } = getAuthTokens();
     if (!refreshToken) throw new Error('No refresh token found');
-    await getLogout(refreshToken);
+    await postLogout(refreshToken);
   },
   refreshTokens: async () => {
     const { refreshToken } = getAuthTokens();
     if (!refreshToken) throw new Error('No refresh token found');
-    setAuthTokens(await getRefreshTokens(refreshToken));
+    setAuthTokens(await postRefreshTokens(refreshToken));
   },
 };
 
@@ -76,24 +77,10 @@ export const logout = async (dispatch: Dispatch<AuthAction>) => {
   }
 };
 
-// export const refreshTokens = async (dispatch: Dispatch<AuthAction>) => {
-//   dispatch({ type: ActionType.REFRESH_REQUEST });
-//   try {
-//     await AuthActions.refreshTokens();
-//     dispatch({ type: ActionType.REFRESH_SUCCESS });
-//   } catch (error) {
-//     dispatch({ type: ActionType.LOGIN_FAILURE });
-//   }
-// };
-
 export async function refreshTokens() {
-  const { refreshToken } = getAuthTokens();
-  if (!refreshToken) return;
   try {
-    const newTokens = await getRefreshTokens(refreshToken);
-    console.log({ newTokens });
-    setAuthTokens(newTokens);
+    await AuthActions.refreshTokens();
   } catch (error) {
-    console.error(error);
+    console.error('Error refreshing tokens', error);
   }
 }

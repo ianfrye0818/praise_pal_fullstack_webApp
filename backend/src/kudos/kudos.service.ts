@@ -186,6 +186,7 @@ export class KudosService {
       console.error(error);
       this.emailService.sendCronErrorNotification(
         'Kudos cleanup failed' + error.message,
+        'Delete Kudos',
       );
     }
   }

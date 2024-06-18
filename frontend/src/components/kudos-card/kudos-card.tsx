@@ -37,6 +37,7 @@ export default function KudosCard({ kudo }: Props) {
             <KudoLikeButton
               liked={liked}
               kudoId={kudo.id}
+              userId={user?.userId ?? ''}
             />
             <p className='text-sm text-gray-500'>{kudo.likes}</p>
           </div>

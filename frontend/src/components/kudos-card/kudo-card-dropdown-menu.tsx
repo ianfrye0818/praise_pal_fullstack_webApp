@@ -12,6 +12,7 @@ interface Props {
 }
 
 export default function KudoCardDropDownMenu({ kudoId }: Props) {
+  //DODO: Implement edit and delete functionality
   const handleEdit = () => {};
   const handleDelete = () => {};
   return (

@@ -138,6 +138,7 @@ const AuthContext = createContext<
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  console.log(state);
 
   useEffect(() => {
     const storedUser: User | null = JSON.parse(localStorage.getItem('user') || 'null');

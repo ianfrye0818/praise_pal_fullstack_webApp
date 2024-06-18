@@ -145,7 +145,10 @@ export class UserService {
       });
     } catch (error) {
       console.error(error);
-      this.emailService.sendCronErrorNotification(error.message);
+      this.emailService.sendCronErrorNotification(
+        error.message,
+        'Delete Users',
+      );
     }
   }
 }

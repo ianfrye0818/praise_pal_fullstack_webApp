@@ -6,11 +6,11 @@ import { cn } from '@/lib/utils';
 interface Props {
   liked: boolean;
   kudoId: string;
+  userId: string;
 }
 
-export default function KudoLikeButton({ liked, kudoId }: Props) {
-  const { mutateAsync } = useLikeKudos({ isLiked: liked, kudoId });
-  console.log('liked', liked);
+export default function KudoLikeButton({ liked, kudoId, userId }: Props) {
+  const { mutateAsync } = useLikeKudos({ isLiked: liked, kudoId, userId });
   return (
     <Button
       variant='ghost'

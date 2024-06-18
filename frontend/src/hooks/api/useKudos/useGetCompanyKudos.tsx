@@ -6,7 +6,6 @@ export default function useGetCompanyKudos(companyId: string) {
     queryKey: ['kudos'],
     queryFn: async () => await getCompanyKudos(companyId),
     enabled: !!companyId,
-    _optimisticResults: 'optimistic',
   });
 
   return query;

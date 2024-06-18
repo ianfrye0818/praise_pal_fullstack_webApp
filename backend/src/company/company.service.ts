@@ -136,7 +136,10 @@ export class CompanyService {
       });
     } catch (error) {
       console.error(error);
-      this.emailService.sendCronErrorNotification(error.message);
+      this.emailService.sendCronErrorNotification(
+        error.message,
+        'Delete Companies',
+      );
     }
   }
 }
