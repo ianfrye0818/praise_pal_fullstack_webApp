@@ -1,7 +1,10 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-
+import axios, { AxiosRequestConfig } from 'axios';
 import { getAuthTokens, handleApiError } from '@/lib/utils';
 import { refreshTokens } from './auth-actions';
+import { CustomError } from '@/errors';
+
+type HTTPClients = 'AUTH' | 'API';
+
 const MAX_REQUESTS = 3;
 let retries = 0;
 
@@ -9,15 +12,16 @@ const BASE_URL = 'http://localhost:3001';
 
 const authClient = axios.create({
   baseURL: `${BASE_URL}/auth`,
-  // withCredentials: true,
-  // headers: localStorage.getItem('auth')
-  //   ? { Authorization: `Bearer ${getAuthTokens().accessToken}` }
-  //   : {},
 });
 const apiClient = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
 });
+
+const clients = {
+  AUTH: authClient,
+  API: apiClient,
+};
 
 apiClient.interceptors.request.use((config) => {
   const authTokens = getAuthTokens();
@@ -29,34 +33,43 @@ apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response.status === 401 && retries < MAX_REQUESTS) {
-      console.log('Refreshing tokens');
       retries++;
-
-      // Explicitly wait for token refresh
       try {
         await refreshTokens();
+        retries = 0;
       } catch (refreshError) {
-        console.error('Token refresh failed:', refreshError);
-        return Promise.reject(error); // If refresh fails, propagate original error
+        const customError = new CustomError(
+          'Token Refresh Failed',
+          (refreshError as any).response.status || 500
+        );
+        return Promise.reject(customError);
       }
-
-      // Now retry the original request
-      console.log('Retrying request');
       const originalRequest = error.config;
       originalRequest.headers.Authorization = `Bearer ${getAuthTokens().accessToken}`;
       return apiClient(originalRequest);
+    } else if (error.response) {
+      const customError = new CustomError(
+        error.response.message || 'An Error Occured',
+        error.response.status
+      );
+      return Promise.reject(customError);
+    } else if (error.request) {
+      const customError = new CustomError('No response from server', 500);
+      return Promise.reject(customError);
+    } else {
+      const customError = new CustomError('An error occured', 500);
+      return Promise.reject(customError);
     }
-    return Promise.reject(error);
   }
 );
 
-async function fetcher<T>(url: string): Promise<T> {
+async function fetcher<T>(url: string, client: HTTPClients = 'API'): Promise<T> {
   try {
-    const response = await apiClient.get<T>(url);
+    const response = await clients[client].get<T>(url);
     return response.data;
   } catch (error) {
     handleApiError(error, 'Error fetching data');
-    throw new Error('Error fetching data');
+    throw error;
   }
 }
 
@@ -64,38 +77,43 @@ async function poster<D = any, T = any>(
   url: string,
   data?: D,
   config?: AxiosRequestConfig<D>,
-  client: AxiosInstance = apiClient
+  client: HTTPClients = 'API'
 ): Promise<T> {
   try {
-    const response = await client.post<T>(url, data, config);
+    const response = await clients[client].post<T>(url, data, config);
     return response.data as T;
   } catch (error) {
     handleApiError(error, 'Error posting data');
-    throw new Error('Error posting data');
+    throw error;
   }
 }
 
 async function patcher<D = any, T = any>(
   url: string,
   data?: D,
-  config?: AxiosRequestConfig<D>
+  config?: AxiosRequestConfig<D>,
+  client: HTTPClients = 'API'
 ): Promise<T> {
   try {
-    const response = await apiClient.patch<T>(url, data, config);
+    const response = await clients[client].patch<T>(url, data, config);
     return response.data as T;
   } catch (error) {
     handleApiError(error, 'Error patching data');
-    throw new Error('Error patching data');
+    throw error;
   }
 }
 
-async function deleter<D = any, T = any>(url: string, config?: AxiosRequestConfig<D>): Promise<T> {
+async function deleter<D = any, T = any>(
+  url: string,
+  config?: AxiosRequestConfig<D>,
+  client: HTTPClients = 'API'
+): Promise<T> {
   try {
-    const response = await apiClient.delete<T>(url, config);
+    const response = await clients[client].delete<T>(url, config);
     return response.data as T;
   } catch (error) {
     handleApiError(error, 'Error deleting data');
-    throw new Error('Error deleting data');
+    throw error;
   }
 }
 

@@ -7,6 +7,7 @@ export interface JWTUser {
   firstName: string;
   lastName: string;
 }
+export type HTTPClients = 'AUTH' | 'API';
 
 export interface JWTPayload extends JWTUser {
   iat: number;

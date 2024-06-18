@@ -1,5 +1,5 @@
 import { LucideProps } from 'lucide-react';
-import { ForwardRefExoticComponent, ReactNode, RefAttributes } from 'react';
+import { ForwardRefExoticComponent, RefAttributes } from 'react';
 
 export interface SignInFormProps {
   email: string;
@@ -102,7 +102,6 @@ export interface AuthState {
   register: (formData: SignUpFormProps) => Promise<void>;
   isAdmin: boolean;
 }
-
 export interface Company {
   id: string;
   name: string;
@@ -118,3 +117,5 @@ export interface Company {
   updatedAt?: EpochTimeStamp;
   deletedAt?: EpochTimeStamp | null;
 }
+
+export type HTTPClients = 'AUTH' | 'API';

@@ -8,12 +8,12 @@ import {
   Company,
 } from '@/types';
 import { ApiRoutes } from './api-routes';
-import { authClient, deleter, fetcher, patcher, poster } from './axios-instances';
+import { authClient, deleter, fetcher, patcher, poster } from './axios';
 import { createRefreshHeader } from '@/lib/utils';
 import { AxiosResponse } from 'axios';
 
 export const postUser = async (data: SignInFormProps) =>
-  await poster<SignInFormProps, User & AuthTokens>(ApiRoutes.login, data, {}, authClient);
+  await poster<SignInFormProps, User & AuthTokens>(ApiRoutes.login, data, {}, 'AUTH');
 
 // export const getUser = async (data: SignInFormProps): Promise<(User & AuthTokens) | undefined> => {
 //   try {
@@ -25,7 +25,7 @@ export const postUser = async (data: SignInFormProps) =>
 // };
 
 export const postRegisterUser = async (data: SignUpFormProps) =>
-  await poster<SignUpFormProps, User & AuthTokens>(ApiRoutes.regsiter, data, {}, authClient);
+  await poster<SignUpFormProps, User & AuthTokens>(ApiRoutes.regsiter, data, {}, 'AUTH');
 
 // export const getRegisterUser = async (
 //   data: SignUpFormProps
@@ -43,7 +43,7 @@ export const postRefreshTokens = async (refreshToken: string) =>
     ApiRoutes.refresh,
     {},
     { headers: createRefreshHeader(refreshToken) },
-    authClient
+    'AUTH'
   );
 
 // export const getRefreshTokens = async (refreshToken: string): Promise<AuthTokens | undefined> => {
@@ -64,7 +64,7 @@ export const postLogout = async (refreshToken: string) =>
     ApiRoutes.logout,
     {},
     { headers: createRefreshHeader(refreshToken) },
-    authClient
+    'AUTH'
   );
 
 // export const getLogout = async (refreshToken: string): Promise<void> => {
