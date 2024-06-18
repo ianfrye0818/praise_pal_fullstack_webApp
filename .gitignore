@@ -9,7 +9,6 @@ dist/
 .env.local
 .env.development.local
 
-
 # dependencies
 /node_modules
 /.pnp
@@ -37,7 +36,6 @@ yarn-error.log*
 
 # local env files
 .env*.local
-.env
 
 # vercel
 .vercel
@@ -48,3 +46,19 @@ next-env.d.ts
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+# Logs
+logs
+*.log
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
