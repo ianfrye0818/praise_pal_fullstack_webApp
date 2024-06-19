@@ -1,17 +1,16 @@
 import { SignInFormProps, SignUpFormProps } from '@/types';
 import { Dispatch } from 'react';
 
+import { ActionType, AuthAction } from '@/providers/AuthReducerProvider';
+import { postLogout, postRefreshTokens, postRegisterUser, postUser } from './api-handlers';
 import {
   getAuthTokens,
   removeAuthTokens,
   removeUserToken,
   setAuthTokens,
   setUserToken,
-} from '@/lib/utils';
-import { ActionType, AuthAction } from '@/providers/AuthReducerProvider';
-import { postLogout, postRefreshTokens, postRegisterUser, postUser } from './api-handlers';
+} from '@/lib/localStorage';
 
-// Simulate an API call for authentication
 const AuthActions = {
   login: async (signInPayload: SignInFormProps) => {
     return await postUser(signInPayload);

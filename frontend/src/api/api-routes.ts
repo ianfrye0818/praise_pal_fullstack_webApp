@@ -4,9 +4,8 @@ export const ApiRoutes = {
   logout: '/logout',
   refresh: '/refresh',
   kudos: {
-    base: (companyId: string) => `/kudos/${companyId}`,
+    base: '/kudos',
     company: (companyId: string) => `/kudos/${companyId}`,
-    all: '/kudos',
     single: (companyId: string, kudoId: string) => `/kudos/${companyId}/${kudoId}`,
     sent: (companyId: string, userId: string) => `/kudos/${companyId}/sender/${userId}`,
     received: (companyId: string, userId: string) => `/kudos/${companyId}/recipient/${userId}`,
@@ -15,11 +14,12 @@ export const ApiRoutes = {
     delete: (companyId: string, kudoId: string) => `/kudos/${companyId}/${kudoId}`,
   },
   company: {
-    base: (companyId: string) => `/company/${companyId}`,
+    base: '/company',
     single: (companyId: string) => `/company/${companyId}`,
     update: (companyId: string) => `/company/${companyId}`,
   },
   userLikes: {
+    base: '/likes',
     add: (kudoId: string) => `/likes/${kudoId}`,
     remove: (kudoId: string) => `/likes/${kudoId}`,
   },

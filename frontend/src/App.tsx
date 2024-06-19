@@ -5,7 +5,17 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './providers/AuthReducerProvider';
 
 const router = createRouter({ routeTree, context: { state: undefined! } });
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      staleTime: 30000,
+    },
+    mutations: {
+      retry: 2,
+    },
+  },
+});
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {

@@ -101,15 +101,7 @@ export interface UserLike {
   userId: string;
   createdAt?: EpochTimeStamp;
 }
-export interface AuthState {
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  user: User | null;
-  login: (formData: SignInFormProps) => Promise<void>;
-  logout: () => Promise<void>;
-  register: (formData: SignUpFormProps) => Promise<void>;
-  isAdmin: boolean;
-}
+
 export interface Company {
   id: string;
   name: string;

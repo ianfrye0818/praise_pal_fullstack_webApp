@@ -22,13 +22,11 @@ export default function MobileNavSheet() {
             <SheetClose asChild>
               <nav className='flex h-full flex-col gap-6 pt-16'>
                 {sidebarLinks.map((link) => (
-                  <SheetClose asChild>
-                    <NavBarLink
-                      key={link.label}
-                      link={link}
-                      onClick={() => setOpen(false)}
-                    />
-                  </SheetClose>
+                  <NavBarLink
+                    key={link.label}
+                    link={link}
+                    onClick={() => setOpen(false)}
+                  />
                 ))}
               </nav>
             </SheetClose>

@@ -1,21 +1,17 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { getAuthTokens, handleApiError } from '@/lib/utils';
 import { refreshTokens } from './auth-actions';
-import { CustomError } from '@/errors';
+import { CustomError, handleApiError } from '@/errors';
 import { HTTPClients } from '@/types';
-import { env } from '@/env';
+import { BASE_API_URL, MAX_API_REQUESTS } from '@/constants';
+import { getAuthTokens } from '@/lib/localStorage';
 
-const MAX_REQUESTS = 3;
 let retries = 0;
 
-// const BASE_URL = 'http://localhost:3001';
-const BASE_URL = env.VITE_API_BASE_URL;
-
 const authClient = axios.create({
-  baseURL: `${BASE_URL}/auth`,
+  baseURL: `${BASE_API_URL}/auth`,
 });
 const apiClient = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_API_URL,
   withCredentials: true,
 });
 
@@ -33,7 +29,7 @@ apiClient.interceptors.request.use((config) => {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response.status === 401 && retries < MAX_REQUESTS) {
+    if (error.response.status === 401 && retries < MAX_API_REQUESTS) {
       retries++;
       try {
         await refreshTokens();
