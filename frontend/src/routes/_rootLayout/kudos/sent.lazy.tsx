@@ -8,8 +8,8 @@ export const Route = createLazyFileRoute('/_rootLayout/kudos/sent')({
 });
 
 function SentPage() {
-  const { state } = useAuth();
-  const { user } = state;
+  const { user } = useAuth().state;
+
   const {
     data: kudos,
     error,

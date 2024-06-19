@@ -8,8 +8,7 @@ export const Route = createLazyFileRoute('/_rootLayout/kudos/received')({
 });
 
 function ReceivedPage() {
-  const { state } = useAuth();
-  const { user } = state;
+  const { user } = useAuth().state;
   const {
     data: kudos,
     isLoading,

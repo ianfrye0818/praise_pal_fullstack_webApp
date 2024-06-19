@@ -23,4 +23,11 @@ export const ApiRoutes = {
     add: (kudoId: string) => `/likes/${kudoId}`,
     remove: (kudoId: string) => `/likes/${kudoId}`,
   },
+  users: {
+    base: '/users',
+    company: (companyId: string) => `/users/company/${companyId}`,
+    single: (companyId: string, userId: string) => `/users/${companyId}/${userId}`,
+    update: (companyId: string, userId: string) => `/users/${companyId}/${userId}`,
+    delete: (companyId: string, userId: string) => `/users/${companyId}/${userId}`,
+  },
 };

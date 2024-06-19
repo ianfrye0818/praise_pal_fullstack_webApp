@@ -1,6 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_rootLayout/admin/dashboard')({
+  beforeLoad: async ({ context }) => {
+    const { isAdmin } = context.state;
+    if (!isAdmin) {
+      throw redirect({ to: '/' });
+    }
+  },
   component: () => <AdminDashboard />,
 });
 

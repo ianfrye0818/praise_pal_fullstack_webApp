@@ -25,6 +25,14 @@ export interface User {
   lastName: string;
 }
 
+export interface UpdateUserProps {
+  email?: string;
+  displayName?: string;
+  firstName?: string;
+  lastName?: string;
+  role?: Role;
+}
+
 export enum Role {
   ADMIN = 'ADMIN',
   USER = 'USER',
@@ -116,6 +124,15 @@ export interface Company {
   createdAt?: EpochTimeStamp;
   updatedAt?: EpochTimeStamp;
   deletedAt?: EpochTimeStamp | null;
+}
+
+export interface UpdateCompanyProps {
+  name?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  phone?: string;
 }
 
 export type HTTPClients = 'AUTH' | 'API';

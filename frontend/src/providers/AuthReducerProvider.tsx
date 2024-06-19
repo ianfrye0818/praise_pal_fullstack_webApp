@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, ReactNode, useEffect } from 'react';
 import { Role, User } from '@/types';
+import { refreshTokens } from '@/api/auth-actions';
 
 export interface AuthState {
   user: User | null;
@@ -140,10 +141,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
-    const storedUser: User | null = JSON.parse(localStorage.getItem('user') || 'null');
-    if (storedUser) {
-      dispatch({ type: ActionType.LOGIN_SUCCESS, payload: { user: storedUser } });
-    }
+    const setUpLoggedInUser = async () => {
+      const storedUser: User | null = JSON.parse(localStorage.getItem('user') || 'null');
+      if (storedUser) {
+        await refreshTokens();
+        dispatch({ type: ActionType.LOGIN_SUCCESS, payload: { user: storedUser } });
+      }
+    };
+    setUpLoggedInUser();
   }, []);
 
   return <AuthContext.Provider value={{ state, dispatch }}>{children}</AuthContext.Provider>;

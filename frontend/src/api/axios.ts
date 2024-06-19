@@ -2,13 +2,14 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { getAuthTokens, handleApiError } from '@/lib/utils';
 import { refreshTokens } from './auth-actions';
 import { CustomError } from '@/errors';
-
-type HTTPClients = 'AUTH' | 'API';
+import { HTTPClients } from '@/types';
+import { env } from '@/env';
 
 const MAX_REQUESTS = 3;
 let retries = 0;
 
-const BASE_URL = 'http://localhost:3001';
+// const BASE_URL = 'http://localhost:3001';
+const BASE_URL = env.VITE_API_BASE_URL;
 
 const authClient = axios.create({
   baseURL: `${BASE_URL}/auth`,
@@ -117,4 +118,4 @@ async function deleter<D = any, T = any>(
   }
 }
 
-export { apiClient, authClient, fetcher, poster, patcher, deleter };
+export { fetcher, poster, patcher, deleter };

@@ -8,8 +8,7 @@ export const Route = createLazyFileRoute('/_rootLayout/')({
 });
 
 function HomePage() {
-  const { state } = useAuth();
-  const { user } = state;
+  const { user } = useAuth().state;
   const { data: kudos, error, isLoading } = useGetCompanyKudos(user?.companyId as string);
 
   if (isLoading) return <div>Loading...</div>;
