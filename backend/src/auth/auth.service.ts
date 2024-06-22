@@ -7,8 +7,9 @@ import { UserService } from 'src/(user)/user/user.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { JWTUser } from 'src/types';
+import { ClientUser } from 'src/types';
 import { RefreshTokenService } from 'src/core-services/refreshToken.service';
+import { generateClientSideUserProperties } from 'src/utils';
 
 @Injectable()
 export class AuthService {
@@ -18,26 +19,27 @@ export class AuthService {
     private refreshTokenService: RefreshTokenService,
   ) {}
 
-  async validateUser(email: string, password: string) {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<ClientUser | null> {
     const user = await this.userService.findOneByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user;
-      return result;
+      return generateClientSideUserProperties(user);
     }
     return null;
   }
 
-  async logout(token: string) {
-    return this.refreshTokenService.deleteToken(token);
+  async logout(token: string): Promise<void> {
+    return await this.refreshTokenService.deleteToken(token);
   }
 
   async login(user: User) {
     const payload = this.generatePayload(user);
-
-    const refreshToken = await this.generateRefreshToken(payload);
+    const newToken = await this.generateRefreshToken(payload);
     await this.refreshTokenService.updateUserRefreshToken({
-      newToken: refreshToken,
-      userId: user.id,
+      newToken,
+      userId: user.userId,
     });
 
     const accessToken = this.generateAccessToken(payload);
@@ -45,16 +47,13 @@ export class AuthService {
     return {
       ...payload,
       accessToken,
-      refreshToken,
+      newToken,
     };
   }
 
-  async refreshToken(user: JWTUser, oldToken: string) {
+  async refreshToken(user: ClientUser, oldToken: string) {
     try {
       await this.refreshTokenService.getRefreshToken(oldToken);
-
-      // if (!dbRefreshToken)
-      //   throw new UnauthorizedException('Invalid refresh token');
 
       const cachedToken = this.refreshTokenService.getCachedToken(oldToken);
       if (cachedToken) {
@@ -85,21 +84,13 @@ export class AuthService {
     }
   }
 
-  private generatePayload(user: User | JWTUser) {
-    return {
-      email: user.email,
-      userId: 'userId' in user ? user.userId : user.id, // Normalizing user ID
-      companyId: user.companyId,
-      role: user.role,
-      displayName: user.displayName,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    };
+  private generatePayload(user: User) {
+    return generateClientSideUserProperties(user);
   }
 
   private generateAccessToken(payload: object) {
     return this.jwtService.sign(payload, {
-      expiresIn: '2m',
+      expiresIn: '15m',
       secret: process.env.JWT_SECRET,
     });
   }

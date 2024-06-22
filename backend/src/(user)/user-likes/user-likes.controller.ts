@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { UserLikesService } from './user-likes.service';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { JWTUser } from 'src/types';
+import { ClientUser } from 'src/types';
 
 @UseGuards(JwtGuard)
 @Controller('likes')
@@ -19,7 +19,7 @@ export class UserLikesController {
   async updateLike(@Param('id') kudosId: string, @Request() req: any) {
     return await this.userLikesService.createLike({
       kudosId,
-      userId: (req.user as JWTUser).userId,
+      userId: (req.user as ClientUser).userId,
     });
   }
 
@@ -27,7 +27,7 @@ export class UserLikesController {
   async deleteLike(@Param('id') kudosId: string, @Request() req: any) {
     return await this.userLikesService.deleteLike({
       kudosId,
-      userId: (req.user as JWTUser).userId,
+      userId: (req.user as ClientUser).userId,
     });
   }
 }

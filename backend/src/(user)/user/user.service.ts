@@ -10,6 +10,8 @@ import * as bcrypt from 'bcryptjs';
 import { Cron } from '@nestjs/schedule';
 import { User } from '@prisma/client';
 import { EmailService } from 'src/core-services/email.service';
+import { generateClientSideUserProperties } from 'src/utils';
+import { ClientUser } from 'src/types';
 
 @Injectable()
 export class UserService {
@@ -18,12 +20,15 @@ export class UserService {
     private emailService: EmailService,
   ) {}
 
-  async findAll(deletedUsers?: boolean): Promise<Omit<User, 'password'>[]> {
+  async findAll(deletedUsers?: boolean): Promise<ClientUser[]> {
     try {
       const users = await this.prismaService.user.findMany({
         where: deletedUsers ? undefined : { deletedAt: null },
       });
-      return users.map(({ password, ...rest }) => rest);
+      const clientUsers = users.map((user) =>
+        generateClientSideUserProperties(user),
+      );
+      return clientUsers;
     } catch (error) {
       console.error(error);
       throw new HttpException('Something went wrong', 500);
@@ -33,26 +38,25 @@ export class UserService {
   async findAllByCompany(
     companyId: string,
     deletedUsers?: boolean,
-  ): Promise<Omit<User, 'password'>[]> {
+  ): Promise<ClientUser[]> {
     try {
       const users = await this.prismaService.user.findMany({
         where: { companyId, ...(deletedUsers ? {} : { deletedAt: null }) },
       });
-      return users.map(({ password, ...rest }) => rest);
+      return users.map((user) => generateClientSideUserProperties(user));
     } catch (error) {
       console.error(error);
       throw new HttpException('Something went wrong', 500);
     }
   }
 
-  async findOneById(userId: string): Promise<Omit<User, 'password'>> {
+  async findOneById(userId: string): Promise<ClientUser> {
     try {
       const user = await this.prismaService.user.findUnique({
-        where: { id: userId },
+        where: { userId },
       });
       if (!user) throw new NotFoundException('User not found');
-      const { password, ...rest } = user;
-      return rest;
+      return generateClientSideUserProperties(user);
     } catch (error) {
       console.error(error);
       if (
@@ -96,13 +100,13 @@ export class UserService {
   }
 
   async updateUserById(
-    id: string,
+    userId: string,
     data: updateUserDTO,
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<ClientUser> {
     try {
       const user = await this.prismaService.user.findFirst({
         where: {
-          id,
+          userId,
         },
       });
       if (!user) throw new NotFoundException('User not found');
@@ -110,11 +114,11 @@ export class UserService {
       if (data.password) data.password = await bcrypt.hash(data.password, 10);
 
       const updatedUser = await this.prismaService.user.update({
-        where: { id },
+        where: { userId },
         data,
       });
-      const { password, ...rest } = updatedUser;
-      return rest;
+
+      return generateClientSideUserProperties(updatedUser);
     } catch (error) {
       console.error(error);
       if (
@@ -126,7 +130,7 @@ export class UserService {
     }
   }
 
-  async softDeleteUserById(id: string): Promise<Omit<User, 'password'>> {
+  async softDeleteUserById(id: string): Promise<ClientUser> {
     return this.updateUserById(id, { deletedAt: new Date() });
   }
 

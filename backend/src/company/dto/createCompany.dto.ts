@@ -45,5 +45,5 @@ export class CreateCompanyDTO {
 export class UpdateCompanyDTO extends PartialType(CreateCompanyDTO) {
   @IsOptional()
   @IsDate()
-  deletedAt: Date;
+  deletedAt?: Date;
 }

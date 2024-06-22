@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
+import { Role } from '@prisma/client';
 import { IsEmail, IsOptional, IsString, IsDate, IsEnum } from 'class-validator';
-import { Role } from 'src/types';
 
 export class createUserDTO {
   @IsString()

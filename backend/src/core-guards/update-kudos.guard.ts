@@ -4,15 +4,16 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import { KudosService } from 'src/kudos/kudos.service';
-import { JWTUser, Role } from 'src/types';
+import { ClientUser } from 'src/types';
 
 @Injectable()
 export class EditKudosGuard implements CanActivate {
   constructor(private kudosService: KudosService) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const jwtUser = request.user as JWTUser;
+    const jwtUser = request.user as ClientUser;
 
     if (jwtUser.role === Role.SUPER_ADMIN) return true;
 

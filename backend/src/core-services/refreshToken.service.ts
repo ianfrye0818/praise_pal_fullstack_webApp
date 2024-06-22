@@ -56,7 +56,7 @@ export class RefreshTokenService {
   private scheduleOldTokenDeletion(oldToken: string) {
     setTimeout(async () => {
       try {
-        const deleted = await this.deleteToken(oldToken);
+        await this.deleteToken(oldToken);
         this.tokenCache.delete(oldToken);
       } catch (error) {
         console.error(`Error deleting old token ${oldToken}:`, error);

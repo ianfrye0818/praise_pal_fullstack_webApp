@@ -16,6 +16,7 @@ import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { AdminGuard } from 'src/core-guards/admin.guard';
 import { CompanyGuard } from 'src/core-guards/company.guard';
 import { CompanyFilterDTO } from './dto/companyFilter.dto';
+
 @UseGuards(JwtGuard)
 @Controller('company')
 export class CompanyController {

@@ -8,7 +8,7 @@ import { PrismaService } from 'src/core-services/prisma.service';
 import { createKudosDTO, UpdateKudosDTO } from './dto/createKudos.dto';
 import { Cron } from '@nestjs/schedule';
 import { EmailService } from 'src/core-services/email.service';
-import { Comment, Kudos } from '@prisma/client';
+import { Kudos } from '@prisma/client';
 
 @Injectable()
 export class KudosService {

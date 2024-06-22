@@ -5,7 +5,6 @@ import {
   Get,
   Param,
   Patch,
-  Post,
   Query,
   UseGuards,
   Request,
@@ -52,7 +51,7 @@ export class UserController {
 
   @UseGuards(AdminGuard)
   @Delete(':companyId/:id')
-  async deleteUserById(@Param('id') id: string, @Request() req) {
+  async deleteUserById(@Param('id') id: string) {
     return await this.userService.softDeleteUserById(id);
   }
 }

@@ -5,7 +5,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { JWTUser, Role } from 'src/types';
+import { Role } from '@prisma/client';
+import { ClientUser } from 'src/types';
 
 @Injectable()
 export class SuperAdminGuard implements CanActivate {
@@ -13,7 +14,7 @@ export class SuperAdminGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const user = request.user as JWTUser;
+    const user = request.user as ClientUser;
 
     if (user.role !== Role.SUPER_ADMIN) {
       throw new UnauthorizedException(
