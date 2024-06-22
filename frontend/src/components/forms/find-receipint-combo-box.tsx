@@ -1,5 +1,3 @@
-import { Calculator, Calendar, CreditCard, Settings, Smile, User } from 'lucide-react';
-
 import {
   Command,
   CommandEmpty,
@@ -12,33 +10,26 @@ import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover
 import { Button } from '../ui/button';
 import { useState } from 'react';
 
-const frameworks = [
-  {
-    value: 'next.js',
-    label: 'Next.js',
-  },
-  {
-    value: 'sveltekit',
-    label: 'SvelteKit',
-  },
-  {
-    value: 'nuxt.js',
-    label: 'Nuxt.js',
-  },
-  {
-    value: 'remix',
-    label: 'Remix',
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
-  },
-];
+import useGetCompanyUsers from '@/hooks/api/useCompayUsers/useGetCompanyUsers';
+import { useAuth } from '@/hooks/useAuth';
+import { User } from '@/types';
 
 export default function ComboBox() {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('');
-  console.log(value);
+  const [recepient, setRecepient] = useState<User | null>(null);
+  const { user } = useAuth().state;
+  console.log('recepient: ', recepient);
+
+  const { data, isLoading, error } = useGetCompanyUsers(user?.companyId as string);
+
+  if (isLoading) return <div>Loading...</div>;
+
+  if (error) return <div>{error.message}</div>;
+
+  if (!data) return <div>No Users</div>;
+
+  const users = data.filter((u) => u.userId !== user?.userId);
+
   return (
     <Popover
       open={open}
@@ -46,10 +37,8 @@ export default function ComboBox() {
     >
       <PopoverTrigger asChild>
         <Button variant='outline'>
-          {value
-            ? frameworks
-                .filter((framework) => framework.value === value)
-                .map((framework) => framework.label)
+          {recepient
+            ? users.filter((r) => r.displayName === recepient.displayName).map((r) => r.displayName)
             : 'Select a recipient'}
         </Button>
       </PopoverTrigger>
@@ -59,17 +48,17 @@ export default function ComboBox() {
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => {
+              {users.map((r) => {
                 return (
                   <CommandItem
                     onSelect={(currentValue) => {
-                      setValue(currentValue);
+                      setRecepient(users.find((r) => r.displayName === currentValue) as User);
                       setOpen(false);
                     }}
-                    value={framework.value}
-                    key={framework.value}
+                    value={r.displayName}
+                    key={r.userId}
                   >
-                    {framework.value}
+                    {r.displayName}
                   </CommandItem>
                 );
               })}

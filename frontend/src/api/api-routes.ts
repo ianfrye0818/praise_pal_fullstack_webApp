@@ -25,7 +25,7 @@ export const ApiRoutes = {
   },
   users: {
     base: '/users',
-    company: (companyId: string) => `/users/company/${companyId}`,
+    company: (companyId: string) => `/user/company/${companyId}`,
     single: (companyId: string, userId: string) => `/users/${companyId}/${userId}`,
     update: (companyId: string, userId: string) => `/users/${companyId}/${userId}`,
     delete: (companyId: string, userId: string) => `/users/${companyId}/${userId}`,

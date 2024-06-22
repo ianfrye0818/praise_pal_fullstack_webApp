@@ -15,3 +15,8 @@ export const signUpFormSchema = z.object({
     .max(4, 'Company code must be 4 characters')
     .transform((val) => val.toUpperCase()),
 });
+
+export const addKudosSchema = z.object({
+  title: z.string().min(2, 'Please enter a longer title'),
+  description: z.string().min(2, 'Please enter a longer description'),
+});

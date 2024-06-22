@@ -1,5 +1,6 @@
 import { LucideProps } from 'lucide-react';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
+import { string } from 'zod';
 
 export interface SignInFormProps {
   email: string;
@@ -7,50 +8,27 @@ export interface SignInFormProps {
 }
 
 export interface SignUpFormProps extends SignInFormProps {
-  email: string;
-  password: string;
   confirmPassword: string;
   displayName: string;
   companyCode: string;
 }
 
 export interface User {
-  id?: string;
   email: string;
   userId: string;
   companyId: string;
   role: Role;
   displayName: string;
-  firstName: string;
-  lastName: string;
-}
-
-export interface UpdateUserProps {
-  email?: string;
-  displayName?: string;
   firstName?: string;
   lastName?: string;
-  role?: Role;
 }
+
+export type UpdateUserProps = Partial<Omit<User, 'companyId' | 'userId'>>;
 
 export enum Role {
   ADMIN = 'ADMIN',
   USER = 'USER',
   SUPER_ADMIN = 'SUPER_ADMIN',
-}
-
-export interface SignInFormProps {
-  email: string;
-  password: string;
-}
-
-export interface SignUpFormProps {
-  email: string;
-  password: string;
-  firstName?: string;
-  lastName?: string;
-  companyCode: string;
-  displayName: string;
 }
 
 export interface AuthTokens {
@@ -67,39 +45,34 @@ export type SidebarLink = {
 export type TKudos = {
   id: string;
   senderId: string;
-  recipientId?: string;
+  receiverId?: string;
   companyId: string;
   message: string;
   title?: string;
-  createdAt?: EpochTimeStamp;
-  updatedAt?: EpochTimeStamp;
-  deletedAt?: EpochTimeStamp | null;
   likes: number;
   isAnonymous: boolean;
   isHidden: boolean;
-  sender: SenderReceiverUser;
-  receiver?: SenderReceiverUser;
+  sender: User;
+  receiver?: User;
   userLikes: UserLike[];
-};
-
-export type SenderReceiverUser = Omit<User, 'accessToken' | 'refreshToken' | 'userId'> & {
-  id: string;
+  comments: Comment[];
 };
 
 export interface CreateKudoFormProps {
   senderId: string;
-  recipientId?: string;
+  receiverId?: string;
   companyId: string;
   message: string;
   title?: string;
   isAnonymous?: boolean;
 }
 
+export type UpdateKudoProps = Omit<CreateKudoFormProps, 'senderId' | 'companyId'>;
+
 export interface UserLike {
   id: string;
   kudoId: string;
   userId: string;
-  createdAt?: EpochTimeStamp;
 }
 
 export interface Company {
@@ -125,6 +98,15 @@ export interface UpdateCompanyProps {
   state?: string;
   zip?: string;
   phone?: string;
+}
+
+interface Comment {
+  id: string;
+  content: string;
+}
+
+interface createContentProps {
+  content: string;
 }
 
 export type HTTPClients = 'AUTH' | 'API';
