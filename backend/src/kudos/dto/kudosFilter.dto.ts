@@ -3,7 +3,7 @@ import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
 export class KudosFilterDTO {
   @IsOptional()
   @IsUUID()
-  recipientId?: string;
+  receiverId?: string;
 
   @IsOptional()
   @IsUUID()

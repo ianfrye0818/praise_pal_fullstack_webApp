@@ -10,7 +10,7 @@
 ALTER TABLE "Comment" DROP CONSTRAINT "Comment_userId_fkey";
 
 -- DropForeignKey
-ALTER TABLE "Kudos" DROP CONSTRAINT "Kudos_recipientId_fkey";
+ALTER TABLE "Kudos" DROP CONSTRAINT "Kudos_receiverId_fkey";
 
 -- DropForeignKey
 ALTER TABLE "Kudos" DROP CONSTRAINT "Kudos_senderId_fkey";
@@ -37,7 +37,7 @@ ADD CONSTRAINT "User_pkey" PRIMARY KEY ("userId");
 ALTER TABLE "Kudos" ADD CONSTRAINT "Kudos_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Kudos" ADD CONSTRAINT "Kudos_recipientId_fkey" FOREIGN KEY ("recipientId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Kudos" ADD CONSTRAINT "Kudos_receiverId_fkey" FOREIGN KEY ("receiverId") REFERENCES "User"("userId") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("userId") ON DELETE CASCADE ON UPDATE CASCADE;

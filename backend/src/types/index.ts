@@ -10,8 +10,6 @@ export interface ClientUser {
   lastName?: string;
 }
 
-export type HTTPClients = 'AUTH' | 'API';
-
 export interface JWTPayload extends ClientUser {
   iat: number;
   exp: number;

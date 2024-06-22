@@ -14,7 +14,7 @@ import { Kudos } from '@prisma/client';
 export class KudosService {
   private readonly selectProps = {
     select: {
-      id: true,
+      userId: true,
       displayName: true,
       firstName: true,
       lastName: true,
@@ -27,17 +27,22 @@ export class KudosService {
     select: {
       id: true,
       content: true,
-      createdAt: true,
-      updatedAt: true,
     },
   };
 
-  private readonly kudosSelectiOptions = {
+  private readonly userLikeSelectProps = {
+    select: {
+      userId: true,
+      kudosId: true,
+    },
+  };
+
+  private readonly kudosSelectOptions = {
     include: {
       sender: this.selectProps,
       receiver: this.selectProps,
       comments: this.commentSelectProps,
-      userLikes: true,
+      userLikes: this.userLikeSelectProps,
     },
   };
 
@@ -51,7 +56,7 @@ export class KudosService {
       return await this.prismaService.kudos.findMany({
         where: filter,
         orderBy: { id: 'desc' },
-        ...this.kudosSelectiOptions,
+        ...this.kudosSelectOptions,
       });
     } catch (error) {
       console.error(error);
@@ -77,9 +82,9 @@ export class KudosService {
     }
   }
 
-  async getKudosByRecipientId(recipientId: string): Promise<Kudos[]> {
+  async getKudosByreceiverId(receiverId: string): Promise<Kudos[]> {
     try {
-      return this.getAllKudos({ recipientId });
+      return this.getAllKudos({ receiverId });
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Could not retreive Kudos');
@@ -90,7 +95,7 @@ export class KudosService {
     try {
       const kudo = await this.prismaService.kudos.findUnique({
         where: { id },
-        ...this.kudosSelectiOptions,
+        ...this.kudosSelectOptions,
       });
 
       if (!kudo) throw new NotFoundException('Unable to locate Kudo ' + id);

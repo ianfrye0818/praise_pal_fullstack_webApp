@@ -42,9 +42,9 @@ export class KudosController {
   }
 
   @UseGuards(CompanyGuard)
-  @Get(':companyId/recipient/:recipientId')
-  async findAllByRecipientId(@Param('recipientId') recipientId: string) {
-    return await this.kudosService.getKudosByRecipientId(recipientId);
+  @Get(':companyId/recipient/:receiverId')
+  async findAllByreceiverId(@Param('receiverId') receiverId: string) {
+    return await this.kudosService.getKudosByreceiverId(receiverId);
   }
 
   @UseGuards(CompanyGuard)

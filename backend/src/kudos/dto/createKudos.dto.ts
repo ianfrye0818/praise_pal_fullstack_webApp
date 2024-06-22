@@ -6,7 +6,7 @@ export class createKudosDTO {
   senderId: string;
 
   @IsString()
-  recipientId: string;
+  receiverId: string;
 
   @IsString()
   message: string;

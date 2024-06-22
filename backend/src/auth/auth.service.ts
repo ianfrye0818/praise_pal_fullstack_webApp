@@ -35,10 +35,10 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const payload = this.generatePayload(user);
-    const newToken = await this.generateRefreshToken(payload);
+    const payload = generateClientSideUserProperties(user);
+    const refreshToken = await this.generateRefreshToken(payload);
     await this.refreshTokenService.updateUserRefreshToken({
-      newToken,
+      newToken: refreshToken,
       userId: user.userId,
     });
 
@@ -47,7 +47,7 @@ export class AuthService {
     return {
       ...payload,
       accessToken,
-      newToken,
+      refreshToken,
     };
   }
 
@@ -82,10 +82,6 @@ export class AuthService {
       console.error(error);
       throw new InternalServerErrorException('Something went wrong');
     }
-  }
-
-  private generatePayload(user: User) {
-    return generateClientSideUserProperties(user);
   }
 
   private generateAccessToken(payload: object) {
