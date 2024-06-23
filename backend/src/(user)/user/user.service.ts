@@ -12,6 +12,7 @@ import { User } from '@prisma/client';
 import { EmailService } from 'src/core-services/email.service';
 import { generateClientSideUserProperties } from 'src/utils';
 import { ClientUser } from 'src/types';
+import { FilterUserDTO } from './dto/filterUser.dto';
 
 @Injectable()
 export class UserService {
@@ -20,10 +21,10 @@ export class UserService {
     private emailService: EmailService,
   ) {}
 
-  async findAll(deletedUsers?: boolean): Promise<ClientUser[]> {
+  async findAllUsers(filter: FilterUserDTO): Promise<ClientUser[]> {
     try {
       const users = await this.prismaService.user.findMany({
-        where: deletedUsers ? undefined : { deletedAt: null },
+        where: filter,
       });
       const clientUsers = users.map((user) =>
         generateClientSideUserProperties(user),
@@ -40,10 +41,11 @@ export class UserService {
     deletedUsers?: boolean,
   ): Promise<ClientUser[]> {
     try {
-      const users = await this.prismaService.user.findMany({
-        where: { companyId, ...(deletedUsers ? {} : { deletedAt: null }) },
+      const users = await this.findAllUsers({
+        companyId,
+        deletedAt: deletedUsers ? new Date() : null,
       });
-      return users.map((user) => generateClientSideUserProperties(user));
+      return users;
     } catch (error) {
       console.error(error);
       throw new HttpException('Something went wrong', 500);
@@ -104,12 +106,7 @@ export class UserService {
     data: updateUserDTO,
   ): Promise<ClientUser> {
     try {
-      const user = await this.prismaService.user.findFirst({
-        where: {
-          userId,
-        },
-      });
-      if (!user) throw new NotFoundException('User not found');
+      await this.findOneById(userId);
 
       if (data.password) data.password = await bcrypt.hash(data.password, 10);
 

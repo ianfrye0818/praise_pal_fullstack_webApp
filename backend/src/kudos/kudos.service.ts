@@ -27,6 +27,9 @@ export class KudosService {
     select: {
       id: true,
       content: true,
+      // kudosId: true,
+      // parentId: true,
+      // userId: true,
     },
   };
 

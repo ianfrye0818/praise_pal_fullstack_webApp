@@ -1,29 +1,21 @@
 import { IsDate, IsOptional, IsString } from 'class-validator';
 
-export class KudosFilterDTO {
+export class FilterCommentDTO {
   @IsOptional()
   @IsString()
-  receiverId?: string;
+  commentId?: string;
 
   @IsOptional()
   @IsString()
-  senderId?: string;
+  kudosId?: string;
 
   @IsOptional()
   @IsString()
-  message?: string;
+  parentId?: string;
 
   @IsOptional()
   @IsString()
-  title?: string;
-
-  @IsOptional()
-  @IsString()
-  companyId?: string;
-
-  @IsOptional()
-  @IsString()
-  id?: string;
+  userId?: string;
 
   @IsOptional()
   @IsDate()
