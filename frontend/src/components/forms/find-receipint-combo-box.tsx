@@ -16,9 +16,9 @@ import { User } from '@/types';
 
 export default function ComboBox() {
   const [open, setOpen] = useState(false);
-  const [recepient, setRecepient] = useState<User | null>(null);
+  const [receiver, setReceiver] = useState<User | null>(null);
   const { user } = useAuth().state;
-  console.log('recepient: ', recepient);
+  console.log('receiver: ', receiver);
 
   const { data, isLoading, error } = useGetCompanyUsers(user?.companyId as string);
 
@@ -37,8 +37,8 @@ export default function ComboBox() {
     >
       <PopoverTrigger asChild>
         <Button variant='outline'>
-          {recepient
-            ? users.filter((r) => r.displayName === recepient.displayName).map((r) => r.displayName)
+          {receiver
+            ? users.filter((r) => r.displayName === receiver.displayName).map((r) => r.displayName)
             : 'Select a recipient'}
         </Button>
       </PopoverTrigger>
@@ -52,7 +52,7 @@ export default function ComboBox() {
                 return (
                   <CommandItem
                     onSelect={(currentValue) => {
-                      setRecepient(users.find((r) => r.displayName === currentValue) as User);
+                      setReceiver(users.find((r) => r.displayName === currentValue) as User);
                       setOpen(false);
                     }}
                     value={r.displayName}

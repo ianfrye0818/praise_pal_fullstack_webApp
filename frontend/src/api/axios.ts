@@ -23,6 +23,7 @@ const clients = {
 apiClient.interceptors.request.use((config) => {
   const authTokens = getAuthTokens();
   config.headers.Authorization = `Bearer ${authTokens.accessToken}`;
+  console.log('config: ', config);
   return config;
 });
 
@@ -62,6 +63,8 @@ apiClient.interceptors.response.use(
 
 async function fetcher<T>(url: string, client: HTTPClients = 'API'): Promise<T> {
   try {
+    console.log('url: ', url);
+
     const response = await clients[client].get<T>(url);
     return response.data;
   } catch (error) {

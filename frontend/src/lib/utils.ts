@@ -15,3 +15,10 @@ export const isAxiosError = (error: any): error is AxiosError => {
 export const createRefreshHeader = (refreshToken: string) => ({
   Authorization: `Bearer ${refreshToken}`,
 });
+
+export function generateQueryString(query: any) {
+  if (isObjEmpty(query)) return '';
+  return Object.keys(query)
+    .map((key) => `${key}=${query[key]}`)
+    .join('&');
+}
