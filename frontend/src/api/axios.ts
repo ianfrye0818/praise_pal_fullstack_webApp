@@ -80,6 +80,7 @@ async function poster<D = any, T = any>(
   client: HTTPClients = 'API'
 ): Promise<T> {
   try {
+    console.log({ url, data, config, client });
     const response = await clients[client].post<T>(url, data, config);
     return response.data as T;
   } catch (error) {

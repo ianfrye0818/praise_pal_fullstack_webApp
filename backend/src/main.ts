@@ -6,18 +6,21 @@ import 'dotenv/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // CORS configuration
   app.enableCors({
-    origin: env.CLIENT_URL,
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
-    allowedHeaders: 'Content-Type, Authorization',
-    exposedHeaders: 'Set-Cookie',
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
     }),
   );
-  await app.listen(env.PORT);
+  await app.listen(3002);
 }
 bootstrap();

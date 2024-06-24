@@ -51,8 +51,8 @@ export const getSentKudos = async (companyId: string, senderId: string): Promise
 export const getReceivedKudos = async (companyId: string, receiverId: string): Promise<TKudos[]> =>
   await fetcher<TKudos[]>(ApiRoutes.kudos.findAll(companyId, { receiverId }));
 
-export const postCreateKudo = async (companyId: string, data: CreateKudoFormProps): Promise<void> =>
-  poster<CreateKudoFormProps, void>(ApiRoutes.kudos.createKudo(companyId), data);
+export const postCreateKudo = async (payload: CreateKudoFormProps): Promise<void> =>
+  poster<CreateKudoFormProps, void>(ApiRoutes.kudos.createKudo(payload.companyId), payload);
 
 export const patchUpdateKudo = async (companyId: string, kudoId: string, data: Partial<TKudos>) =>
   await patcher<Partial<TKudos>, void>(ApiRoutes.kudos.updateKudoById(companyId, kudoId), data);

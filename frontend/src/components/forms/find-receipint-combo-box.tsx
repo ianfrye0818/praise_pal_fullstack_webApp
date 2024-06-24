@@ -9,16 +9,23 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
 import { Button } from '../ui/button';
 import { useState } from 'react';
+import * as z from 'zod';
 
 import useGetCompanyUsers from '@/hooks/api/useCompayUsers/useGetCompanyUsers';
 import { useAuth } from '@/hooks/useAuth';
-import { User } from '@/types';
+import { UseFormSetValue } from 'react-hook-form';
+import { addKudoFormSchema } from './add-kudos-dialog';
 
-export default function ComboBox() {
+interface ComboBoxProps {
+  receiverId: string | null;
+  setValue: UseFormSetValue<z.infer<typeof addKudoFormSchema>>;
+  isAnonymous: boolean;
+}
+
+export default function ComboBox({ receiverId, setValue, isAnonymous }: ComboBoxProps) {
   const [open, setOpen] = useState(false);
-  const [receiver, setReceiver] = useState<User | null>(null);
+  // const [receiverId, setReceiverId] = useState<string | null>(null);
   const { user } = useAuth().state;
-  console.log('receiver: ', receiver);
 
   const { data, isLoading, error } = useGetCompanyUsers(user?.companyId as string);
 
@@ -36,9 +43,12 @@ export default function ComboBox() {
       onOpenChange={setOpen}
     >
       <PopoverTrigger asChild>
-        <Button variant='outline'>
-          {receiver
-            ? users.filter((r) => r.displayName === receiver.displayName).map((r) => r.displayName)
+        <Button
+          variant='outline'
+          disabled={isAnonymous}
+        >
+          {receiverId
+            ? users.filter((r) => r.userId === receiverId).map((r) => r.displayName)
             : 'Select a recipient'}
         </Button>
       </PopoverTrigger>
@@ -51,8 +61,8 @@ export default function ComboBox() {
               {users.map((r) => {
                 return (
                   <CommandItem
-                    onSelect={(currentValue) => {
-                      setReceiver(users.find((r) => r.displayName === currentValue) as User);
+                    onSelect={() => {
+                      setValue('receiverId', r.userId);
                       setOpen(false);
                     }}
                     value={r.displayName}

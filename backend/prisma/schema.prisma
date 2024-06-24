@@ -55,7 +55,7 @@ model Company {
 model Kudos {
   id          String    @id @default(cuid())
   senderId    String
-  receiverId String
+  receiverId String?
   companyId   String
   message     String
   title       String?
@@ -67,7 +67,7 @@ model Kudos {
   isHidden    Boolean   @default(false)
   comments    Comment[]
   sender   User    @relation(fields: [senderId], references: [userId], name: "SentKudos")
-  receiver User    @relation(fields: [receiverId], references: [userId], name: "ReceivedKudos")
+  receiver User?   @relation(fields: [receiverId], references: [userId], name: "ReceivedKudos")
   company  Company @relation(fields: [companyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userLikes User_Like[]
 }

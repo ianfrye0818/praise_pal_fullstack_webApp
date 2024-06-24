@@ -60,11 +60,11 @@ export type TKudos = {
 
 export interface CreateKudoFormProps {
   senderId: string;
-  receiverId?: string;
+  receiverId?: string | null;
   companyId: string;
   message: string;
-  title?: string;
-  isAnonymous?: boolean;
+  title?: string | null;
+  isAnonymous: boolean;
 }
 
 export type UpdateKudoProps = Omit<CreateKudoFormProps, 'senderId' | 'companyId'>;

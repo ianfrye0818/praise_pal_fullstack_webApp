@@ -28,3 +28,7 @@ export const adminSideBarLink: SidebarLink = {
 
 export const MAX_API_REQUESTS = 3;
 export const BASE_API_URL = env.VITE_API_BASE_URL;
+
+export const IMAGES = {
+  logo: 'src/assets/logo.png',
+};
