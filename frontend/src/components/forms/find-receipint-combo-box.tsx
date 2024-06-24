@@ -13,16 +13,15 @@ import * as z from 'zod';
 
 import useGetCompanyUsers from '@/hooks/api/useCompayUsers/useGetCompanyUsers';
 import { useAuth } from '@/hooks/useAuth';
-import { UseFormSetValue } from 'react-hook-form';
-import { addKudoFormSchema } from './add-kudos-dialog';
+import { ControllerRenderProps, UseFormReturn, UseFormSetValue } from 'react-hook-form';
+import { addKudoFormSchema } from '@/zodSchemas';
 
 interface ComboBoxProps {
-  receiverId: string | null;
-  setValue: UseFormSetValue<z.infer<typeof addKudoFormSchema>>;
-  isAnonymous: boolean;
+  field: ControllerRenderProps<z.infer<typeof addKudoFormSchema>, 'receiverId'>;
+  form: UseFormReturn<z.infer<typeof addKudoFormSchema>>;
 }
 
-export default function ComboBox({ receiverId, setValue, isAnonymous }: ComboBoxProps) {
+export default function ComboBox({ field, form }: ComboBoxProps) {
   const [open, setOpen] = useState(false);
   // const [receiverId, setReceiverId] = useState<string | null>(null);
   const { user } = useAuth().state;
@@ -40,15 +39,15 @@ export default function ComboBox({ receiverId, setValue, isAnonymous }: ComboBox
   return (
     <Popover
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(open) => {
+        form.reset();
+        setOpen(open);
+      }}
     >
       <PopoverTrigger asChild>
-        <Button
-          variant='outline'
-          disabled={isAnonymous}
-        >
-          {receiverId
-            ? users.filter((r) => r.userId === receiverId).map((r) => r.displayName)
+        <Button variant='outline'>
+          {field.value
+            ? users.filter((r) => r.userId === field.value).map((r) => r.displayName)
             : 'Select a recipient'}
         </Button>
       </PopoverTrigger>
@@ -62,8 +61,9 @@ export default function ComboBox({ receiverId, setValue, isAnonymous }: ComboBox
                 return (
                   <CommandItem
                     onSelect={() => {
-                      setValue('receiverId', r.userId);
+                      form.setValue('receiverId', r.userId);
                       setOpen(false);
+                      field.onChange(r.userId);
                     }}
                     value={r.displayName}
                     key={r.userId}

@@ -60,7 +60,7 @@ export type TKudos = {
 
 export interface CreateKudoFormProps {
   senderId: string;
-  receiverId?: string | null;
+  receiverId: string;
   companyId: string;
   message: string;
   title?: string | null;

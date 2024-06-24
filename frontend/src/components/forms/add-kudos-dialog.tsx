@@ -23,21 +23,11 @@ import { useForm } from 'react-hook-form';
 import { postCreateKudo } from '@/api/api-handlers';
 import { useAuth } from '@/hooks/useAuth';
 import useCreateKudo from '@/hooks/api/useKudos/useCreateKudo';
+import { addKudoFormSchema } from '@/zodSchemas';
 interface AddKudoDialogProps {
   editing?: boolean;
   kudo?: TKudos;
 }
-
-export const addKudoFormSchema = z
-  .object({
-    title: z.string().optional(),
-    message: z.string().min(2, 'Please provide a valid message.'),
-    receiverId: z.string().nullable(),
-    isAnonymous: z.boolean(),
-  })
-  .transform((data) => {
-    return !data.isAnonymous ? data : { ...data, receiverId: null };
-  });
 
 export default function AddKudosDialog(props: AddKudoDialogProps) {
   const [open, setOpen] = useState(false);
@@ -51,20 +41,17 @@ export default function AddKudosDialog(props: AddKudoDialogProps) {
     defaultValues: {
       title: props.kudo?.title || '',
       message: props.kudo?.message || '',
-      receiverId: props.kudo?.receiverId || null,
+      receiverId: props.kudo?.receiverId || '',
       isAnonymous: !props.kudo?.receiver || false,
     },
   });
 
   async function onSubmit(data: z.infer<typeof addKudoFormSchema>) {
-    if (!user) return;
-    const { companyId, userId } = user;
-    try {
-      mutateAsync({ ...data, companyId, senderId: userId, receiverId: data.receiverId ? data.receiverId : undefined, isAnonymous: });
-    } catch (error) {
-      console.error(error);
-    }
+    console.log(data);
   }
+
+  const values = form.getValues();
+  console.log(values);
 
   return (
     <Dialog
@@ -137,9 +124,8 @@ export default function AddKudosDialog(props: AddKudoDialogProps) {
                       <FormItem>
                         <FormControl>
                           <ComboBox
-                            receiverId={field.value}
-                            setValue={form.setValue}
-                            isAnonymous={form.watch('isAnonymous')}
+                            field={field}
+                            form={form}
                           />
                         </FormControl>
                         <FormMessage />
@@ -173,7 +159,10 @@ export default function AddKudosDialog(props: AddKudoDialogProps) {
               <Button
                 variant='outline'
                 className='mr-auto'
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  form.reset();
+                }}
               >
                 Cancel
               </Button>

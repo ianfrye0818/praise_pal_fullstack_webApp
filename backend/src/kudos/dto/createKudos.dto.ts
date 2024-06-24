@@ -5,27 +5,28 @@ import {
   IsInt,
   IsOptional,
   IsString,
-  ValidateIf,
 } from 'class-validator';
 
 export class createKudosDTO {
   @IsString()
   senderId: string;
 
-  @IsOptional()
-  @ValidateIf((o) => o.receiverId !== null && o.receiverId !== undefined)
   @IsString()
-  receiverId?: string;
+  receiverId: string;
 
   @IsString()
-  message?: string;
+  message: string;
 
   @IsOptional()
   @IsString()
   title?: string;
 
+  @IsOptional()
   @IsBoolean()
-  isAnonymous: boolean;
+  isAnonymous?: boolean;
+
+  @IsString()
+  companyId: string;
 }
 
 export class UpdateKudosDTO extends PartialType(createKudosDTO) {

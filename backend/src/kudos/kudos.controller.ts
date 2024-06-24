@@ -30,24 +30,6 @@ export class KudosController {
     return await this.kudosService.getAllKudos(query);
   }
 
-  // @UseGuards(CompanyGuard)
-  // @Get()
-  // async findAllByCompanyId(@Param('companyId') companyId: string) {
-  //   return await this.kudosService.getKudosByCompanyId(companyId);
-  // }
-
-  // @UseGuards(CompanyGuard)
-  // @Get(':companyId/sender/:senderId')
-  // async findAllBySenderId(@Param('senderId') senderId: string) {
-  //   return await this.kudosService.getKudosBySenderId(senderId);
-  // }
-
-  // @UseGuards(CompanyGuard)
-  // @Get(':companyId/recipient/:receiverId')
-  // async findAllByreceiverId(@Param('receiverId') receiverId: string) {
-  //   return await this.kudosService.getKudosByreceiverId(receiverId);
-  // }
-
   @UseGuards(CompanyGuard)
   @Get(':kudoId')
   async findKudoById(@Param('kudoId') kudoId: string) {
@@ -56,11 +38,8 @@ export class KudosController {
 
   @UseGuards(CompanyGuard)
   @Post()
-  async createKudo(
-    @Param('companyId') comapnyId: string,
-    @Body() data: createKudosDTO,
-  ) {
-    return await this.kudosService.createKudo(data, comapnyId);
+  async createKudo(@Body() data: createKudosDTO) {
+    return await this.kudosService.createKudo(data);
   }
 
   @UseGuards(EditKudosGuard)

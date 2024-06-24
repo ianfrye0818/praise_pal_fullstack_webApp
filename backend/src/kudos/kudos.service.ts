@@ -110,11 +110,15 @@ export class KudosService {
     }
   }
 
-  async createKudo(data: createKudosDTO, companyId: string): Promise<Kudos> {
+  async createKudo(data: createKudosDTO): Promise<Kudos> {
     try {
-      return await this.prismaService.kudos.create({
-        data: { ...data, companyId },
+      const newKudos = await this.prismaService.kudos.create({
+        data: {
+          ...data,
+          isAnonymous: false,
+        },
       });
+      return newKudos;
     } catch (error) {
       console.error(error);
       if (error.code === 'P2002') {
