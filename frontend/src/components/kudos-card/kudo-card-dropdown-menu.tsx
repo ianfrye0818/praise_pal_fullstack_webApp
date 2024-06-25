@@ -6,14 +6,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { TKudos } from '@/types';
+import EditKudosDialog from '../forms/edit-kudos-dialog';
 
-interface Props {
-  kudoId: string;
+interface KudoCardDropDownMenuProps {
+  kudo: TKudos;
 }
 
-export default function KudoCardDropDownMenu({ kudoId }: Props) {
+export default function KudoCardDropDownMenu({ kudo }: KudoCardDropDownMenuProps) {
   //DODO: Implement edit and delete functionality
-  const handleEdit = () => {};
+
   const handleDelete = () => {};
   return (
     <DropdownMenu>
@@ -31,7 +33,9 @@ export default function KudoCardDropDownMenu({ kudoId }: Props) {
         className='bg-white p-3 cursor-pointer'
         align='end'
       >
-        <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <EditKudosDialog kudo={kudo} />
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

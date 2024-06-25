@@ -1,5 +1,4 @@
 import * as z from 'zod';
-import { AddKudoDialogProps } from '@/types';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -25,17 +24,17 @@ import { FormTextAreaItem } from './form-text-area-item';
 import { CheckBoxInputItem } from './form-checkbox-input-item';
 import { ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES } from '@/constants';
 
-export default function AddKudosDialog(props: AddKudoDialogProps) {
+export default function AddKudosDialog() {
   const [open, setOpen] = useState(false);
   const { user } = useAuth().state;
   const { data: users } = useGetCompanyUsers(user!.companyId);
 
   const form = useForm<z.infer<typeof addKudoFormSchema>>({
     resolver: zodResolver(addKudoFormSchema),
-    defaultValues: ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES(props.kudo),
+    defaultValues: ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES,
   });
 
-  const onSubmit = useSubmitAddKudosForm(user!);
+  const onSubmit = useSubmitAddKudosForm(user!, setOpen);
 
   return (
     <Dialog
@@ -125,7 +124,7 @@ export default function AddKudosDialog(props: AddKudoDialogProps) {
                 type='submit'
                 disabled={form.formState.isSubmitting || !form.formState.isValid}
               >
-                {form.formState.isSubmitting ? 'Sending...' : props.editing ? 'Update' : 'Add'}
+                {form.formState.isSubmitting ? 'Sending...' : 'Add Kudo'}
               </Button>
             </DialogFooter>
           </DialogContent>

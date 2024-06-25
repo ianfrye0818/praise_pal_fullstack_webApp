@@ -14,9 +14,9 @@ export interface SignUpFormProps extends SignInFormProps {
   companyCode: string;
 }
 
-export interface AddKudoDialogProps {
-  editing?: boolean;
-  kudo?: TKudos;
+export interface EditKudosDialogProps {
+  kudo: TKudos;
+  className?: string;
 }
 
 export interface User {
@@ -73,7 +73,9 @@ export interface CreateKudoFormProps {
   isAnonymous: boolean;
 }
 
-export type UpdateKudoProps = Omit<CreateKudoFormProps, 'senderId' | 'companyId'>;
+export type UpdateKudoProps = Partial<Omit<CreateKudoFormProps, 'senderId' | 'companyId'>> & {
+  id: string;
+};
 
 export interface UserLike {
   id: string;
@@ -112,10 +114,6 @@ interface Comment {
   parentId?: string | null;
   userId: string;
   kudosId: string;
-}
-
-interface createContentProps {
-  content: string;
 }
 
 export type HTTPClients = 'AUTH' | 'API';

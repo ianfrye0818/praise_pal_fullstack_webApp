@@ -7,6 +7,7 @@ import {
   CreateKudoFormProps,
   Company,
   UpdateCompanyProps,
+  UpdateKudoProps,
 } from '@/types';
 import { ApiRoutes } from './api-routes';
 import { deleter, fetcher, patcher, poster } from './axios';
@@ -54,8 +55,11 @@ export const getReceivedKudos = async (companyId: string, receiverId: string): P
 export const postCreateKudo = async (payload: CreateKudoFormProps): Promise<void> =>
   poster<CreateKudoFormProps, void>(ApiRoutes.kudos.createKudo(payload.companyId), payload);
 
-export const patchUpdateKudo = async (companyId: string, kudoId: string, data: Partial<TKudos>) =>
-  await patcher<Partial<TKudos>, void>(ApiRoutes.kudos.updateKudoById(companyId, kudoId), data);
+export const patchUpdateKudo = async (companyId: string, payload: UpdateKudoProps) =>
+  await patcher<UpdateKudoProps, void>(
+    ApiRoutes.kudos.updateKudoById(companyId, payload.id!),
+    payload
+  );
 
 export const deleteSingleKudo = async (
   companyId: string,

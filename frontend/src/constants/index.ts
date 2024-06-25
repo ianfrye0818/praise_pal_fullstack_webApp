@@ -1,4 +1,4 @@
-import { AddKudoDialogProps, SidebarLink, TKudos } from '@/types';
+import { SidebarLink, TKudos } from '@/types';
 import { PackageOpen, SendIcon, Mailbox, ShieldCheck } from 'lucide-react';
 import { env } from '@/zodSchemas/env';
 
@@ -46,11 +46,16 @@ export const SIGN_IN_FORM_DEFAULT_VALUES = {
   password: '',
 };
 
-export function ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES(kudo: TKudos | undefined) {
+export const ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES = {
+  title: '',
+  message: '',
+  isAnonymous: false,
+  receiverId: '',
+};
+
+export function EDIT_KUDOS_DIALOG_FORM_DEFAULT_VALUES(kudo: TKudos) {
   return {
-    title: kudo?.title || '',
-    message: kudo?.message || '',
-    receiverId: kudo?.receiverId || '',
-    isAnonymous: kudo?.isAnonymous || false,
+    title: kudo.title,
+    message: kudo.message,
   };
 }

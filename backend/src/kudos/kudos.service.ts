@@ -115,7 +115,6 @@ export class KudosService {
       const newKudos = await this.prismaService.kudos.create({
         data: {
           ...data,
-          isAnonymous: false,
         },
       });
       return newKudos;

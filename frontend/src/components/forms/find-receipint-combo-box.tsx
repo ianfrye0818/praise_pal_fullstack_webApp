@@ -25,6 +25,8 @@ export default function ComboBox({ field, form, users, currentUser }: ComboBoxPr
   const [open, setOpen] = useState(false);
   users = users.filter((r) => r.userId !== currentUser?.userId);
 
+  console.log('users from combobox ', users);
+
   return (
     <Popover
       open={open}

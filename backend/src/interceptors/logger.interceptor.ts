@@ -15,13 +15,14 @@ export class LoggingInterceptor implements NestInterceptor {
     const currentTime = new Date().toLocaleTimeString();
     const route = context.switchToHttp().getRequest().url;
     const user = context.switchToHttp().getRequest().user;
+    const method = context.switchToHttp().getRequest().method;
     if (!user) return next.handle();
     return next
       .handle()
       .pipe(
         tap(() =>
           console.log(
-            `${currentTime} Route ${route}, User: ${user.email}, Request Time: ${Date.now() - now}ms`,
+            `${currentTime} Route ${route}, Method: ${method} User: ${user.email}, Request Time: ${Date.now() - now}ms`,
           ),
         ),
       );
