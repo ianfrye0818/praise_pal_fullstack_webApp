@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { adminSideBarLink, sidebarLinks } from '@/constants';
+import { adminSideBarLink, IMAGES, sidebarLinks } from '@/constants';
 import NavBarLink from '@/components/sidebar/nav-bar-link';
 import SideBarFooter from './sidebar-footer';
 import { useAuth } from '@/hooks/useAuth';
@@ -15,7 +15,13 @@ export default function Sidebar() {
           to='/'
           className='mb-12 cursor-pointer items-center gap-2 flex'
         >
-          <h1 className='text-4xl font-bold w-full'>Praise Pal</h1>
+          {/* <h1 className='text-4xl font-bold w-full'>Praise Pal</h1>
+           */}
+          <img
+            src={IMAGES.logo}
+            alt='logo'
+            className='w-full object-contain'
+          />
         </Link>
         {sidebarLinks.map((link) => (
           <NavBarLink

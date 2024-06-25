@@ -1,37 +1,34 @@
-import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
+import { Role } from '@prisma/client';
+import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
 
-export class CompanyFilterDTO {
+export class FilterUserDTO {
   @IsOptional()
   @IsString()
-  name?: string;
-
-  @IsOptional()
-  @IsString()
-  address?: string;
+  userId?: string;
 
   @IsOptional()
   @IsString()
-  city?: string;
+  displayName?: string;
 
   @IsOptional()
   @IsString()
-  state?: string;
+  email?: string;
 
   @IsOptional()
   @IsString()
-  zip?: string;
+  companyId?: string;
 
   @IsOptional()
   @IsString()
-  phone?: string;
+  firstName?: string;
 
   @IsOptional()
   @IsString()
-  companyCode?: string;
+  lastName?: string;
 
   @IsOptional()
-  @IsUUID()
-  id?: string;
+  @IsEnum(Role)
+  role?: Role;
 
   @IsOptional()
   @IsDate()

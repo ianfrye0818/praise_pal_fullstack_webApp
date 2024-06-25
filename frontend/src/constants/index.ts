@@ -1,4 +1,4 @@
-import { SidebarLink } from '@/types';
+import { SidebarLink, TKudos } from '@/types';
 import { PackageOpen, SendIcon, Mailbox, ShieldCheck } from 'lucide-react';
 import { env } from '@/zodSchemas/env';
 
@@ -28,3 +28,34 @@ export const adminSideBarLink: SidebarLink = {
 
 export const MAX_API_REQUESTS = 3;
 export const BASE_API_URL = env.VITE_API_BASE_URL;
+
+export const IMAGES = {
+  logo: 'src/assets/logo.png',
+};
+
+export const SIGN_UP_FORM_DEFAULT_VALUES = {
+  email: '',
+  password: '',
+  confirmPassword: '',
+  displayName: '',
+  companyCode: '',
+};
+
+export const SIGN_IN_FORM_DEFAULT_VALUES = {
+  email: '',
+  password: '',
+};
+
+export const ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES = {
+  title: '',
+  message: '',
+  isAnonymous: false,
+  receiverId: '',
+};
+
+export function EDIT_KUDOS_DIALOG_FORM_DEFAULT_VALUES(kudo: TKudos) {
+  return {
+    title: kudo.title,
+    message: kudo.message,
+  };
+}

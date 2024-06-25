@@ -10,7 +10,7 @@ import { Cron } from '@nestjs/schedule';
 import { Company } from '@prisma/client';
 import { EmailService } from 'src/core-services/email.service';
 import { generateCompanyCode } from 'src/utils';
-import { CompanyFilterDTO } from './dto/companyFilter.dto';
+import { CompanyFilterDTO } from './dto/filterCompany.dto';
 
 @Injectable()
 export class CompanyService {

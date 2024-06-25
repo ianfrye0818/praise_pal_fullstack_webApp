@@ -1,12 +1,12 @@
-import { IsDate, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsDate, IsOptional, IsString } from 'class-validator';
 
 export class KudosFilterDTO {
   @IsOptional()
-  @IsUUID()
+  @IsString()
   receiverId?: string;
 
   @IsOptional()
-  @IsUUID()
+  @IsString()
   senderId?: string;
 
   @IsOptional()
@@ -18,11 +18,11 @@ export class KudosFilterDTO {
   title?: string;
 
   @IsOptional()
-  @IsUUID()
+  @IsString()
   companyId?: string;
 
   @IsOptional()
-  @IsUUID()
+  @IsString()
   id?: string;
 
   @IsOptional()

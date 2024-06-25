@@ -16,7 +16,29 @@ export const signUpFormSchema = z.object({
     .transform((val) => val.toUpperCase()),
 });
 
-export const addKudosSchema = z.object({
-  title: z.string().min(2, 'Please enter a longer title'),
-  description: z.string().min(2, 'Please enter a longer description'),
+export const addKudoFormSchema = z.object({
+  title: z.string().optional(),
+  message: z.string().min(2, 'Please provide a valid message.'),
+  receiverId: z.string().min(2, 'Please provide a valid recipient.'),
+  isAnonymous: z.boolean(),
 });
+
+export const editKudosFormSchema = z.object({
+  title: z.string().optional(),
+  message: z.string().min(2, 'Please provide a valid message.'),
+});
+
+export function getSchema(schema: SchemaTypes) {
+  switch (schema) {
+    case 'signIn':
+      return signInFormSchema;
+    case 'signUp':
+      return signUpFormSchema;
+    case 'addKudo':
+      return addKudoFormSchema;
+    default:
+      return null;
+  }
+}
+
+type SchemaTypes = 'signIn' | 'signUp' | 'addKudo';

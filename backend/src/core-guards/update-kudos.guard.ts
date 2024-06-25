@@ -17,12 +17,12 @@ export class EditKudosGuard implements CanActivate {
 
     if (jwtUser.role === Role.SUPER_ADMIN) return true;
 
-    const companyId = request.params.companyId;
+    const companyId = request.params.companyId || request.query.companyId;
 
     if (jwtUser.role === Role.ADMIN && jwtUser.companyId === companyId)
       return true;
 
-    const kudoId = request.params.kudosId;
+    const kudoId = request.params.kudosId || request.query.kudosId;
 
     const kudo = await this.kudosService.getKudoById(kudoId);
 

@@ -1,6 +1,7 @@
+import { z } from 'zod';
 import { LucideProps } from 'lucide-react';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
-import { string } from 'zod';
+import { Control, FieldPath } from 'react-hook-form';
 
 export interface SignInFormProps {
   email: string;
@@ -11,6 +12,12 @@ export interface SignUpFormProps extends SignInFormProps {
   confirmPassword: string;
   displayName: string;
   companyCode: string;
+}
+
+export interface EditKudosDialogProps {
+  kudo: TKudos;
+  className?: string;
+  setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface User {
@@ -53,21 +60,23 @@ export type TKudos = {
   isAnonymous: boolean;
   isHidden: boolean;
   sender: User;
-  receiver?: User;
+  receiver: User;
   userLikes: UserLike[];
-  comments: Comment[];
+  comments: Omit<Comment, 'userId' | 'parentId' | 'kudoId'>[];
 };
 
 export interface CreateKudoFormProps {
   senderId: string;
-  receiverId?: string;
+  receiverId: string;
   companyId: string;
   message: string;
-  title?: string;
-  isAnonymous?: boolean;
+  title?: string | null;
+  isAnonymous: boolean;
 }
 
-export type UpdateKudoProps = Omit<CreateKudoFormProps, 'senderId' | 'companyId'>;
+export type UpdateKudoProps = Partial<Omit<CreateKudoFormProps, 'senderId' | 'companyId'>> & {
+  id: string;
+};
 
 export interface UserLike {
   id: string;
@@ -103,10 +112,79 @@ export interface UpdateCompanyProps {
 interface Comment {
   id: string;
   content: string;
-}
-
-interface createContentProps {
-  content: string;
+  parentId?: string | null;
+  userId: string;
+  kudosId: string;
 }
 
 export type HTTPClients = 'AUTH' | 'API';
+
+export interface UserQueryParams {
+  userId?: string;
+  displayName?: string;
+  email?: string;
+  companyId?: string;
+  firstName?: string;
+  lastName?: string;
+  role?: Role;
+  deletedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface KudosQueryParams {
+  kudosId?: string;
+  senderId?: string;
+  receiverId?: string;
+  message?: string;
+  title?: string;
+  companyId?: string;
+  id?: string;
+  deletedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface CommentQueryParams {
+  commentId?: string;
+  kudosId?: string;
+  parentId?: string;
+  userId?: string;
+  content?: string;
+  deletedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface CompanyQueryParams {
+  companyId?: string;
+  name?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  phone?: string;
+  companyCode?: string;
+  deletedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export interface UserNotificationQueryParams {
+  id?: string;
+  userId?: string;
+  read?: boolean;
+  message?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
+}
+
+export interface FormInputItemProps<T extends z.ZodTypeAny>
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  control: Control<z.infer<T>, any>;
+  name: FieldPath<z.infer<T>>;
+  label?: string;
+  type?: string;
+  onChange?: (...event: any[]) => void;
+}

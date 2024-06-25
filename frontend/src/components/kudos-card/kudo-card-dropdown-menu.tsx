@@ -6,17 +6,23 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { TKudos } from '@/types';
+import EditKudosDialog from '../forms/edit-kudos-dialog';
+import { useState } from 'react';
+import { CustomDialog } from '../forms/delete-kudo-dialog';
 
-interface Props {
-  kudoId: string;
+interface KudoCardDropDownMenuProps {
+  kudo: TKudos;
 }
 
-export default function KudoCardDropDownMenu({ kudoId }: Props) {
-  //DODO: Implement edit and delete functionality
-  const handleEdit = () => {};
-  const handleDelete = () => {};
+export default function KudoCardDropDownMenu({ kudo }: KudoCardDropDownMenuProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      open={menuOpen}
+      onOpenChange={(open) => setMenuOpen(open)}
+    >
       <DropdownMenuTrigger asChild>
         <Button
           variant='ghost'
@@ -31,8 +37,18 @@ export default function KudoCardDropDownMenu({ kudoId }: Props) {
         className='bg-white p-3 cursor-pointer'
         align='end'
       >
-        <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <EditKudosDialog
+            kudo={kudo}
+            setMenuOpen={setMenuOpen}
+          />
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <CustomDialog
+            kudo={kudo}
+            setMenuOpen={setMenuOpen}
+          />
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

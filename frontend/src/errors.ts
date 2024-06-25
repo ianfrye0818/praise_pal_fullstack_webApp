@@ -10,19 +10,19 @@ class CustomError extends Error {
   }
 }
 
-const handleApiError = (error: unknown, customMessage: string): never => {
+const handleApiError = (error: unknown, customMessage?: string): never => {
   console.error(customMessage, error);
 
   if (error instanceof AxiosError) {
     const errorMessage = error.response?.data?.message || error.message || customMessage;
-    throw new Error(errorMessage);
+    throw new CustomError(errorMessage, error.response?.status || 500);
   }
 
   if (error instanceof Error) {
-    throw new Error(error.message);
+    throw new CustomError(error.message, 500);
   }
 
-  throw new Error(customMessage);
+  throw new CustomError(customMessage || 'An unknown error occured', 500);
 };
 
 export { CustomError, handleApiError };

@@ -27,6 +27,9 @@ export class KudosService {
     select: {
       id: true,
       content: true,
+      // kudosId: true,
+      // parentId: true,
+      // userId: true,
     },
   };
 
@@ -54,7 +57,7 @@ export class KudosService {
   async getAllKudos(filter?: Partial<Kudos>): Promise<Kudos[]> {
     try {
       return await this.prismaService.kudos.findMany({
-        where: filter,
+        where: { deletedAt: null, ...filter },
         orderBy: { id: 'desc' },
         ...this.kudosSelectOptions,
       });
@@ -107,11 +110,14 @@ export class KudosService {
     }
   }
 
-  async createKudo(data: createKudosDTO, companyId: string): Promise<Kudos> {
+  async createKudo(data: createKudosDTO): Promise<Kudos> {
     try {
-      return await this.prismaService.kudos.create({
-        data: { ...data, companyId },
+      const newKudos = await this.prismaService.kudos.create({
+        data: {
+          ...data,
+        },
       });
+      return newKudos;
     } catch (error) {
       console.error(error);
       if (error.code === 'P2002') {

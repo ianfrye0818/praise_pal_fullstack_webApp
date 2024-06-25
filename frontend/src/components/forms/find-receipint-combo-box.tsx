@@ -9,26 +9,23 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
 import { Button } from '../ui/button';
 import { useState } from 'react';
-
-import useGetCompanyUsers from '@/hooks/api/useCompayUsers/useGetCompanyUsers';
-import { useAuth } from '@/hooks/useAuth';
+import * as z from 'zod';
+import { ControllerRenderProps, UseFormReturn } from 'react-hook-form';
+import { addKudoFormSchema } from '@/zodSchemas';
 import { User } from '@/types';
 
-export default function ComboBox() {
+interface ComboBoxProps {
+  field: ControllerRenderProps<z.infer<typeof addKudoFormSchema>, 'receiverId'>;
+  form: UseFormReturn<z.infer<typeof addKudoFormSchema>>;
+  users: User[];
+  currentUser: User | null;
+}
+
+export default function ComboBox({ field, form, users, currentUser }: ComboBoxProps) {
   const [open, setOpen] = useState(false);
-  const [recepient, setRecepient] = useState<User | null>(null);
-  const { user } = useAuth().state;
-  console.log('recepient: ', recepient);
+  users = users.filter((r) => r.userId !== currentUser?.userId);
 
-  const { data, isLoading, error } = useGetCompanyUsers(user?.companyId as string);
-
-  if (isLoading) return <div>Loading...</div>;
-
-  if (error) return <div>{error.message}</div>;
-
-  if (!data) return <div>No Users</div>;
-
-  const users = data.filter((u) => u.userId !== user?.userId);
+  console.log('users from combobox ', users);
 
   return (
     <Popover
@@ -37,8 +34,8 @@ export default function ComboBox() {
     >
       <PopoverTrigger asChild>
         <Button variant='outline'>
-          {recepient
-            ? users.filter((r) => r.displayName === recepient.displayName).map((r) => r.displayName)
+          {field.value
+            ? users.filter((r) => r.userId === field.value).map((r) => r.displayName)
             : 'Select a recipient'}
         </Button>
       </PopoverTrigger>
@@ -51,9 +48,10 @@ export default function ComboBox() {
               {users.map((r) => {
                 return (
                   <CommandItem
-                    onSelect={(currentValue) => {
-                      setRecepient(users.find((r) => r.displayName === currentValue) as User);
+                    onSelect={() => {
+                      form.setValue('receiverId', r.userId);
                       setOpen(false);
+                      field.onChange(r.userId);
                     }}
                     value={r.displayName}
                     key={r.userId}

@@ -10,6 +10,14 @@ export interface ClientUser {
   lastName?: string;
 }
 
+export interface ClientComment {
+  id: string;
+  content: string;
+  kudosId: string;
+  parentId: string;
+  userId: string;
+}
+
 export interface JWTPayload extends ClientUser {
   iat: number;
   exp: number;

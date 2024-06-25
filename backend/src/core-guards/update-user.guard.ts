@@ -16,21 +16,18 @@ export class UpdateUserGuard implements CanActivate {
     const jwtUser = request.user as ClientUser;
     const data = request.body;
 
-    //super admin can update any user
     if (jwtUser.role === Role.SUPER_ADMIN) return true;
 
-    const companyId = request.params.companyId;
-    const userId = request.params.id;
+    const companyId = request.params.companyId || request.query.companyId;
+    const userId = request.params.id || request.query.userId;
 
-    //user cannot update their own role(including admin)
+    //TODO: check to see if this logic is valid
     if (jwtUser.userId === userId && data.role)
       throw new ForbiddenException('You cannot update your role');
 
-    //admin can update any user in their company
     if (jwtUser.role === Role.ADMIN && jwtUser.companyId === companyId)
       return true;
 
-    //user can update their own data except role
     if (jwtUser.userId === userId) return true;
 
     throw new ForbiddenException('You are not allowed to update this user');

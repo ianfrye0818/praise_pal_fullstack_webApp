@@ -28,10 +28,11 @@ export default function KudosCard({ kudo }: Props) {
       <div className='ml-4 flex-1'>
         <p className='font-bold'>
           {' '}
-          {sender.displayName} sent kudos to {receiver?.displayName ?? 'Someone Special'}
+          {kudo.isAnonymous ? 'Someone Special' : sender.displayName} sent kudos to{' '}
+          {receiver.displayName}
         </p>
-        <p>{kudo.id}</p>
-        {/* <p className='text-sm text-gray-500 dark:text-gray-400'>{kudo.createdAt.toISOString()}</p> */}
+        {kudo.title && <h3 className='font-bold text-lg my-2'>{kudo.title}</h3>}
+        <p>{kudo.message}</p>
         <div className='mt-2 flex items-center justify-between'>
           <div className='flex m-0 items-center'>
             <KudoLikeButton
@@ -41,7 +42,7 @@ export default function KudosCard({ kudo }: Props) {
             />
             <p className='text-sm text-gray-500'>{kudo.likes}</p>
           </div>
-          {usersKudo && <KudoCardDropDownMenu kudoId={kudo.id} />}
+          {usersKudo && <KudoCardDropDownMenu kudo={kudo} />}
         </div>
       </div>
     </div>

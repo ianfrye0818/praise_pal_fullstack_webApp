@@ -15,7 +15,7 @@ import { SuperAdminGuard } from 'src/core-guards/super-admin.guard';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { AdminGuard } from 'src/core-guards/admin.guard';
 import { CompanyGuard } from 'src/core-guards/company.guard';
-import { CompanyFilterDTO } from './dto/companyFilter.dto';
+import { CompanyFilterDTO } from './dto/filterCompany.dto';
 
 @UseGuards(JwtGuard)
 @Controller('company')

@@ -1,3 +1,10 @@
+import * as z from 'zod';
+import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useAuth } from '@/hooks/useAuth';
+import useSubmitAddKudosForm from '@/hooks/useSubmitAddKudosForm';
+import { addKudoFormSchema } from '@/zodSchemas';
 import {
   Dialog,
   DialogTrigger,
@@ -9,24 +16,33 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
 import ComboBox from './find-receipint-combo-box';
-import { TKudos } from '@/types';
-import { useState } from 'react';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
+import useGetCompanyUsers from '@/hooks/api/useCompayUsers/useGetCompanyUsers';
+import { FormInputItem } from './form-input-item';
+import { FormTextAreaItem } from './form-text-area-item';
+import { CheckBoxInputItem } from './form-checkbox-input-item';
+import { ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES } from '@/constants';
 
-interface AddKudoDialogProps {
-  editing?: boolean;
-  kudo?: TKudos;
-}
-
-export default function AddKudosDialog(props: AddKudoDialogProps) {
+export default function AddKudosDialog() {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth().state;
+  const { data: users } = useGetCompanyUsers(user!.companyId);
+
+  const form = useForm<z.infer<typeof addKudoFormSchema>>({
+    resolver: zodResolver(addKudoFormSchema),
+    defaultValues: ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES,
+  });
+
+  const onSubmit = useSubmitAddKudosForm(user!, setOpen);
+
   return (
     <Dialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(open: boolean) => {
+        form.reset();
+        setOpen(open);
+      }}
     >
       <DialogTrigger asChild>
         <Button
@@ -36,80 +52,84 @@ export default function AddKudosDialog(props: AddKudoDialogProps) {
           Add Kudo
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[500px]'>
-        <DialogHeader>
-          <DialogTitle>Add a Kudo</DialogTitle>
-          <DialogDescription>Recognize your teammates for their great work.</DialogDescription>
-        </DialogHeader>
-        <div className='grid gap-4 py-4'>
-          <div className='grid gap-2'>
-            <Label htmlFor='title'>Title</Label>
-            <Input
-              id='title'
-              placeholder='Great job on that project!'
-            />
-          </div>
-          <div className='grid gap-2'>
-            <Label htmlFor='message'>Message</Label>
-            <Textarea
-              id='message'
-              placeholder='Let them know what they did well!'
-              className='min-h-[100px]'
-            />
-          </div>
-          <div className='grid gap-2'>
-            <Label htmlFor='recipient'>Recipient</Label>
-            <div className='relative'>
-              <ComboBox />
-              {/* <div className='absolute inset-y-0 right-2 flex items-center'>
-                <SearchIcon className='h-4 w-4 text-gray-400' />
-              </div> */}
+      <Form {...form}>
+        <form>
+          <DialogContent className='sm:max-w-[500px]'>
+            <DialogHeader>
+              <DialogTitle>Add a Kudo</DialogTitle>
+              <DialogDescription>Recognize your teammates for their great work.</DialogDescription>
+            </DialogHeader>
+
+            <div className='grid gap-4 py-4'>
+              <div className='grid gap-2'>
+                <FormInputItem<typeof addKudoFormSchema>
+                  control={form.control}
+                  label='Title'
+                  placeholder='Great job on that project!'
+                  type='text'
+                  name='title'
+                />
+              </div>
+              <div className='grid gap-2'>
+                <FormTextAreaItem<typeof addKudoFormSchema>
+                  control={form.control}
+                  label='Message'
+                  placeholder='Let them know what they did well!'
+                  name='message'
+                />
+              </div>
+              <div className='grid gap-2'>
+                <Label htmlFor='recipient'>Recipient</Label>
+                <div className='relative'>
+                  <FormField
+                    control={form.control}
+                    name='receiverId'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <ComboBox
+                            field={field}
+                            form={form}
+                            users={users || []}
+                            currentUser={user}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className='flex items-center gap-2'>
+                <CheckBoxInputItem<typeof addKudoFormSchema>
+                  control={form.control}
+                  label='Send Anonymous'
+                  name='isAnonymous'
+                />
+              </div>
             </div>
-          </div>
-          <div className='flex items-center gap-2'>
-            <Checkbox id='no-recipient' />
-            <Label htmlFor='no-recipient'>No recipient</Label>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
-            variant='outline'
-            className='mr-auto'
-            onClick={() => setOpen(false)}
-          >
-            Cancel
-          </Button>
-          <Button type='submit'>Send</Button>
-        </DialogFooter>
-      </DialogContent>
+            <DialogFooter>
+              <Button
+                variant='outline'
+                className='mr-auto'
+                onClick={() => {
+                  setOpen(false);
+                  form.reset();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={form.handleSubmit(onSubmit)}
+                type='submit'
+                disabled={form.formState.isSubmitting || !form.formState.isValid}
+              >
+                {form.formState.isSubmitting ? 'Sending...' : 'Add Kudo'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </form>
+      </Form>
     </Dialog>
   );
 }
-
-// interface SearchIconProps {
-//   className?: string;
-// }
-
-// function SearchIcon(props: SearchIconProps) {
-//   return (
-//     <svg
-//       {...props}
-//       xmlns='http://www.w3.org/2000/svg'
-//       width='24'
-//       height='24'
-//       viewBox='0 0 24 24'
-//       fill='none'
-//       stroke='currentColor'
-//       strokeWidth='2'
-//       strokeLinecap='round'
-//       strokeLinejoin='round'
-//     >
-//       <circle
-//         cx='11'
-//         cy='11'
-//         r='8'
-//       />
-//       <path d='m21 21-4.3-4.3' />
-//     </svg>
-//   );
-// }

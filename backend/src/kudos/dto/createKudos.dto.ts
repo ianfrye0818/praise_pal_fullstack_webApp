@@ -1,5 +1,11 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsDate, IsInt, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsInt,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class createKudosDTO {
   @IsString()
@@ -13,7 +19,14 @@ export class createKudosDTO {
 
   @IsOptional()
   @IsString()
-  title: string;
+  title?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isAnonymous?: boolean;
+
+  @IsString()
+  companyId: string;
 }
 
 export class UpdateKudosDTO extends PartialType(createKudosDTO) {
