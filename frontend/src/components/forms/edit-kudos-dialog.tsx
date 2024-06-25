@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/hooks/useAuth';
-
 import { editKudosFormSchema } from '@/zodSchemas';
 import {
   Dialog,
@@ -23,16 +22,20 @@ import { EDIT_KUDOS_DIALOG_FORM_DEFAULT_VALUES } from '@/constants';
 import useSubmitEditKudosForm from '@/hooks/useSubmitEditKudosForm';
 import { EditKudosDialogProps } from '@/types';
 
-export default function EditKudosDialog(props: EditKudosDialogProps) {
+export default function EditKudosDialog({ kudo, setMenuOpen }: EditKudosDialogProps) {
   const [open, setOpen] = useState(false);
   const { user } = useAuth().state;
 
   const form = useForm<z.infer<typeof editKudosFormSchema>>({
     resolver: zodResolver(editKudosFormSchema),
-    defaultValues: EDIT_KUDOS_DIALOG_FORM_DEFAULT_VALUES(props.kudo),
+    defaultValues: EDIT_KUDOS_DIALOG_FORM_DEFAULT_VALUES(kudo),
   });
 
-  const onSubmit = useSubmitEditKudosForm(user!, setOpen, props.kudo.id);
+  function handleCloseMenus() {
+    setOpen(false);
+    setMenuOpen(false);
+  }
+  const onSubmit = useSubmitEditKudosForm(user!, kudo.id);
 
   return (
     <Dialog
@@ -40,6 +43,7 @@ export default function EditKudosDialog(props: EditKudosDialogProps) {
       onOpenChange={(open: boolean) => {
         form.reset();
         setOpen(open);
+        setMenuOpen(open);
       }}
     >
       <DialogTrigger asChild>
@@ -82,14 +86,17 @@ export default function EditKudosDialog(props: EditKudosDialogProps) {
                 variant='outline'
                 className='mr-auto'
                 onClick={() => {
-                  setOpen(false);
+                  handleCloseMenus();
                   form.reset();
                 }}
               >
                 Cancel
               </Button>
               <Button
-                onClick={form.handleSubmit(onSubmit)}
+                onClick={form.handleSubmit((values) => {
+                  onSubmit(values);
+                  handleCloseMenus();
+                })}
                 type='submit'
                 disabled={form.formState.isSubmitting || !form.formState.isValid}
               >

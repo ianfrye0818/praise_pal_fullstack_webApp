@@ -17,6 +17,7 @@ export interface SignUpFormProps extends SignInFormProps {
 export interface EditKudosDialogProps {
   kudo: TKudos;
   className?: string;
+  setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface User {

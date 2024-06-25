@@ -8,17 +8,21 @@ import {
 } from '../ui/dropdown-menu';
 import { TKudos } from '@/types';
 import EditKudosDialog from '../forms/edit-kudos-dialog';
+import { useState } from 'react';
+import { CustomDialog } from '../forms/delete-kudo-dialog';
 
 interface KudoCardDropDownMenuProps {
   kudo: TKudos;
 }
 
 export default function KudoCardDropDownMenu({ kudo }: KudoCardDropDownMenuProps) {
-  //DODO: Implement edit and delete functionality
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleDelete = () => {};
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      open={menuOpen}
+      onOpenChange={(open) => setMenuOpen(open)}
+    >
       <DropdownMenuTrigger asChild>
         <Button
           variant='ghost'
@@ -34,9 +38,17 @@ export default function KudoCardDropDownMenu({ kudo }: KudoCardDropDownMenuProps
         align='end'
       >
         <DropdownMenuItem asChild>
-          <EditKudosDialog kudo={kudo} />
+          <EditKudosDialog
+            kudo={kudo}
+            setMenuOpen={setMenuOpen}
+          />
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDelete}>Delete</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <CustomDialog
+            kudo={kudo}
+            setMenuOpen={setMenuOpen}
+          />
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
