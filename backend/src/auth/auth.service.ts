@@ -27,7 +27,7 @@ export class AuthService {
     if (user && (await bcrypt.compare(password, user.password))) {
       return generateClientSideUserProperties(user);
     }
-    return null;
+    throw new UnauthorizedException('Invalid credentials');
   }
 
   async logout(token: string): Promise<void> {

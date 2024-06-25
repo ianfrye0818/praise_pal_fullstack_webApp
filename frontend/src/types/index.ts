@@ -1,6 +1,7 @@
+import { z } from 'zod';
 import { LucideProps } from 'lucide-react';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
-import { string } from 'zod';
+import { Control, FieldPath } from 'react-hook-form';
 
 export interface SignInFormProps {
   email: string;
@@ -11,6 +12,11 @@ export interface SignUpFormProps extends SignInFormProps {
   confirmPassword: string;
   displayName: string;
   companyCode: string;
+}
+
+export interface AddKudoDialogProps {
+  editing?: boolean;
+  kudo?: TKudos;
 }
 
 export interface User {
@@ -53,7 +59,7 @@ export type TKudos = {
   isAnonymous: boolean;
   isHidden: boolean;
   sender: User;
-  receiver?: User;
+  receiver: User;
   userLikes: UserLike[];
   comments: Omit<Comment, 'userId' | 'parentId' | 'kudoId'>[];
 };
@@ -173,4 +179,13 @@ export interface UserNotificationQueryParams {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
+}
+
+export interface FormInputItemProps<T extends z.ZodTypeAny>
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  control: Control<z.infer<T>, any>;
+  name: FieldPath<z.infer<T>>;
+  label?: string;
+  type?: string;
+  onChange?: (...event: any[]) => void;
 }

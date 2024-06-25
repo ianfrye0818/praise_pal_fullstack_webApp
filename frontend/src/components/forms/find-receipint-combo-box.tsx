@@ -10,39 +10,25 @@ import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover
 import { Button } from '../ui/button';
 import { useState } from 'react';
 import * as z from 'zod';
-
-import useGetCompanyUsers from '@/hooks/api/useCompayUsers/useGetCompanyUsers';
-import { useAuth } from '@/hooks/useAuth';
-import { ControllerRenderProps, UseFormReturn, UseFormSetValue } from 'react-hook-form';
+import { ControllerRenderProps, UseFormReturn } from 'react-hook-form';
 import { addKudoFormSchema } from '@/zodSchemas';
+import { User } from '@/types';
 
 interface ComboBoxProps {
   field: ControllerRenderProps<z.infer<typeof addKudoFormSchema>, 'receiverId'>;
   form: UseFormReturn<z.infer<typeof addKudoFormSchema>>;
+  users: User[];
+  currentUser: User | null;
 }
 
-export default function ComboBox({ field, form }: ComboBoxProps) {
+export default function ComboBox({ field, form, users, currentUser }: ComboBoxProps) {
   const [open, setOpen] = useState(false);
-  // const [receiverId, setReceiverId] = useState<string | null>(null);
-  const { user } = useAuth().state;
-
-  const { data, isLoading, error } = useGetCompanyUsers(user?.companyId as string);
-
-  if (isLoading) return <div>Loading...</div>;
-
-  if (error) return <div>{error.message}</div>;
-
-  if (!data) return <div>No Users</div>;
-
-  const users = data.filter((u) => u.userId !== user?.userId);
+  users = users.filter((r) => r.userId !== currentUser?.userId);
 
   return (
     <Popover
       open={open}
-      onOpenChange={(open) => {
-        form.reset();
-        setOpen(open);
-      }}
+      onOpenChange={setOpen}
     >
       <PopoverTrigger asChild>
         <Button variant='outline'>

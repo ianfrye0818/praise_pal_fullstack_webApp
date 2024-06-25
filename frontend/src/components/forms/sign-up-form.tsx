@@ -2,18 +2,9 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Form } from '@/components/ui/form';
 import { signUpFormSchema } from '@/zodSchemas';
-import { useNavigate } from '@tanstack/react-router';
-
+import useSubmitSignUpForm from '@/hooks/useSubmitSignUpForm';
 import { Link } from '@tanstack/react-router';
 import {
   Card,
@@ -23,45 +14,19 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { AxiosError } from 'axios';
-import { useAuth } from '@/hooks/useAuth';
-import { register } from '@/api/auth-actions';
+import { FormInputItem } from './form-input-item';
+import { SIGN_UP_FORM_DEFAULT_VALUES } from '@/constants';
 
 export default function SignUpForm() {
-  const navigate = useNavigate();
   const form = useForm<z.infer<typeof signUpFormSchema>>({
     resolver: zodResolver(signUpFormSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-      confirmPassword: '',
-      displayName: '',
-      companyCode: '',
-    },
+    defaultValues: SIGN_UP_FORM_DEFAULT_VALUES,
   });
-  const { dispatch } = useAuth();
+
   const isSubmitting = form.formState.isSubmitting;
   const globalError = form.formState.errors.root;
 
-  async function onSubmit(data: z.infer<typeof signUpFormSchema>) {
-    if (data.password !== data.confirmPassword) {
-      form.setError('confirmPassword', { message: 'Passwords do not match' });
-      return;
-    }
-    try {
-      await register(dispatch, data);
-      await navigate({ to: '/' });
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        form.setError('root', {
-          message: error.response?.data.message ?? 'An error occurred. Please try again.',
-        });
-      } else {
-        form.setError('root', { message: 'An error occurred. Please try again.' });
-      }
-    }
-  }
-
+  const onSubmit = useSubmitSignUpForm(form);
   return (
     <Card className='w-full max-w-md'>
       <CardHeader className='space-y-1'>
@@ -74,100 +39,44 @@ export default function SignUpForm() {
             onSubmit={form.handleSubmit(onSubmit)}
             className='flex flex-col gap-5'
           >
-            <FormField
+            <FormInputItem<typeof signUpFormSchema>
               control={form.control}
               name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <div className='grid gap-2'>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='email'
-                        placeholder='m@example.com'
-                        {...field}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label='Email'
+              placeholder='Enter your email'
+              type='email'
             />
             <div className='grid grid-cols-2 gap-4'>
-              <FormField
+              <FormInputItem<typeof signUpFormSchema>
                 control={form.control}
                 name='password'
-                render={({ field }) => (
-                  <FormItem>
-                    <div className='grid gap-2'>
-                      <FormLabel htmlFor='password'>Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type='password'
-                          {...field}
-                        />
-                      </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label='Password'
+                placeholder='Enter your password'
+                type='password'
               />
-              <FormField
+              <FormInputItem<typeof signUpFormSchema>
                 control={form.control}
                 name='confirmPassword'
-                render={({ field }) => (
-                  <FormItem>
-                    <div className='grid gap-2'>
-                      <FormLabel htmlFor='password'>Confirm Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type='password'
-                          {...field}
-                        />
-                      </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label='Confirm Password'
+                placeholder='Confirm your password'
+                type='password'
               />
             </div>
-            <FormField
+            <FormInputItem<typeof signUpFormSchema>
               control={form.control}
               name='companyCode'
-              render={({ field }) => (
-                <FormItem>
-                  <div className='grid gap-2'>
-                    <FormLabel>Company Code</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='Enter your company code'
-                        maxLength={4}
-                        {...field}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label='Company Code'
+              placeholder='Enter your company code'
+              type='text'
+              maxLength={4}
+              minLength={4}
             />
-            <FormField
+            <FormInputItem<typeof signUpFormSchema>
               control={form.control}
               name='displayName'
-              render={({ field }) => (
-                <FormItem>
-                  <div className='grid gap-2'>
-                    <FormLabel>Display Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        id='displayName'
-                        placeholder='Enter your display name'
-                        {...field}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label='Display Name'
+              placeholder='Enter your display name'
+              type='text'
             />
             {globalError && <p className='italic text-lg text-red-500'>{globalError?.message}</p>}
             <Button

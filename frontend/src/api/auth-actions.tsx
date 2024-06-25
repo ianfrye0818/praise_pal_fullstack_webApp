@@ -44,6 +44,7 @@ export const login = async (dispatch: Dispatch<AuthAction>, signInPayload: SignI
     });
   } catch (error) {
     dispatch({ type: ActionType.LOGIN_FAILURE });
+    throw error;
   }
 };
 
@@ -75,6 +76,14 @@ export const logout = async (dispatch: Dispatch<AuthAction>) => {
     dispatch({ type: ActionType.LOGOUT_FAILURE });
   }
 };
+
+export function errorLogout(errorMessage?: string) {
+  localStorage.setItem('logouterror', errorMessage || 'An error occurred. Please try again.');
+  removeAuthTokens();
+  removeUserToken();
+  // window.location.href = '/sign-in';
+  window.location.pathname !== '/sign-in' && window.location.replace('/sign-in');
+}
 
 export async function refreshTokens() {
   try {

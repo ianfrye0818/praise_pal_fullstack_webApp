@@ -1,19 +1,10 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { signInFormSchema } from '@/zodSchemas';
 
-import { Link } from '@tanstack/react-router';
 import {
   Card,
   CardContent,
@@ -22,44 +13,29 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { AxiosError } from 'axios';
-
-import { useNavigate } from '@tanstack/react-router';
-import { useAuth } from '@/hooks/useAuth';
-import { login } from '@/api/auth-actions';
+import { FormInputItem } from './form-input-item';
+import { Form } from '../ui/form';
+import useSetLogoutError from '@/hooks/useSetLogoutError';
+import useSubmitSignInForm from '@/hooks/useSubmitSignInForm';
+import { SIGN_IN_FORM_DEFAULT_VALUES } from '@/constants';
 
 export default function SignInForm() {
-  const navigate = useNavigate();
   const form = useForm<z.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: SIGN_IN_FORM_DEFAULT_VALUES,
   });
-  // const navigate = useNavigate();
-  const { dispatch } = useAuth();
   const isSubmitting = form.formState.isSubmitting;
   const globalError = form.formState.errors.root;
 
-  async function onSubmit(data: z.infer<typeof signInFormSchema>) {
-    try {
-      await login(dispatch, data);
-      await navigate({ to: '/' });
-    } catch (error) {
-      console.error(['signInFormError'], error);
-      if (error instanceof AxiosError) {
-        form.setError('root', {
-          message: error.response?.data.message ?? 'An error occurred. Please try again.',
-        });
-      } else {
-        form.setError('root', { message: 'An error occurred. Please try again.' });
-      }
-    }
-  }
+  const logOutErrorMessage = useSetLogoutError();
+
+  const onSubmit = useSubmitSignInForm(form);
 
   return (
     <Card className='w-full max-w-md'>
+      {logOutErrorMessage && (
+        <p className='text-red-600 text-center my-5 text-lg'>{logOutErrorMessage}</p>
+      )}
       <CardHeader className='space-y-1'>
         <CardTitle className='text-2xl'>Login</CardTitle>
         <CardDescription>Fill out the form to login to your account.</CardDescription>
@@ -70,43 +46,20 @@ export default function SignInForm() {
             onSubmit={form.handleSubmit(onSubmit)}
             className='flex flex-col gap-5'
           >
-            <FormField
+            <FormInputItem<typeof signInFormSchema>
               control={form.control}
               name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <div className='grid gap-2'>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='email'
-                        placeholder='m@example.com'
-                        {...field}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
+              placeholder='m@example.com'
+              label='Email'
+              type='email'
             />
 
-            <FormField
+            <FormInputItem<typeof signInFormSchema>
               control={form.control}
               name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <div className='grid gap-2'>
-                    <FormLabel htmlFor='password'>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type='password'
-                        {...field}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label='Password'
+              placeholder='Password'
+              type='password'
             />
 
             {globalError && <p className='italic text-lg text-red-500'>{globalError.message}</p>}

@@ -1,3 +1,11 @@
+import * as z from 'zod';
+import { AddKudoDialogProps } from '@/types';
+import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useAuth } from '@/hooks/useAuth';
+import useSubmitAddKudosForm from '@/hooks/useSubmitAddKudosForm';
+import { addKudoFormSchema } from '@/zodSchemas';
 import {
   Dialog,
   DialogTrigger,
@@ -9,54 +17,33 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
 import ComboBox from './find-receipint-combo-box';
-import { TKudos } from '@/types';
-import { useState } from 'react';
-import * as z from 'zod';
-
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
-import { useForm } from 'react-hook-form';
-import { postCreateKudo } from '@/api/api-handlers';
-import { useAuth } from '@/hooks/useAuth';
-import useCreateKudo from '@/hooks/api/useKudos/useCreateKudo';
-import { addKudoFormSchema } from '@/zodSchemas';
-interface AddKudoDialogProps {
-  editing?: boolean;
-  kudo?: TKudos;
-}
+import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
+import useGetCompanyUsers from '@/hooks/api/useCompayUsers/useGetCompanyUsers';
+import { FormInputItem } from './form-input-item';
+import { FormTextAreaItem } from './form-text-area-item';
+import { CheckBoxInputItem } from './form-checkbox-input-item';
+import { ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES } from '@/constants';
 
 export default function AddKudosDialog(props: AddKudoDialogProps) {
   const [open, setOpen] = useState(false);
-
   const { user } = useAuth().state;
-
-  const { mutateAsync } = useCreateKudo();
+  const { data: users } = useGetCompanyUsers(user!.companyId);
 
   const form = useForm<z.infer<typeof addKudoFormSchema>>({
     resolver: zodResolver(addKudoFormSchema),
-    defaultValues: {
-      title: props.kudo?.title || '',
-      message: props.kudo?.message || '',
-      receiverId: props.kudo?.receiverId || '',
-      isAnonymous: !props.kudo?.receiver || false,
-    },
+    defaultValues: ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES(props.kudo),
   });
 
-  async function onSubmit(data: z.infer<typeof addKudoFormSchema>) {
-    console.log(data);
-  }
-
-  const values = form.getValues();
-  console.log(values);
+  const onSubmit = useSubmitAddKudosForm(user!);
 
   return (
     <Dialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(open: boolean) => {
+        form.reset();
+        setOpen(open);
+      }}
     >
       <DialogTrigger asChild>
         <Button
@@ -76,42 +63,20 @@ export default function AddKudosDialog(props: AddKudoDialogProps) {
 
             <div className='grid gap-4 py-4'>
               <div className='grid gap-2'>
-                <FormField
+                <FormInputItem<typeof addKudoFormSchema>
                   control={form.control}
+                  label='Title'
+                  placeholder='Great job on that project!'
+                  type='text'
                   name='title'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Title</FormLabel>
-                      <FormControl>
-                        <Input
-                          id='title'
-                          placeholder='Great job on that project!'
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
                 />
               </div>
               <div className='grid gap-2'>
-                <FormField
+                <FormTextAreaItem<typeof addKudoFormSchema>
                   control={form.control}
+                  label='Message'
+                  placeholder='Let them know what they did well!'
                   name='message'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Message</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          id='message'
-                          placeholder='Let them know what they did well!'
-                          className='min-h-[100px]'
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
                 />
               </div>
               <div className='grid gap-2'>
@@ -126,6 +91,8 @@ export default function AddKudosDialog(props: AddKudoDialogProps) {
                           <ComboBox
                             field={field}
                             form={form}
+                            users={users || []}
+                            currentUser={user}
                           />
                         </FormControl>
                         <FormMessage />
@@ -135,24 +102,11 @@ export default function AddKudosDialog(props: AddKudoDialogProps) {
                 </div>
               </div>
               <div className='flex items-center gap-2'>
-                <FormField
+                <CheckBoxInputItem<typeof addKudoFormSchema>
                   control={form.control}
+                  label='Send Anonymous'
                   name='isAnonymous'
-                  render={({ field }) => (
-                    <FormItem className='flex gap-2 items-center'>
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormLabel>Send Anonymous</FormLabel>
-                      <FormMessage />
-                    </FormItem>
-                  )}
                 />
-                {/* <Checkbox id='no-recipient' />
-                <Label htmlFor='no-recipient'>No recipient</Label> */}
               </div>
             </div>
             <DialogFooter>

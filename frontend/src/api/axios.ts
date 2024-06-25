@@ -1,9 +1,14 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { refreshTokens } from './auth-actions';
+import { errorLogout, logout, refreshTokens } from './auth-actions';
 import { CustomError, handleApiError } from '@/errors';
 import { HTTPClients } from '@/types';
 import { BASE_API_URL, MAX_API_REQUESTS } from '@/constants';
-import { getAuthTokens } from '@/lib/localStorage';
+import {
+  getAuthTokens,
+  removeAuthTokens,
+  removeUserToken,
+  setAuthTokens,
+} from '@/lib/localStorage';
 
 let retries = 0;
 
@@ -23,9 +28,17 @@ const clients = {
 apiClient.interceptors.request.use((config) => {
   const authTokens = getAuthTokens();
   config.headers.Authorization = `Bearer ${authTokens.accessToken}`;
-  console.log('config: ', config);
   return config;
 });
+
+authClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response.status === 401 || error.response.status === 403) {
+      errorLogout(error.response.data.message);
+    }
+  }
+);
 
 apiClient.interceptors.response.use(
   (response) => response,
@@ -36,6 +49,7 @@ apiClient.interceptors.response.use(
         await refreshTokens();
         retries = 0;
       } catch (refreshError) {
+        errorLogout();
         const customError = new CustomError(
           'Token Refresh Failed',
           (refreshError as any).response.status || 500
@@ -63,8 +77,6 @@ apiClient.interceptors.response.use(
 
 async function fetcher<T>(url: string, client: HTTPClients = 'API'): Promise<T> {
   try {
-    console.log('url: ', url);
-
     const response = await clients[client].get<T>(url);
     return response.data;
   } catch (error) {
@@ -80,7 +92,6 @@ async function poster<D = any, T = any>(
   client: HTTPClients = 'API'
 ): Promise<T> {
   try {
-    console.log({ url, data, config, client });
     const response = await clients[client].post<T>(url, data, config);
     return response.data as T;
   } catch (error) {
@@ -117,5 +128,9 @@ async function deleter<D = any, T = any>(
     throw error;
   }
 }
+
+// function setClient(client: HTTPClients, token: string) {
+//   clients[client].defaults.headers
+// }
 
 export { fetcher, poster, patcher, deleter };
