@@ -57,7 +57,7 @@ export class KudosService {
   async getAllKudos(filter?: Partial<Kudos>): Promise<Kudos[]> {
     try {
       return await this.prismaService.kudos.findMany({
-        where: filter,
+        where: { deletedAt: null, ...filter },
         orderBy: { id: 'desc' },
         ...this.kudosSelectOptions,
       });
