@@ -30,7 +30,8 @@ export interface User {
   lastName?: string;
 }
 
-export type UpdateUserProps = Partial<Omit<User, 'companyId' | 'userId'>>;
+export type UpdateUserProps = Partial<Omit<User, 'companyId' | 'userId' | 'role'>>;
+export type AdminUpdateUserProps = Partial<Omit<User, 'companyId' | 'userId'>>;
 
 export enum Role {
   ADMIN = 'ADMIN',

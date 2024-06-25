@@ -16,6 +16,13 @@ export const signUpFormSchema = z.object({
     .transform((val) => val.toUpperCase()),
 });
 
+export const updateUserFormSchema = z.object({
+  firstName: z.string().min(2, 'Please enter a valid first name'),
+  lastName: z.string().min(2, 'Please enter a valid last name'),
+  displayName: z.string().optional(),
+  email: z.string().email('Please enter a valid email address'),
+});
+
 export const addKudoFormSchema = z.object({
   title: z.string().optional(),
   message: z.string().min(2, 'Please provide a valid message.'),
