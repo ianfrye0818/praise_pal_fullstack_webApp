@@ -3,8 +3,8 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/core-services/prisma.service';
-import { KudosService } from 'src/kudos/kudos.service';
+import { PrismaService } from '../../core-services/prisma.service';
+import { KudosService } from '../../kudos/kudos.service';
 
 @Injectable()
 export class UserLikesService {

@@ -10,11 +10,10 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { updateUserDTO } from './dto/createUser.dto';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { CompanyGuard } from 'src/core-guards/company.guard';
-// import { SuperAdminGuard } from 'src/core-guards/super-admin.guard';
-import { AdminGuard } from 'src/core-guards/admin.guard';
-import { UpdateUserGuard } from 'src/core-guards/update-user.guard';
+import { JwtGuard } from '../../auth/guards/jwt.guard';
+import { CompanyGuard } from '../../core-guards/company.guard';
+import { AdminGuard } from '../../core-guards/admin.guard';
+import { UpdateUserGuard } from '../../core-guards/update-user.guard';
 import { FilterUserDTO } from './dto/filterUser.dto';
 
 @UseGuards(JwtGuard)
@@ -22,26 +21,11 @@ import { FilterUserDTO } from './dto/filterUser.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // @UseGuards(SuperAdminGuard)
-  // @Get()
-  // async findAll(@Query('deletedUsers') deletedUsers: boolean = false) {
-  //   return await this.userService.findAll(deletedUsers);
-  // }
-
   @UseGuards(CompanyGuard)
   @Get()
   async findAllUsers(@Query('query') query: FilterUserDTO) {
     return await this.userService.findAllUsers(query);
   }
-
-  // @UseGuards(CompanyGuard)
-  // @Get('/company/:companyId')
-  // async findAllByCompany(
-  //   @Param('companyId') companyId: string,
-  //   @Query('deletedUsers') deletedUsers: boolean = false,
-  // ) {
-  //   return await this.userService.findAllByCompany(companyId, deletedUsers);
-  // }
 
   @UseGuards(CompanyGuard)
   @Get(':id')

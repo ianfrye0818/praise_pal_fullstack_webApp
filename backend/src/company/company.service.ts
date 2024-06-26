@@ -4,12 +4,12 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/core-services/prisma.service';
+import { PrismaService } from '../core-services/prisma.service';
 import { CreateCompanyDTO, UpdateCompanyDTO } from './dto/createCompany.dto';
 import { Cron } from '@nestjs/schedule';
 import { Company } from '@prisma/client';
-import { EmailService } from 'src/core-services/email.service';
-import { generateCompanyCode } from 'src/utils';
+import { EmailService } from '../core-services/email.service';
+import { generateCompanyCode } from '../utils';
 import { CompanyFilterDTO } from './dto/filterCompany.dto';
 
 @Injectable()

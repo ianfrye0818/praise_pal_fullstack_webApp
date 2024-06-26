@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/core-services/prisma.service';
+import { PrismaService } from '../../core-services/prisma.service';
 
 @Injectable()
 export class UserNotificationsService {

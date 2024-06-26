@@ -7,8 +7,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserLikesService } from './user-likes.service';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { ClientUser } from 'src/types';
+import { JwtGuard } from '../../auth/guards/jwt.guard';
+import { ClientUser } from '../../types';
 
 @UseGuards(JwtGuard)
 @Controller('likes')

@@ -1,14 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { errorLogout, logout, refreshTokens } from './auth-actions';
+import { errorLogout, refreshTokens } from './auth-actions';
 import { CustomError, handleApiError } from '@/errors';
 import { HTTPClients } from '@/types';
 import { BASE_API_URL, MAX_API_REQUESTS } from '@/constants';
-import {
-  getAuthTokens,
-  removeAuthTokens,
-  removeUserToken,
-  setAuthTokens,
-} from '@/lib/localStorage';
+import { getAuthTokens } from '@/lib/localStorage';
 
 let retries = 0;
 
@@ -93,8 +88,10 @@ async function poster<D = any, T = any>(
 ): Promise<T> {
   try {
     const response = await clients[client].post<T>(url, data, config);
+
     return response.data as T;
   } catch (error) {
+    console.log('error from poster');
     handleApiError(error, 'Error posting data');
     throw error;
   }

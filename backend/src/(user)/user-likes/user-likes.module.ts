@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { UserLikesController } from './user-likes.controller';
 import { UserLikesService } from './user-likes.service';
-import { KudosService } from 'src/kudos/kudos.service';
-import { PrismaService } from 'src/core-services/prisma.service';
-import { EmailService } from 'src/core-services/email.service';
+import { KudosService } from '../../kudos/kudos.service';
+import { PrismaService } from '../../core-services/prisma.service';
+import { EmailService } from '../../core-services/email.service';
 import { UserService } from '../user/user.service';
 import { SkipThrottle } from '@nestjs/throttler';
 @SkipThrottle()

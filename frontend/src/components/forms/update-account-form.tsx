@@ -6,36 +6,33 @@ import { Form } from '../ui/form';
 import { FormInputItem } from './form-input-item';
 import { Button } from '../ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Role, User } from '@/types';
+import { User } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
 import FormSelectItem from './form-select-item';
-import { capitalizeString, getRoleDropDownOptions } from '@/lib/utils';
+import { getRoleDropDownOptions } from '@/lib/utils';
+import { UPDATE_USER_DIALOG_DEFAULT_VALUES } from '@/constants';
+import useSubmitUpdateUserForm from '@/hooks/forms/useSubmitUpdateUserForm';
 
 export function UpdateAccountDialog({
-  user,
+  updatingUser,
   setOpen,
   setDeleting,
 }: {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setDeleting: React.Dispatch<React.SetStateAction<boolean>>;
-  user: User;
+  updatingUser: User;
 }) {
   const { isAdmin, user: currentUser } = useAuth().state;
+
   const form = useForm<z.infer<typeof updateUserFormSchema>>({
     resolver: zodResolver(updateUserFormSchema),
-    defaultValues: {
-      email: user!.email,
-      firstName: user!.firstName,
-      lastName: user!.lastName,
-      role: user!.role,
-    },
+    defaultValues: UPDATE_USER_DIALOG_DEFAULT_VALUES(updatingUser),
   });
 
   const roleOptions = getRoleDropDownOptions();
 
-  const onSubmit = (data: z.infer<typeof updateUserFormSchema>) => {
-    setOpen(false);
-  };
+  const onSubmit = useSubmitUpdateUserForm(currentUser, updatingUser);
+
   return (
     <>
       <DialogHeader>
@@ -45,7 +42,10 @@ export function UpdateAccountDialog({
       <Form {...form}>
         <form
           className='grid gap-4'
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((values) => {
+            onSubmit(values);
+            setOpen(false);
+          })}
         >
           <div className='grid grid-cols-2 gap-4'>
             <div className='space-y-2'>

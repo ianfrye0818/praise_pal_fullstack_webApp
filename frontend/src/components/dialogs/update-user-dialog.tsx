@@ -1,16 +1,17 @@
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import { useState } from 'react';
-import { Avatar, AvatarFallback } from '../ui/avatar';
 import { DeleteAccountConfirmation } from './delete-account-confirmation';
 import { UpdateAccountDialog } from '../forms/update-account-form';
 import { User } from '@/types';
 
 export default function UpdateUserDialog({
-  user,
+  updatingUser,
   trigger,
+  currentUser,
 }: {
-  user: User;
+  updatingUser: User;
   trigger?: React.ReactNode | string;
+  currentUser: User;
 }) {
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -25,12 +26,14 @@ export default function UpdateUserDialog({
       <DialogContent>
         {deleting ? (
           <DeleteAccountConfirmation
-            email={user!.email}
+            user={updatingUser}
+            currentUser={currentUser}
             setDeleting={setDeleting}
+            setOpen={setOpen}
           />
         ) : (
           <UpdateAccountDialog
-            user={user!}
+            updatingUser={updatingUser}
             setOpen={setOpen}
             setDeleting={setDeleting}
           />

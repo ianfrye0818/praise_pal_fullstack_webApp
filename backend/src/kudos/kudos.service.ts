@@ -4,10 +4,10 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/core-services/prisma.service';
+import { PrismaService } from '../core-services/prisma.service';
 import { createKudosDTO, UpdateKudosDTO } from './dto/createKudos.dto';
 import { Cron } from '@nestjs/schedule';
-import { EmailService } from 'src/core-services/email.service';
+import { EmailService } from '../core-services/email.service';
 import { Kudos } from '@prisma/client';
 
 @Injectable()
@@ -51,7 +51,7 @@ export class KudosService {
   };
 
   constructor(
-    private readonly prismaService: PrismaService,
+    private prismaService: PrismaService,
     private emailService: EmailService,
   ) {}
 

@@ -1,8 +1,8 @@
 import { Controller, Request, UseGuards, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserService } from 'src/(user)/user/user.service';
+import { UserService } from '../(user)/user/user.service';
 import { LocalAuthGuard } from './guards/local.guard';
-import { createUserDTO } from 'src/(user)/user/dto/createUser.dto';
+import { createUserDTO } from '../(user)/user/dto/createUser.dto';
 import { RefreshJwtGuard } from './guards/refresh.guard';
 import { SkipThrottle } from '@nestjs/throttler';
 

@@ -5,8 +5,8 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { KudosService } from 'src/kudos/kudos.service';
-import { ClientUser } from 'src/types';
+import { KudosService } from '../kudos/kudos.service';
+import { ClientUser } from '../types';
 
 @Injectable()
 export class EditKudosGuard implements CanActivate {

@@ -1,18 +1,17 @@
-import { patchUpdateUser } from '@/api/api-handlers';
+import { deleteSingleUser } from '@/api/api-handlers';
 import { User } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface UseGetUserProps {
   userId: string;
   companyId: string;
-  payload: Partial<User>;
 }
 
-export default function useUpdateCompanyUser() {
+export default function useDeleteCompanyUser() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: async ({ companyId, userId, payload }: UseGetUserProps) =>
-      await patchUpdateUser(companyId, userId, payload),
+    mutationFn: async ({ companyId, userId }: UseGetUserProps) =>
+      await deleteSingleUser(companyId, userId),
     //optimistic update
     onMutate: async (newData: Partial<User>) => {
       await queryClient.cancelQueries({ queryKey: ['companyUsers'] });
@@ -20,14 +19,8 @@ export default function useUpdateCompanyUser() {
       const previousData = queryClient.getQueryData(['companyUsers']);
 
       queryClient.setQueryData(['companyUsers'], (old: User[]) => {
-        return old.map((user: User) => {
-          if (user.userId === newData.userId) {
-            return {
-              ...user,
-              ...newData,
-            };
-          }
-          return user;
+        return old.filter((user: User) => {
+          user.userId !== newData.userId;
         });
       });
       return { previousData };

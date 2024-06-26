@@ -13,6 +13,7 @@ import {
 import useGetCompanyUsers from '@/hooks/api/useCompayUsers/useGetCompanyUsers';
 import { useAuth } from '@/hooks/useAuth';
 import { getShownUsers } from '@/lib/utils';
+import { User } from '@/types';
 
 interface UsersTableProps {
   limit?: number;
@@ -66,7 +67,8 @@ export default function UsersTable({ companyId, limited = false }: UsersTablePro
                 <TableCell>{user.role}</TableCell>
                 <TableCell>
                   <UpdateUserDialog
-                    user={user}
+                    currentUser={currentUser as User}
+                    updatingUser={user}
                     trigger={<Button size={'sm'}>Edit</Button>}
                   />
                 </TableCell>

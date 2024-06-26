@@ -9,7 +9,6 @@ import AdminNavLinkList from '../admin-nav-link-list';
 export default function MobileNavSheet() {
   const [open, setOpen] = useState(false);
   const { adminMode } = useAdminMode();
-  console.log(adminMode);
 
   return (
     <section>
