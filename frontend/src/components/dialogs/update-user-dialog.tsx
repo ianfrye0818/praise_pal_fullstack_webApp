@@ -1,12 +1,17 @@
-import { useAuth } from '@/hooks/useAuth';
 import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import { useState } from 'react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { DeleteAccountConfirmation } from './delete-account-confirmation';
 import { UpdateAccountDialog } from '../forms/update-account-form';
+import { User } from '@/types';
 
-export default function UpdateUserDialog() {
-  const { user } = useAuth().state;
+export default function UpdateUserDialog({
+  user,
+  trigger,
+}: {
+  user: User;
+  trigger?: React.ReactNode | string;
+}) {
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -15,13 +20,7 @@ export default function UpdateUserDialog() {
       open={open}
       onOpenChange={(open) => setOpen(open)}
     >
-      <DialogTrigger>
-        <Avatar>
-          <AvatarFallback className='bg-blue-500 text-zinc-100'>
-            {user?.displayName?.[0]?.toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      </DialogTrigger>
+      <DialogTrigger>{trigger}</DialogTrigger>
 
       <DialogContent>
         {deleting ? (

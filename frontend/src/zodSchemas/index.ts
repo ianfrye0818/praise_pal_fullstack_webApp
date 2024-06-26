@@ -1,3 +1,4 @@
+import { Role } from '@/types';
 import { z } from 'zod';
 export const signInFormSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -21,6 +22,7 @@ export const updateUserFormSchema = z.object({
   lastName: z.string().min(2, 'Please enter a valid last name'),
   displayName: z.string().optional(),
   email: z.string().email('Please enter a valid email address'),
+  role: z.nativeEnum(Role),
 });
 
 export const addKudoFormSchema = z.object({

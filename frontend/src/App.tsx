@@ -3,6 +3,7 @@ import { routeTree } from './routeTree.gen';
 import { useAuth } from './hooks/useAuth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './providers/AuthReducerProvider';
+import AdminModeProvider from './providers/AdminModeProvider';
 
 const router = createRouter({ routeTree, context: { state: undefined! } });
 const queryClient = new QueryClient({
@@ -38,7 +39,9 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <InnerApp />
+        <AdminModeProvider>
+          <InnerApp />
+        </AdminModeProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

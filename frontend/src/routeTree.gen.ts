@@ -15,10 +15,12 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as RootLayoutImport } from './routes/_rootLayout'
 import { Route as AuthLayoutImport } from './routes/_authLayout'
-import { Route as AdminLayoutImport } from './routes/_adminLayout'
 import { Route as AuthLayoutSignUpImport } from './routes/_authLayout/sign-up'
 import { Route as AuthLayoutSignInImport } from './routes/_authLayout/sign-in'
+import { Route as RootLayoutAdminUsersImport } from './routes/_rootLayout/admin/users'
+import { Route as RootLayoutAdminKudosImport } from './routes/_rootLayout/admin/kudos'
 import { Route as RootLayoutAdminDashboardImport } from './routes/_rootLayout/admin/dashboard'
+import { Route as RootLayoutAdminCompanyImport } from './routes/_rootLayout/admin/company'
 
 // Create Virtual Routes
 
@@ -39,11 +41,6 @@ const RootLayoutRoute = RootLayoutImport.update({
 
 const AuthLayoutRoute = AuthLayoutImport.update({
   id: '/_authLayout',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AdminLayoutRoute = AdminLayoutImport.update({
-  id: '/_adminLayout',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -79,8 +76,23 @@ const RootLayoutKudosReceivedLazyRoute =
     import('./routes/_rootLayout/kudos/received.lazy').then((d) => d.Route),
   )
 
+const RootLayoutAdminUsersRoute = RootLayoutAdminUsersImport.update({
+  path: '/admin/users',
+  getParentRoute: () => RootLayoutRoute,
+} as any)
+
+const RootLayoutAdminKudosRoute = RootLayoutAdminKudosImport.update({
+  path: '/admin/kudos',
+  getParentRoute: () => RootLayoutRoute,
+} as any)
+
 const RootLayoutAdminDashboardRoute = RootLayoutAdminDashboardImport.update({
   path: '/admin/dashboard',
+  getParentRoute: () => RootLayoutRoute,
+} as any)
+
+const RootLayoutAdminCompanyRoute = RootLayoutAdminCompanyImport.update({
+  path: '/admin/company',
   getParentRoute: () => RootLayoutRoute,
 } as any)
 
@@ -88,13 +100,6 @@ const RootLayoutAdminDashboardRoute = RootLayoutAdminDashboardImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_adminLayout': {
-      id: '/_adminLayout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AdminLayoutImport
-      parentRoute: typeof rootRoute
-    }
     '/_authLayout': {
       id: '/_authLayout'
       path: ''
@@ -130,11 +135,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RootLayoutIndexLazyImport
       parentRoute: typeof RootLayoutImport
     }
+    '/_rootLayout/admin/company': {
+      id: '/_rootLayout/admin/company'
+      path: '/admin/company'
+      fullPath: '/admin/company'
+      preLoaderRoute: typeof RootLayoutAdminCompanyImport
+      parentRoute: typeof RootLayoutImport
+    }
     '/_rootLayout/admin/dashboard': {
       id: '/_rootLayout/admin/dashboard'
       path: '/admin/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof RootLayoutAdminDashboardImport
+      parentRoute: typeof RootLayoutImport
+    }
+    '/_rootLayout/admin/kudos': {
+      id: '/_rootLayout/admin/kudos'
+      path: '/admin/kudos'
+      fullPath: '/admin/kudos'
+      preLoaderRoute: typeof RootLayoutAdminKudosImport
+      parentRoute: typeof RootLayoutImport
+    }
+    '/_rootLayout/admin/users': {
+      id: '/_rootLayout/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof RootLayoutAdminUsersImport
       parentRoute: typeof RootLayoutImport
     }
     '/_rootLayout/kudos/received': {
@@ -163,7 +189,10 @@ export const routeTree = rootRoute.addChildren({
   }),
   RootLayoutRoute: RootLayoutRoute.addChildren({
     RootLayoutIndexLazyRoute,
+    RootLayoutAdminCompanyRoute,
     RootLayoutAdminDashboardRoute,
+    RootLayoutAdminKudosRoute,
+    RootLayoutAdminUsersRoute,
     RootLayoutKudosReceivedLazyRoute,
     RootLayoutKudosSentLazyRoute,
   }),
@@ -177,13 +206,9 @@ export const routeTree = rootRoute.addChildren({
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_adminLayout",
         "/_authLayout",
         "/_rootLayout"
       ]
-    },
-    "/_adminLayout": {
-      "filePath": "_adminLayout.tsx"
     },
     "/_authLayout": {
       "filePath": "_authLayout.tsx",
@@ -196,7 +221,10 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_rootLayout.tsx",
       "children": [
         "/_rootLayout/",
+        "/_rootLayout/admin/company",
         "/_rootLayout/admin/dashboard",
+        "/_rootLayout/admin/kudos",
+        "/_rootLayout/admin/users",
         "/_rootLayout/kudos/received",
         "/_rootLayout/kudos/sent"
       ]
@@ -213,8 +241,20 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "_rootLayout/index.lazy.tsx",
       "parent": "/_rootLayout"
     },
+    "/_rootLayout/admin/company": {
+      "filePath": "_rootLayout/admin/company.tsx",
+      "parent": "/_rootLayout"
+    },
     "/_rootLayout/admin/dashboard": {
       "filePath": "_rootLayout/admin/dashboard.tsx",
+      "parent": "/_rootLayout"
+    },
+    "/_rootLayout/admin/kudos": {
+      "filePath": "_rootLayout/admin/kudos.tsx",
+      "parent": "/_rootLayout"
+    },
+    "/_rootLayout/admin/users": {
+      "filePath": "_rootLayout/admin/users.tsx",
       "parent": "/_rootLayout"
     },
     "/_rootLayout/kudos/received": {

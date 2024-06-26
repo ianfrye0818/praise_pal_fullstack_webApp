@@ -1,3 +1,4 @@
+import { Role, User } from '@/types';
 import { AxiosError } from 'axios';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -39,6 +40,28 @@ export function formatDate(isoDate: string) {
 export function capitalizeString(str: string) {
   return str
     .split(' ')
-    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
+}
+
+export function getRoleDropDownOptions() {
+  return Object.values(Role)
+    .filter((role) => role !== Role.SUPER_ADMIN)
+    .map((role) => ({
+      label: capitalizeString(role),
+      value: role,
+    }));
+}
+
+export function getShownUsers(users: User[], currentUser: User | null, limited: boolean) {
+  const allowedUsers =
+    currentUser?.role === Role.SUPER_ADMIN
+      ? users
+      : users.filter((user) => user.role !== Role.SUPER_ADMIN);
+
+  const usersLength = allowedUsers.length;
+
+  const limitedUsers = usersLength < 10 ? allowedUsers : allowedUsers.slice(0, 10);
+
+  return limited ? limitedUsers : allowedUsers;
 }

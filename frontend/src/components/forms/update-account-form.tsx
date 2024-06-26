@@ -6,7 +6,10 @@ import { Form } from '../ui/form';
 import { FormInputItem } from './form-input-item';
 import { Button } from '../ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { User } from '@/types';
+import { Role, User } from '@/types';
+import { useAuth } from '@/hooks/useAuth';
+import FormSelectItem from './form-select-item';
+import { capitalizeString, getRoleDropDownOptions } from '@/lib/utils';
 
 export function UpdateAccountDialog({
   user,
@@ -17,14 +20,18 @@ export function UpdateAccountDialog({
   setDeleting: React.Dispatch<React.SetStateAction<boolean>>;
   user: User;
 }) {
+  const { isAdmin, user: currentUser } = useAuth().state;
   const form = useForm<z.infer<typeof updateUserFormSchema>>({
     resolver: zodResolver(updateUserFormSchema),
     defaultValues: {
       email: user!.email,
       firstName: user!.firstName,
       lastName: user!.lastName,
+      role: user!.role,
     },
   });
+
+  const roleOptions = getRoleDropDownOptions();
 
   const onSubmit = (data: z.infer<typeof updateUserFormSchema>) => {
     setOpen(false);
@@ -74,6 +81,14 @@ export function UpdateAccountDialog({
               placeholder='john@example.com'
             />
           </div>
+          {isAdmin && (
+            <FormSelectItem<typeof updateUserFormSchema>
+              control={form.control}
+              name='role'
+              options={roleOptions}
+              label='Role'
+            />
+          )}
           <DialogFooter>
             <div className='w-full flex justify-between'>
               <Button

@@ -1,5 +1,15 @@
 import { SidebarLink, TKudos } from '@/types';
-import { PackageOpen, SendIcon, Mailbox, ShieldCheck } from 'lucide-react';
+import {
+  PackageOpen,
+  SendIcon,
+  Mailbox,
+  ShieldCheck,
+  User,
+  Building2,
+  ScrollText,
+  LayoutDashboard,
+  X,
+} from 'lucide-react';
 import { env } from '@/zodSchemas/env';
 
 export const sidebarLinks: SidebarLink[] = [
@@ -17,6 +27,29 @@ export const sidebarLinks: SidebarLink[] = [
     label: 'Sent Kudos',
     route: '/kudos/sent',
     icon: SendIcon,
+  },
+];
+
+export const adminSidebarLinks: SidebarLink[] = [
+  {
+    label: 'Dashboard',
+    route: '/admin/dashboard',
+    icon: LayoutDashboard,
+  },
+  {
+    label: 'Users',
+    route: '/admin/users',
+    icon: User,
+  },
+  {
+    label: 'Company',
+    route: '/admin/company',
+    icon: Building2,
+  },
+  {
+    label: 'Kudos',
+    route: '/admin/kudos',
+    icon: ScrollText,
   },
 ];
 
