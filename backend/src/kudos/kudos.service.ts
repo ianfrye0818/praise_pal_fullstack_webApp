@@ -21,6 +21,7 @@ export class KudosService {
       email: true,
       companyId: true,
       role: true,
+      createdAt: true,
     },
   };
   private readonly commentSelectProps = {
