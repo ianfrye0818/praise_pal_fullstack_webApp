@@ -64,6 +64,7 @@ export type TKudos = {
   receiver: User;
   userLikes: UserLike[];
   comments: Omit<Comment, 'userId' | 'parentId' | 'kudoId'>[];
+  createdAt: string;
 };
 
 export interface CreateKudoFormProps {

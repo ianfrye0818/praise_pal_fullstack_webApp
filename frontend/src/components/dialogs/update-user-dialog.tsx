@@ -3,7 +3,7 @@ import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog';
 import { useState } from 'react';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { DeleteAccountConfirmation } from './delete-account-confirmation';
-import { UpdateAccountDialog } from './update-account-form';
+import { UpdateAccountDialog } from '../forms/update-account-form';
 
 export default function UpdateUserDialog() {
   const { user } = useAuth().state;

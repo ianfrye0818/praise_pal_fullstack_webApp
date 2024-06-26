@@ -1,15 +1,11 @@
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-
-import { Link } from '@tanstack/react-router';
+import UpdateUserDialog from '../dialogs/update-user-dialog';
 import LogoutButton from './logout-button';
 import { useAuth } from '@/hooks/useAuth';
-import UpdateUserDialog from '../forms/update-user-dialog';
 
 export default function SideBarFooter() {
   const { state } = useAuth();
   const user = state.user;
   if (!user) return <div>Footer</div>;
-  // if(!user) return null;
 
   return (
     <footer className='footer'>

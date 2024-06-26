@@ -1,7 +1,8 @@
 import { User } from '@/types';
 import * as z from 'zod';
-import useCreateKudo from './api/useKudos/useCreateKudo';
+
 import { addKudoFormSchema } from '@/zodSchemas';
+import useCreateKudo from '../api/useKudos/useCreateKudo';
 
 export default function useSubmitAddKudosForm(
   user: User,
@@ -10,7 +11,6 @@ export default function useSubmitAddKudosForm(
   const { mutateAsync } = useCreateKudo();
 
   async function onSubmit(data: z.infer<typeof addKudoFormSchema>) {
-    console.log(data);
     try {
       await mutateAsync({
         ...data,

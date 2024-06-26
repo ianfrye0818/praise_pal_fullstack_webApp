@@ -6,7 +6,6 @@ export default function useUpdateKudo() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async ({ companyId, payload }: { companyId: string; payload: UpdateKudoProps }) => {
-      console.log(payload);
       await patchUpdateKudo(companyId, payload);
     },
     onMutate: async ({ payload }) => {

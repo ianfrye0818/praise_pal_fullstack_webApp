@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/hooks/useAuth';
-import useSubmitAddKudosForm from '@/hooks/useSubmitAddKudosForm';
 import { addKudoFormSchema } from '@/zodSchemas';
 import {
   Dialog,
@@ -16,13 +15,14 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import ComboBox from './find-receipint-combo-box';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import useGetCompanyUsers from '@/hooks/api/useCompayUsers/useGetCompanyUsers';
-import { FormInputItem } from './form-input-item';
-import { FormTextAreaItem } from './form-text-area-item';
-import { CheckBoxInputItem } from './form-checkbox-input-item';
 import { ADD_KUDOS_DIALOG_FORM_DEFAULT_VALUES } from '@/constants';
+import useSubmitAddKudosForm from '@/hooks/forms/useSubmitAddKudosForm';
+import { FormInputItem } from '../forms/form-input-item';
+import { FormTextAreaItem } from '../forms/form-text-area-item';
+import ComboBox from '../forms/find-receipint-combo-box';
+import { CheckBoxInputItem } from '../forms/form-checkbox-input-item';
 
 export default function AddKudosDialog() {
   const [open, setOpen] = useState(false);

@@ -16,8 +16,9 @@ import {
 import { FormInputItem } from './form-input-item';
 import { Form } from '../ui/form';
 import useSetLogoutError from '@/hooks/useSetLogoutError';
-import useSubmitSignInForm from '@/hooks/useSubmitSignInForm';
+
 import { SIGN_IN_FORM_DEFAULT_VALUES } from '@/constants';
+import useSubmitSignInForm from '@/hooks/forms/useSubmitSignInForm';
 
 export default function SignInForm() {
   const form = useForm<z.infer<typeof signInFormSchema>>({

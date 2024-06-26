@@ -1,4 +1,4 @@
-import AddKudosDialog from '@/components/forms/add-kudos-dialog';
+import AddKudosDialog from '@/components/dialogs/add-kudos-dialog';
 import MobileNavSheet from '@/components/mobile-nav/mobile-nav-sheet';
 import Sidebar from '@/components/sidebar/sidebar';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';

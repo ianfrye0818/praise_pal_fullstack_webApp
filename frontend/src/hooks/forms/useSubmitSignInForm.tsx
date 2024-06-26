@@ -1,11 +1,11 @@
 import * as z from 'zod';
 import { login } from '@/api/auth-actions';
 import { signInFormSchema } from '@/zodSchemas';
-import { useAuth } from './useAuth';
 
 import { useNavigate } from '@tanstack/react-router';
 import { UseFormReturn } from 'react-hook-form';
 import { CustomError } from '@/errors';
+import { useAuth } from '../useAuth';
 
 export default function useSubmitSignInForm(form: UseFormReturn<z.infer<typeof signInFormSchema>>) {
   const navigate = useNavigate();

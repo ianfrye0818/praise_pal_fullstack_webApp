@@ -1,6 +1,6 @@
 import { updateUserFormSchema } from '@/zodSchemas';
 import * as z from 'zod';
-import { useForm, UseFormReturn } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Form } from '../ui/form';
 import { FormInputItem } from './form-input-item';

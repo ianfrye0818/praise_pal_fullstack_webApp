@@ -1,10 +1,10 @@
-'use client';
 import { TKudos } from '@/types';
 
 import KudoCardDropDownMenu from './kudo-card-dropdown-menu';
 import KudoLikeButton from './kudo-like-button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
+import { capitalizeString, formatDate } from '@/lib/utils';
 
 type Props = {
   kudo: TKudos;
@@ -26,12 +26,15 @@ export default function KudosCard({ kudo }: Props) {
         </AvatarFallback>
       </Avatar>
       <div className='ml-4 flex-1'>
-        <p className='font-bold'>
-          {' '}
-          {kudo.isAnonymous ? 'Someone Special' : sender.displayName} sent kudos to{' '}
-          {receiver.displayName}
-        </p>
-        {kudo.title && <h3 className='font-bold text-lg my-2'>{kudo.title}</h3>}
+        <div className='flex justify-between items-center'>
+          <p className='font-bold'>
+            {' '}
+            {kudo.isAnonymous ? 'Someone Special' : capitalizeString(sender.displayName)} sent kudos
+            to {capitalizeString(receiver.displayName)}
+          </p>
+          <p className='text-sm text-gray-500'>{formatDate(kudo.createdAt)}</p>
+        </div>
+        {kudo.title && <h3 className='font-bold text-lg my-2'>{capitalizeString(kudo.title)}</h3>}
         <p>{kudo.message}</p>
         <div className='mt-2 flex items-center justify-between'>
           <div className='flex m-0 items-center'>

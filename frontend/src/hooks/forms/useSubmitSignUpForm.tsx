@@ -4,7 +4,7 @@ import { signUpFormSchema } from '@/zodSchemas';
 import { UseFormReturn } from 'react-hook-form';
 import { useNavigate } from '@tanstack/react-router';
 import { CustomError } from '@/errors';
-import { useAuth } from './useAuth';
+import { useAuth } from '../useAuth';
 
 export default function useSubmitSignUpForm(form: UseFormReturn<z.infer<typeof signUpFormSchema>>) {
   const navigate = useNavigate();

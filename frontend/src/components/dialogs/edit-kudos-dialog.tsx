@@ -15,12 +15,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Form } from '../ui/form';
-import { FormInputItem } from './form-input-item';
-import { FormTextAreaItem } from './form-text-area-item';
 
 import { EDIT_KUDOS_DIALOG_FORM_DEFAULT_VALUES } from '@/constants';
-import useSubmitEditKudosForm from '@/hooks/useSubmitEditKudosForm';
+
 import { EditKudosDialogProps } from '@/types';
+import useSubmitEditKudosForm from '@/hooks/forms/useSubmitEditKudosForm';
+import { FormInputItem } from '../forms/form-input-item';
+import { FormTextAreaItem } from '../forms/form-text-area-item';
 
 export default function EditKudosDialog({ kudo, setMenuOpen }: EditKudosDialogProps) {
   const [open, setOpen] = useState(false);

@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as RootLayoutImport } from './routes/_rootLayout'
 import { Route as AuthLayoutImport } from './routes/_authLayout'
+import { Route as AdminLayoutImport } from './routes/_adminLayout'
 import { Route as AuthLayoutSignUpImport } from './routes/_authLayout/sign-up'
 import { Route as AuthLayoutSignInImport } from './routes/_authLayout/sign-in'
 import { Route as RootLayoutAdminDashboardImport } from './routes/_rootLayout/admin/dashboard'
@@ -38,6 +39,11 @@ const RootLayoutRoute = RootLayoutImport.update({
 
 const AuthLayoutRoute = AuthLayoutImport.update({
   id: '/_authLayout',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminLayoutRoute = AdminLayoutImport.update({
+  id: '/_adminLayout',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -82,6 +88,13 @@ const RootLayoutAdminDashboardRoute = RootLayoutAdminDashboardImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_adminLayout': {
+      id: '/_adminLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AdminLayoutImport
+      parentRoute: typeof rootRoute
+    }
     '/_authLayout': {
       id: '/_authLayout'
       path: ''
@@ -164,9 +177,13 @@ export const routeTree = rootRoute.addChildren({
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
+        "/_adminLayout",
         "/_authLayout",
         "/_rootLayout"
       ]
+    },
+    "/_adminLayout": {
+      "filePath": "_adminLayout.tsx"
     },
     "/_authLayout": {
       "filePath": "_authLayout.tsx",

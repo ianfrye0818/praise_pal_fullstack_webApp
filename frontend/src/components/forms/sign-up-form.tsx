@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { signUpFormSchema } from '@/zodSchemas';
-import useSubmitSignUpForm from '@/hooks/useSubmitSignUpForm';
+
 import { Link } from '@tanstack/react-router';
 import {
   Card,
@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/card';
 import { FormInputItem } from './form-input-item';
 import { SIGN_UP_FORM_DEFAULT_VALUES } from '@/constants';
+import useSubmitSignUpForm from '@/hooks/forms/useSubmitSignUpForm';
 
 export default function SignUpForm() {
   const form = useForm<z.infer<typeof signUpFormSchema>>({

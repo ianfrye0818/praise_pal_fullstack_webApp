@@ -4,7 +4,7 @@ import NavBarLink from '@/components/sidebar/nav-bar-link';
 import SideBarFooter from './sidebar-footer';
 import { useAuth } from '@/hooks/useAuth';
 
-export default function Sidebar() {
+export default function AdminSideBar() {
   const { isAdmin } = useAuth().state;
 
   return (

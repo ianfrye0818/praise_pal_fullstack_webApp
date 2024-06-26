@@ -7,9 +7,10 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { TKudos } from '@/types';
-import EditKudosDialog from '../forms/edit-kudos-dialog';
+
 import { useState } from 'react';
-import { CustomDialog } from '../forms/delete-kudo-dialog';
+import EditKudosDialog from '../dialogs/edit-kudos-dialog';
+import { CustomDialog } from '../dialogs/delete-kudo-dialog';
 
 interface KudoCardDropDownMenuProps {
   kudo: TKudos;
