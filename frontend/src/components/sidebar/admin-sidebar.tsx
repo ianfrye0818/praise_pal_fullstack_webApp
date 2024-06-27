@@ -1,8 +1,9 @@
 import { Link } from '@tanstack/react-router';
-import { adminSideBarLink, IMAGES, sidebarLinks } from '@/constants';
+import { adminSideBarLink, sidebarLinks } from '@/constants';
 import NavBarLink from '@/components/sidebar/nav-bar-link';
 import SideBarFooter from './sidebar-footer';
 import { useAuth } from '@/hooks/useAuth';
+import logo from '@/assets/logo.png';
 
 export default function AdminSideBar() {
   const { isAdmin } = useAuth().state;
@@ -17,7 +18,7 @@ export default function AdminSideBar() {
           {/* <h1 className='text-4xl font-bold w-full'>Praise Pal</h1>
            */}
           <img
-            src={IMAGES.logo}
+            src={logo}
             alt='logo'
             className='w-full object-contain'
           />

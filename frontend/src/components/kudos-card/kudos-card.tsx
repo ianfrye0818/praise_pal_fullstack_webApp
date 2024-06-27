@@ -5,6 +5,8 @@ import KudoLikeButton from './kudo-like-button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
 import { capitalizeString, formatDate } from '@/lib/utils';
+import { MessageCircle, MessageSquare } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 
 type Props = {
   kudo: TKudos;
@@ -38,13 +40,22 @@ export default function KudosCard({ kudo }: Props) {
         {kudo.title && <h3 className='font-bold text-lg my-2'>{capitalizeString(kudo.title)}</h3>}
         <p>{kudo.message}</p>
         <div className='mt-2 flex items-center justify-between'>
-          <div className='flex m-0 items-center'>
-            <KudoLikeButton
-              liked={liked}
-              kudoId={kudo.id}
-              userId={user?.userId ?? ''}
-            />
-            <p className='text-sm text-gray-500'>{kudo.likes}</p>
+          <div className='flex m-0 gap-3 items-center'>
+            <div className='flex items-center gap-1'>
+              <KudoLikeButton
+                liked={liked}
+                kudoId={kudo.id}
+                userId={user?.userId ?? ''}
+              />
+              {/* kudos comment button */}
+
+              <p className='text-sm text-gray-500'>{kudo.likes}</p>
+            </div>
+            <Link className='flex items-center gap-1 '>
+              <MessageCircle className='size-4 cursor-pointer text-gray-400' />
+
+              <p className='text-sm text-gray-500'>{kudo.comments.length}</p>
+            </Link>
           </div>
           {usersKudo && <KudoCardDropDownMenu kudo={kudo} />}
         </div>

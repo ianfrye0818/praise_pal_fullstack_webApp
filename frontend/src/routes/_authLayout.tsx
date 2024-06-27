@@ -1,3 +1,4 @@
+import { IMAGES } from '@/constants';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authLayout')({
@@ -13,6 +14,15 @@ export const Route = createFileRoute('/_authLayout')({
 function AuthLayout() {
   return (
     <main className='h-full w-full'>
+      <header className='h-[96px]  p-1'>
+        <div className='container mx-auto '>
+          <img
+            src={IMAGES.logo}
+            alt='logo'
+            width={180}
+          />
+        </div>
+      </header>
       <Outlet />
     </main>
   );
