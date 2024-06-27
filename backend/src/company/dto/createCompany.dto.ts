@@ -7,7 +7,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { capitalizeWords } from 'src/utils';
+import { capitalizeWords } from '../../utils';
 
 export class CreateCompanyDTO {
   @IsString()

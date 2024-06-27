@@ -7,8 +7,8 @@ export const Route = createFileRoute('/_authLayout/sign-in')({
 
 function SignInPage() {
   return (
-    <div className='h-full w-full flex flex-col justify-center items-center'>
-      <SignInForm />;
+    <div className='h-[calc(100dvh-96px)] w-full flex flex-col justify-center items-center'>
+      <SignInForm />
     </div>
   );
 }

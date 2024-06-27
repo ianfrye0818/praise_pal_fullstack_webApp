@@ -1,14 +1,10 @@
-import { Link } from '@tanstack/react-router';
-import { adminSideBarLink, IMAGES, sidebarLinks } from '@/constants';
-import NavBarLink from '@/components/sidebar/nav-bar-link';
 import SideBarFooter from './sidebar-footer';
-import { useAuth } from '@/hooks/useAuth';
+
 import NavLinksList from '../nav-links-list';
 import useAdminMode from '@/hooks/useAdminMode';
 import AdminNavLinkList from '../admin-nav-link-list';
 
 export default function Sidebar() {
-  const { isAdmin } = useAuth().state;
   const { adminMode } = useAdminMode();
 
   return (

@@ -1,10 +1,10 @@
-import { SidebarLink, TKudos } from '@/types';
+import { SidebarLink, TKudos, User } from '@/types';
 import {
   PackageOpen,
   SendIcon,
   Mailbox,
   ShieldCheck,
-  User,
+  UserIcon,
   Building2,
   ScrollText,
   LayoutDashboard,
@@ -39,13 +39,13 @@ export const adminSidebarLinks: SidebarLink[] = [
   {
     label: 'Users',
     route: '/admin/users',
-    icon: User,
+    icon: UserIcon,
   },
-  {
-    label: 'Company',
-    route: '/admin/company',
-    icon: Building2,
-  },
+  // {
+  //   label: 'Company',
+  //   route: '/admin/company',
+  //   icon: Building2,
+  // },
   {
     label: 'Kudos',
     route: '/admin/kudos',
@@ -92,3 +92,13 @@ export function EDIT_KUDOS_DIALOG_FORM_DEFAULT_VALUES(kudo: TKudos) {
     message: kudo.message,
   };
 }
+
+export const UPDATE_USER_DIALOG_DEFAULT_VALUES = (user: User) => {
+  return {
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    displayName: user.displayName,
+    role: user.role,
+  };
+};

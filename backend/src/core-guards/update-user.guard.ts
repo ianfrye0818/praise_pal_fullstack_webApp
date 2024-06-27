@@ -5,8 +5,8 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { UserService } from 'src/(user)/user/user.service';
-import { ClientUser } from 'src/types';
+import { UserService } from '../(user)/user/user.service';
+import { ClientUser } from '../types';
 
 @Injectable()
 export class UpdateUserGuard implements CanActivate {
@@ -20,9 +20,10 @@ export class UpdateUserGuard implements CanActivate {
 
     const companyId = request.params.companyId || request.query.companyId;
     const userId = request.params.id || request.query.userId;
+    console.log({ jwtUser, data, companyId, userId });
 
     //TODO: check to see if this logic is valid
-    if (jwtUser.userId === userId && data.role)
+    if (jwtUser.userId === userId && data.role && data.role !== jwtUser.role)
       throw new ForbiddenException('You cannot update your role');
 
     if (jwtUser.role === Role.ADMIN && jwtUser.companyId === companyId)

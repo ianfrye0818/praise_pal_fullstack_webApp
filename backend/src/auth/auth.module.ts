@@ -2,15 +2,15 @@ import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { UserService } from 'src/(user)/user/user.service';
+import { UserService } from '../(user)/user/user.service';
 import { LocalStrategy } from './stratagies/local-stratagy';
 import { JwtStrategy } from './stratagies/jwt-stratagy';
-import { PrismaService } from 'src/core-services/prisma.service';
-import { EmailService } from 'src/core-services/email.service';
+import { PrismaService } from '../core-services/prisma.service';
+import { EmailService } from '../core-services/email.service';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { RefreshStrategy } from './stratagies/refresh-stratagy';
-import { RefreshTokenService } from 'src/core-services/refreshToken.service';
+import { RefreshTokenService } from '../core-services/refreshToken.service';
 
 @Module({
   imports: [

@@ -4,11 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Comment } from '@prisma/client';
-import { PrismaService } from 'src/core-services/prisma.service';
-import { ClientComment } from 'src/types';
+import { PrismaService } from '../core-services/prisma.service';
+import { ClientComment } from '../types';
 import { CreateCommentDTO, UpdateCommentDTO } from './dto/createComment.dto';
 import { Cron } from '@nestjs/schedule';
-import { EmailService } from 'src/core-services/email.service';
+import { EmailService } from '../core-services/email.service';
 
 @Injectable()
 export class CommentsService {

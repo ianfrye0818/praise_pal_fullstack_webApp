@@ -1,4 +1,4 @@
-import { Role, User } from '@/types';
+import { Role, TKudos, User } from '@/types';
 import { AxiosError } from 'axios';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -64,4 +64,12 @@ export function getShownUsers(users: User[], currentUser: User | null, limited: 
   const limitedUsers = usersLength < 10 ? allowedUsers : allowedUsers.slice(0, 10);
 
   return limited ? limitedUsers : allowedUsers;
+}
+
+export function getShownKudos(kudos: TKudos[], limited: boolean) {
+  const kudosLength = kudos.length;
+
+  const limitedKudos = kudosLength < 10 ? kudos : kudos.slice(0, 10);
+
+  return limited ? limitedKudos : kudos;
 }

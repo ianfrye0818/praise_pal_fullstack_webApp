@@ -24,6 +24,7 @@ interface ComboBoxProps {
 export default function ComboBox({ field, form, users, currentUser }: ComboBoxProps) {
   const [open, setOpen] = useState(false);
   users = users.filter((r) => r.userId !== currentUser?.userId);
+  console.log(users);
 
   return (
     <Popover
@@ -33,7 +34,15 @@ export default function ComboBox({ field, form, users, currentUser }: ComboBoxPr
       <PopoverTrigger asChild>
         <Button variant='outline'>
           {field.value
-            ? users.filter((r) => r.userId === field.value).map((r) => r.displayName)
+            ? users
+                .filter((r) => r.userId === field.value)
+                .map((r) => {
+                  if (r.firstName && r.lastName) {
+                    return `${r.firstName} ${r.lastName}`;
+                  } else {
+                    return r.displayName;
+                  }
+                })
             : 'Select a recipient'}
         </Button>
       </PopoverTrigger>
@@ -51,10 +60,12 @@ export default function ComboBox({ field, form, users, currentUser }: ComboBoxPr
                       setOpen(false);
                       field.onChange(r.userId);
                     }}
-                    value={r.displayName}
+                    value={
+                      r.firstName && r.lastName ? `${r.firstName} ${r.lastName}` : r.displayName
+                    }
                     key={r.userId}
                   >
-                    {r.displayName}
+                    {r.firstName && r.lastName ? `${r.firstName} ${r.lastName}` : r.displayName}
                   </CommandItem>
                 );
               })}

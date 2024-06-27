@@ -9,12 +9,12 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { JwtGuard } from '../auth/guards/jwt.guard';
 import { KudosService } from './kudos.service';
-import { CompanyGuard } from 'src/core-guards/company.guard';
+import { CompanyGuard } from '../core-guards/company.guard';
 import { createKudosDTO, UpdateKudosDTO } from './dto/createKudos.dto';
 import { KudosFilterDTO } from './dto/kudosFilter.dto';
-import { EditKudosGuard } from 'src/core-guards/update-kudos.guard';
+import { EditKudosGuard } from '../core-guards/update-kudos.guard';
 import { SkipThrottle } from '@nestjs/throttler';
 
 @SkipThrottle()

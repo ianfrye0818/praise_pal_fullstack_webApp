@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { KudosController } from './kudos.controller';
 import { KudosService } from './kudos.service';
-import { EmailService } from 'src/core-services/email.service';
-import { PrismaService } from 'src/core-services/prisma.service';
-import { JwtStrategy } from 'src/auth/stratagies/jwt-stratagy';
-import { UserService } from 'src/(user)/user/user.service';
+import { EmailService } from '../core-services/email.service';
+import { PrismaService } from '../core-services/prisma.service';
+import { JwtStrategy } from '../auth/stratagies/jwt-stratagy';
+import { UserService } from '../(user)/user/user.service';
 
 @Module({
   controllers: [KudosController],

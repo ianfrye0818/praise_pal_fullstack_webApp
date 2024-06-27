@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { ClientUser } from 'src/types';
+import { ClientUser } from '../types';
 
 @Injectable()
 export class AdminGuard implements CanActivate {

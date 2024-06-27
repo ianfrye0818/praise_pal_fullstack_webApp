@@ -1,13 +1,20 @@
-import { SignInFormProps, SignUpFormProps } from '@/types';
+import { SignInFormProps, SignUpFormProps, UpdateUserProps } from '@/types';
 import { Dispatch } from 'react';
 
 import { ActionType, AuthAction } from '@/providers/AuthReducerProvider';
-import { postLogout, postRefreshTokens, postRegisterUser, postUser } from './api-handlers';
+import {
+  patchUpdateUser,
+  postLogout,
+  postRefreshTokens,
+  postRegisterUser,
+  postUser,
+} from './api-handlers';
 import {
   getAuthTokens,
   removeAuthTokens,
   removeUserToken,
   setAuthTokens,
+  setErrorMessage,
   setUserToken,
 } from '@/lib/localStorage';
 
@@ -17,6 +24,9 @@ const AuthActions = {
   },
   register: async (signUpPaylaod: SignUpFormProps) => {
     return await postRegisterUser(signUpPaylaod);
+  },
+  update: async (companyId: string, userId: string, updateUserPayload: UpdateUserProps) => {
+    return await patchUpdateUser(companyId, userId, updateUserPayload);
   },
   logout: async () => {
     const { refreshToken } = getAuthTokens();
@@ -44,6 +54,7 @@ export const login = async (dispatch: Dispatch<AuthAction>, signInPayload: SignI
     });
   } catch (error) {
     dispatch({ type: ActionType.LOGIN_FAILURE });
+    console.log(error);
     throw error;
   }
 };
@@ -77,11 +88,30 @@ export const logout = async (dispatch: Dispatch<AuthAction>) => {
   }
 };
 
+export async function updateCurrentUser(
+  dispatch: Dispatch<AuthAction>,
+  companyId: string,
+  userId: string,
+  updateUserPayload: UpdateUserProps
+) {
+  dispatch({ type: ActionType.UPDATE_REQUEST });
+  try {
+    const data = await AuthActions.update(companyId, userId, updateUserPayload);
+    if (!data) throw new Error('Error updating user');
+    dispatch({
+      type: ActionType.UPDATE_SUCCESS,
+      payload: { user: data },
+    });
+    setUserToken(data);
+  } catch (error) {
+    dispatch({ type: ActionType.UPDATE_FAILURE });
+  }
+}
+
 export function errorLogout(errorMessage?: string) {
-  localStorage.setItem('logouterror', errorMessage || 'An error occurred. Please try again.');
+  setErrorMessage(errorMessage || 'Session expired. Please sign in again.');
   removeAuthTokens();
   removeUserToken();
-  // window.location.href = '/sign-in';
   window.location.pathname !== '/sign-in' && window.location.replace('/sign-in');
 }
 

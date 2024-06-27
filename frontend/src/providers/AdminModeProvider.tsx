@@ -10,7 +10,6 @@ export const AdminModeContext = createContext<{
 
 export default function AdminModeProvider({ children }: { children: React.ReactNode }) {
   const [adminMode, setAdminMode] = useState(false);
-  console.log(adminMode);
   return (
     <AdminModeContext.Provider value={{ adminMode, setAdminMode }}>
       {children}

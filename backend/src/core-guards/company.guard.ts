@@ -7,8 +7,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { UserService } from 'src/(user)/user/user.service';
-import { ClientUser } from 'src/types';
+import { UserService } from '../(user)/user/user.service';
+import { ClientUser } from '../types';
 
 @Injectable()
 export class CompanyGuard implements CanActivate {

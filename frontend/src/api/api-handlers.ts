@@ -10,9 +10,9 @@ import {
   UpdateKudoProps,
 } from '@/types';
 import { ApiRoutes } from './api-routes';
-import { deleter, fetcher, patcher, poster } from './axios';
+import { authClient, deleter, fetcher, patcher, poster } from './axios';
 import { createRefreshHeader } from '@/lib/utils';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 //auth actions
 export const postUser = async (data: SignInFormProps) =>
@@ -95,8 +95,8 @@ export const patchUpdateUser = async (
   companyId: string,
   userId: string,
   data: Partial<User>
-): Promise<void> =>
-  patcher<Partial<User>, void>(ApiRoutes.users.updateUserById(companyId, userId), data);
+): Promise<User> =>
+  await patcher<Partial<User>, User>(ApiRoutes.users.updateUserById(companyId, userId), data);
 
 export const deleteSingleUser = async (
   companyId: string,

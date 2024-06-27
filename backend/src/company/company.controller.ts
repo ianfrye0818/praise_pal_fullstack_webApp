@@ -11,10 +11,10 @@ import {
 } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { CreateCompanyDTO, UpdateCompanyDTO } from './dto/createCompany.dto';
-import { SuperAdminGuard } from 'src/core-guards/super-admin.guard';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { AdminGuard } from 'src/core-guards/admin.guard';
-import { CompanyGuard } from 'src/core-guards/company.guard';
+import { SuperAdminGuard } from '../core-guards/super-admin.guard';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { AdminGuard } from '../core-guards/admin.guard';
+import { CompanyGuard } from '../core-guards/company.guard';
 import { CompanyFilterDTO } from './dto/filterCompany.dto';
 
 @UseGuards(JwtGuard)

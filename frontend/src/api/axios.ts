@@ -1,21 +1,16 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { errorLogout, logout, refreshTokens } from './auth-actions';
+import { errorLogout, refreshTokens } from './auth-actions';
 import { CustomError, handleApiError } from '@/errors';
 import { HTTPClients } from '@/types';
 import { BASE_API_URL, MAX_API_REQUESTS } from '@/constants';
-import {
-  getAuthTokens,
-  removeAuthTokens,
-  removeUserToken,
-  setAuthTokens,
-} from '@/lib/localStorage';
+import { getAuthTokens } from '@/lib/localStorage';
 
 let retries = 0;
 
-const authClient = axios.create({
+export const authClient = axios.create({
   baseURL: `${BASE_API_URL}/auth`,
 });
-const apiClient = axios.create({
+export const apiClient = axios.create({
   baseURL: BASE_API_URL,
   withCredentials: true,
 });
@@ -37,6 +32,7 @@ authClient.interceptors.response.use(
     if (error.response.status === 401 || error.response.status === 403) {
       errorLogout(error.response.data.message);
     }
+    return Promise.reject(error);
   }
 );
 
@@ -90,14 +86,9 @@ async function poster<D = any, T = any>(
   data?: D,
   config?: AxiosRequestConfig<D>,
   client: HTTPClients = 'API'
-): Promise<T> {
-  try {
-    const response = await clients[client].post<T>(url, data, config);
-    return response.data as T;
-  } catch (error) {
-    handleApiError(error, 'Error posting data');
-    throw error;
-  }
+): Promise<T | undefined> {
+  const response = await clients[client].post<T>(url, data, config);
+  return response.data;
 }
 
 async function patcher<D = any, T = any>(
@@ -110,6 +101,7 @@ async function patcher<D = any, T = any>(
     const response = await clients[client].patch<T>(url, data, config);
     return response.data as T;
   } catch (error) {
+    console.log(error);
     handleApiError(error, 'Error patching data');
     throw error;
   }

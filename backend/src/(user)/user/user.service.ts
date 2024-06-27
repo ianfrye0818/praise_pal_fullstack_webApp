@@ -4,14 +4,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/core-services/prisma.service';
+import { PrismaService } from '../../core-services/prisma.service';
 import { createUserDTO, updateUserDTO } from './dto/createUser.dto';
 import * as bcrypt from 'bcryptjs';
 import { Cron } from '@nestjs/schedule';
 import { User } from '@prisma/client';
-import { EmailService } from 'src/core-services/email.service';
-import { generateClientSideUserProperties } from 'src/utils';
-import { ClientUser } from 'src/types';
+import { EmailService } from '../../core-services/email.service';
+import { generateClientSideUserProperties } from '../../utils';
+import { ClientUser } from '../../types';
 import { FilterUserDTO } from './dto/filterUser.dto';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class UserService {
   async findAllUsers(filter: FilterUserDTO): Promise<ClientUser[]> {
     try {
       const users = await this.prismaService.user.findMany({
-        where: filter,
+        where: { deletedAt: null, ...filter },
       });
       const clientUsers = users.map((user) =>
         generateClientSideUserProperties(user),

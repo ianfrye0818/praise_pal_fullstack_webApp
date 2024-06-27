@@ -36,6 +36,7 @@ export default function EditKudosDialog({ kudo, setMenuOpen }: EditKudosDialogPr
     setOpen(false);
     setMenuOpen(false);
   }
+
   const onSubmit = useSubmitEditKudosForm(user!, kudo.id);
 
   return (

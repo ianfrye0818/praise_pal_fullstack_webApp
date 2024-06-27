@@ -10,8 +10,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { CompanyGuard } from 'src/core-guards/company.guard';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { CompanyGuard } from '../core-guards/company.guard';
 import { CommentsService } from './comments.service';
 import { CreateCommentDTO } from './dto/createComment.dto';
 

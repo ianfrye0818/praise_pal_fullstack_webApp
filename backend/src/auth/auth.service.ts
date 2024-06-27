@@ -1,15 +1,16 @@
 import {
+  HttpException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserService } from 'src/(user)/user/user.service';
+import { UserService } from '../(user)/user/user.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { ClientUser } from 'src/types';
-import { RefreshTokenService } from 'src/core-services/refreshToken.service';
-import { generateClientSideUserProperties } from 'src/utils';
+import { ClientUser } from '../types';
+import { RefreshTokenService } from '../core-services/refreshToken.service';
+import { generateClientSideUserProperties } from '../utils';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,8 @@ export class AuthService {
     password: string,
   ): Promise<ClientUser | null> {
     const user = await this.userService.findOneByEmail(email);
+    if (user && user.deletedAt !== null)
+      throw new HttpException('User not found', 404);
     if (user && (await bcrypt.compare(password, user.password))) {
       return generateClientSideUserProperties(user);
     }

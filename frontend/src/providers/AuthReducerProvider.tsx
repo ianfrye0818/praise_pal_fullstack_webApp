@@ -28,6 +28,9 @@ enum ActionType {
   REGISTER_REQUEST = 'REGISTER_REQUEST',
   REGISTER_SUCCESS = 'REGISTER_SUCCESS',
   REGISTER_FAILURE = 'REGISTER_FAILURE',
+  UPDATE_REQUEST = 'UPDATE_REQUEST',
+  UPDATE_SUCCESS = 'UPDATE_SUCCESS',
+  UPDATE_FAILURE = 'UPDATE_FAILURE',
 }
 
 //Action types
@@ -69,6 +72,19 @@ interface RegisterFailureAction {
   type: ActionType.REGISTER_FAILURE;
 }
 
+interface UpdateRequestAction {
+  type: ActionType.UPDATE_REQUEST;
+}
+
+interface UpdateSuccessAction {
+  type: ActionType.UPDATE_SUCCESS;
+  payload: { user: User };
+}
+
+interface UpdateFailureAction {
+  type: ActionType.UPDATE_FAILURE;
+}
+
 // Define action creators
 export type AuthAction =
   | LoginRequestAction
@@ -79,7 +95,10 @@ export type AuthAction =
   | LogoutFailureAction
   | RegisterRequestAction
   | RegisterSuccessAction
-  | RegisterFailureAction;
+  | RegisterFailureAction
+  | UpdateRequestAction
+  | UpdateSuccessAction
+  | UpdateFailureAction;
 
 // Create the reducer
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -87,8 +106,11 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     case ActionType.LOGIN_REQUEST:
     case ActionType.REGISTER_REQUEST:
     case ActionType.LOGOUT_REQUEST:
+    case ActionType.UPDATE_REQUEST:
       return { ...state, loading: true };
     case ActionType.LOGIN_SUCCESS:
+    case ActionType.REGISTER_SUCCESS:
+    case ActionType.UPDATE_SUCCESS:
       return {
         ...state,
         user: action.payload.user,
@@ -99,6 +121,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
       };
     case ActionType.LOGIN_FAILURE:
     case ActionType.REGISTER_FAILURE:
+    case ActionType.UPDATE_FAILURE:
       return { ...state, loading: false, isAuthenticated: false, user: null, isAdmin: false };
     case ActionType.LOGOUT_SUCCESS:
       return { ...state, user: null, isAuthenticated: false, isAdmin: false, loading: false };
