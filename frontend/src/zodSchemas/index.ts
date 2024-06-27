@@ -18,8 +18,8 @@ export const signUpFormSchema = z.object({
 });
 
 export const updateUserFormSchema = z.object({
-  firstName: z.string().min(2, 'Please enter a valid first name'),
-  lastName: z.string().min(2, 'Please enter a valid last name'),
+  firstName: z.string().nullable(),
+  lastName: z.string().nullable(),
   displayName: z.string().optional(),
   email: z.string().email('Please enter a valid email address'),
   role: z.nativeEnum(Role),

@@ -1,4 +1,4 @@
-import { FlipVerticalIcon } from 'lucide-react';
+import { MenuSquareIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
@@ -30,7 +30,7 @@ export default function KudoCardDropDownMenu({ kudo }: KudoCardDropDownMenuProps
           size='sm'
           className='text-gray-400 hover:text-gray-900 dark:hover:text-gray-50'
         >
-          <FlipVerticalIcon className='h-4 w-4' />
+          <MenuSquareIcon className='h-4 w-4' />
           <span className='sr-only'>More</span>
         </Button>
       </DropdownMenuTrigger>

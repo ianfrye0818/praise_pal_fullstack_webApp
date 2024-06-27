@@ -101,6 +101,7 @@ async function patcher<D = any, T = any>(
     const response = await clients[client].patch<T>(url, data, config);
     return response.data as T;
   } catch (error) {
+    console.log(error);
     handleApiError(error, 'Error patching data');
     throw error;
   }

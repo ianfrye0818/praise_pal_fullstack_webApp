@@ -12,11 +12,12 @@ export default function SideBarFooter() {
     <footer className='footer'>
       <div className='mt-auto flex items-center gap-2 relative'>
         <UpdateUserDialog
-          user={user}
-          trigger={<UserDialogTrigger displayName={user.displayName} />}
+          updatingUser={user}
+          trigger={<UserDialogTrigger name={user.firstName || user.displayName} />}
+          currentUser={user}
         />
         <div className='flex-1'>
-          <p className='font-medium'>{user?.displayName}</p>
+          <p className='font-medium'>{user.firstName || user.displayName}</p>
           <p className='text-sm text-gray-500 dark:text-gray-400'>{user?.email}</p>
         </div>
 
@@ -26,12 +27,10 @@ export default function SideBarFooter() {
   );
 }
 
-function UserDialogTrigger({ displayName }: { displayName: string }) {
+function UserDialogTrigger({ name }: { name: string }) {
   return (
     <Avatar>
-      <AvatarFallback className='bg-blue-500 text-zinc-100'>
-        {displayName[0].toUpperCase()}
-      </AvatarFallback>
+      <AvatarFallback className='bg-blue-500 text-zinc-100'>{name[0].toUpperCase()}</AvatarFallback>
     </Avatar>
   );
 }

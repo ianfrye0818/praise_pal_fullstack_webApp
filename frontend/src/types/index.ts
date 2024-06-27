@@ -26,8 +26,8 @@ export interface User {
   companyId: string;
   role: Role;
   displayName: string;
-  firstName?: string;
-  lastName?: string;
+  firstName?: string | null | undefined;
+  lastName?: string | null | undefined;
 }
 
 export type UpdateUserProps = Partial<Omit<User, 'companyId' | 'userId' | 'role'>>;

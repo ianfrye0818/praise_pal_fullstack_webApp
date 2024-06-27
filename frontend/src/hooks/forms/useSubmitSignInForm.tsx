@@ -3,11 +3,13 @@ import { login } from '@/api/auth-actions';
 import { signInFormSchema } from '@/zodSchemas';
 
 import { useNavigate } from '@tanstack/react-router';
-import { UseFormReturn } from 'react-hook-form';
+
 import { CustomError } from '@/errors';
 import { useAuth } from '../useAuth';
+import { AxiosError } from 'axios';
+import { setErrorMessage } from '@/lib/localStorage';
 
-export default function useSubmitSignInForm(form: UseFormReturn<z.infer<typeof signInFormSchema>>) {
+export default function useSubmitSignInForm() {
   const navigate = useNavigate();
   const { dispatch } = useAuth();
 
@@ -17,13 +19,14 @@ export default function useSubmitSignInForm(form: UseFormReturn<z.infer<typeof s
       await navigate({ to: '/' });
     } catch (error) {
       console.error(['signInFormError'], error);
-      if (error instanceof CustomError || error instanceof Error) {
-        form.setError('root', {
-          message: error.message ?? 'An error occurred. Please try again.',
-        });
+      if (error instanceof AxiosError) {
+        setErrorMessage(error.response?.data.message);
+      } else if (error instanceof CustomError || error instanceof Error) {
+        setErrorMessage(error.message);
       } else {
-        form.setError('root', { message: 'An error occurred. Please try again....' });
+        setErrorMessage('An unknown error occurred.');
       }
+      window.location.reload();
     }
   }
   return onSubmit;

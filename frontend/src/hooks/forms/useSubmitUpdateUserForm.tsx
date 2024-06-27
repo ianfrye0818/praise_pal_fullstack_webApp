@@ -9,8 +9,9 @@ export default function useSubmitUpdateUserForm(currentUser: User | null, user: 
     try {
       await updateUser({
         companyId: currentUser?.companyId as string,
-        userId: user.userId,
+        userToUpdateId: user.userId,
         payload: data,
+        currentUser: currentUser as User,
       });
     } catch (error) {
       console.error(error);

@@ -1,19 +1,28 @@
 import { patchUpdateUser } from '@/api/api-handlers';
+import { updateCurrentUser } from '@/api/auth-actions';
+import { useAuth } from '@/hooks/useAuth';
 import { User } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface UseGetUserProps {
-  userId: string;
+  userToUpdateId: string;
   companyId: string;
   payload: Partial<User>;
+  currentUser: User;
 }
 
 export default function useUpdateCompanyUser() {
+  const { dispatch } = useAuth();
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: async ({ companyId, userId, payload }: UseGetUserProps) =>
-      await patchUpdateUser(companyId, userId, payload),
-    //optimistic update
+    mutationFn: async ({ companyId, userToUpdateId, payload, currentUser }: UseGetUserProps) => {
+      console.log({ companyId, userToUpdateId, currentUserId: currentUser.userId });
+      if (userToUpdateId === currentUser.userId) {
+        return await updateCurrentUser(dispatch, companyId, userToUpdateId, payload);
+      } else {
+        return await patchUpdateUser(companyId, userToUpdateId, payload);
+      }
+    },
     onMutate: async (newData: Partial<User>) => {
       await queryClient.cancelQueries({ queryKey: ['companyUsers'] });
 

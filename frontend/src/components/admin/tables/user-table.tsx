@@ -35,9 +35,7 @@ export default function UsersTable({ companyId, limited = false }: UsersTablePro
 
   return (
     <>
-      <div className='flex items-center'>
-        <h2 className='font-semibold text-lg md:text-2xl'>Users</h2>
-      </div>
+      {!limited && <p className=' p-2 text-lg'>Total Users: {shownUsers.length}</p>}
       <div className='border shadow-sm rounded-lg'>
         <Table>
           <TableHeader>
@@ -69,7 +67,14 @@ export default function UsersTable({ companyId, limited = false }: UsersTablePro
                   <UpdateUserDialog
                     currentUser={currentUser as User}
                     updatingUser={user}
-                    trigger={<Button size={'sm'}>Edit</Button>}
+                    trigger={
+                      <Button
+                        size={'sm'}
+                        variant={'secondary'}
+                      >
+                        Edit
+                      </Button>
+                    }
                   />
                 </TableCell>
               </TableRow>

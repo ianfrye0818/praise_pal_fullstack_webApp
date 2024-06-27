@@ -41,11 +41,11 @@ export const adminSidebarLinks: SidebarLink[] = [
     route: '/admin/users',
     icon: UserIcon,
   },
-  {
-    label: 'Company',
-    route: '/admin/company',
-    icon: Building2,
-  },
+  // {
+  //   label: 'Company',
+  //   route: '/admin/company',
+  //   icon: Building2,
+  // },
   {
     label: 'Kudos',
     route: '/admin/kudos',

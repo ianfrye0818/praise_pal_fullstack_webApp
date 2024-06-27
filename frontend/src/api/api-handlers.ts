@@ -18,15 +18,6 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 export const postUser = async (data: SignInFormProps) =>
   await poster<SignInFormProps, User & AuthTokens>(ApiRoutes.auth.login, data, {}, 'AUTH');
 
-// export const postUser = async (data: SignInFormProps) => {
-//   try {
-//     const response = await authClient.post<User & AuthTokens>(ApiRoutes.auth.login, data);
-//     console.log('response', response);
-//   } catch (error) {
-//     console.log('postuser', error);
-//   }
-// };
-
 export const postRegisterUser = async (data: SignUpFormProps) =>
   await poster<SignUpFormProps, User & AuthTokens>(ApiRoutes.auth.register, data, {}, 'AUTH');
 
@@ -104,8 +95,8 @@ export const patchUpdateUser = async (
   companyId: string,
   userId: string,
   data: Partial<User>
-): Promise<void> =>
-  patcher<Partial<User>, void>(ApiRoutes.users.updateUserById(companyId, userId), data);
+): Promise<User> =>
+  await patcher<Partial<User>, User>(ApiRoutes.users.updateUserById(companyId, userId), data);
 
 export const deleteSingleUser = async (
   companyId: string,

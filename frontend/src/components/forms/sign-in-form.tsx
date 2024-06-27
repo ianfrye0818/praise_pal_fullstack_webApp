@@ -15,10 +15,10 @@ import {
 } from '@/components/ui/card';
 import { FormInputItem } from './form-input-item';
 import { Form } from '../ui/form';
-import useSetLogoutError from '@/hooks/useSetLogoutError';
 
 import { SIGN_IN_FORM_DEFAULT_VALUES } from '@/constants';
 import useSubmitSignInForm from '@/hooks/forms/useSubmitSignInForm';
+import useGetErrorMessage from '@/hooks/useGetErrorMessage';
 
 export default function SignInForm() {
   const form = useForm<z.infer<typeof signInFormSchema>>({
@@ -28,15 +28,12 @@ export default function SignInForm() {
   const isSubmitting = form.formState.isSubmitting;
   const globalError = form.formState.errors.root;
 
-  const logOutErrorMessage = useSetLogoutError();
-
-  const onSubmit = useSubmitSignInForm(form);
+  const onSubmit = useSubmitSignInForm();
+  const errorMessage = useGetErrorMessage();
 
   return (
     <Card className='w-full max-w-md'>
-      {logOutErrorMessage && (
-        <p className='text-red-600 text-center my-5 text-lg'>{logOutErrorMessage}</p>
-      )}
+      {errorMessage && <p className='text-red-600 text-center my-5 text-lg'>{errorMessage}</p>}
       <CardHeader className='space-y-1'>
         <CardTitle className='text-2xl'>Login</CardTitle>
         <CardDescription>Fill out the form to login to your account.</CardDescription>
