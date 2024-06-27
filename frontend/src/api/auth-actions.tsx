@@ -8,6 +8,7 @@ import {
   removeAuthTokens,
   removeUserToken,
   setAuthTokens,
+  setErrorMessage,
   setUserToken,
 } from '@/lib/localStorage';
 
@@ -44,6 +45,7 @@ export const login = async (dispatch: Dispatch<AuthAction>, signInPayload: SignI
     });
   } catch (error) {
     dispatch({ type: ActionType.LOGIN_FAILURE });
+    console.log(error);
     throw error;
   }
 };
@@ -78,7 +80,7 @@ export const logout = async (dispatch: Dispatch<AuthAction>) => {
 };
 
 export function errorLogout(errorMessage?: string) {
-  localStorage.setItem('logouterror', errorMessage || 'An error occurred. Please try again.');
+  setErrorMessage(errorMessage || 'Session expired. Please sign in again.');
   removeAuthTokens();
   removeUserToken();
   // window.location.href = '/sign-in';

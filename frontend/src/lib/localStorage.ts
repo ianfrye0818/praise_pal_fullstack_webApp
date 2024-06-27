@@ -33,3 +33,17 @@ export const getUserToken = () => {
   }
   return user as User;
 };
+
+export function setErrorMessage(message: string) {
+  localStorage.setItem('error', message);
+}
+export function removeErrorMessage() {
+  localStorage.removeItem('error');
+}
+export function getErrorMessage() {
+  const errorMessage = localStorage.getItem('error');
+  if (errorMessage) {
+    return errorMessage;
+  }
+  return null;
+}

@@ -25,7 +25,8 @@ export class AuthService {
     password: string,
   ): Promise<ClientUser | null> {
     const user = await this.userService.findOneByEmail(email);
-    if (user.deletedAt !== null) throw new HttpException('User not found', 404);
+    if (user && user.deletedAt !== null)
+      throw new HttpException('User not found', 404);
     if (user && (await bcrypt.compare(password, user.password))) {
       return generateClientSideUserProperties(user);
     }

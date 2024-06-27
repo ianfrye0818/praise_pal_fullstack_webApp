@@ -10,13 +10,22 @@ import {
   UpdateKudoProps,
 } from '@/types';
 import { ApiRoutes } from './api-routes';
-import { deleter, fetcher, patcher, poster } from './axios';
+import { authClient, deleter, fetcher, patcher, poster } from './axios';
 import { createRefreshHeader } from '@/lib/utils';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 //auth actions
 export const postUser = async (data: SignInFormProps) =>
   await poster<SignInFormProps, User & AuthTokens>(ApiRoutes.auth.login, data, {}, 'AUTH');
+
+// export const postUser = async (data: SignInFormProps) => {
+//   try {
+//     const response = await authClient.post<User & AuthTokens>(ApiRoutes.auth.login, data);
+//     console.log('response', response);
+//   } catch (error) {
+//     console.log('postuser', error);
+//   }
+// };
 
 export const postRegisterUser = async (data: SignUpFormProps) =>
   await poster<SignUpFormProps, User & AuthTokens>(ApiRoutes.auth.register, data, {}, 'AUTH');
