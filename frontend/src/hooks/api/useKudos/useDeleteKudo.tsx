@@ -7,11 +7,12 @@ interface DeleteKudoProps {
   kudoId: string;
 }
 
-export default function useDeleteKudo({ companyId, kudoId }: DeleteKudoProps) {
+export default function useDeleteKudo() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: async () => await deleteSingleKudo(companyId, kudoId),
-    onMutate: async () => {
+    mutationFn: async ({ companyId, kudoId }: DeleteKudoProps) =>
+      await deleteSingleKudo(companyId, kudoId),
+    onMutate: async ({ kudoId }) => {
       const previousKudos = queryClient.getQueryData(['kudos']);
       queryClient.setQueryData(['kudos'], (old: TKudos[]) => {
         return old.filter((kudo: TKudos) => kudo.id !== kudoId);

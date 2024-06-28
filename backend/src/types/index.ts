@@ -15,7 +15,7 @@ export interface ClientComment {
   content: string;
   kudosId: string;
   parentId: string;
-  userId: string;
+  user: ClientUser;
 }
 
 export interface JWTPayload extends ClientUser {

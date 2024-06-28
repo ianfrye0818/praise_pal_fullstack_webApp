@@ -64,7 +64,7 @@ export type TKudos = {
   sender: User;
   receiver: User;
   userLikes: UserLike[];
-  comments: Omit<Comment, 'userId' | 'parentId' | 'kudoId'>[];
+  comments: Comment[];
   createdAt: string;
 };
 
@@ -79,6 +79,7 @@ export interface CreateKudoFormProps {
 
 export type UpdateKudoProps = Partial<Omit<CreateKudoFormProps, 'senderId' | 'companyId'>> & {
   id: string;
+  isHidden?: boolean;
 };
 
 export interface UserLike {
@@ -112,11 +113,11 @@ export interface UpdateCompanyProps {
   phone?: string;
 }
 
-interface Comment {
+export interface Comment {
   id: string;
   content: string;
-  parentId?: string | null;
-  userId: string;
+  parentId?: string | null | undefined;
+  user: User;
   kudosId: string;
 }
 
@@ -138,10 +139,11 @@ export interface UserQueryParams {
 export interface KudosQueryParams {
   kudosId?: string;
   senderId?: string;
+  isHidden?: boolean;
   receiverId?: string;
   message?: string;
   title?: string;
-  companyId?: string;
+  companyId: string;
   id?: string;
   deletedAt?: Date;
   createdAt?: Date;

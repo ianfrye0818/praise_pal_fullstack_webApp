@@ -1,4 +1,5 @@
-import { IsDate, IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsBoolean, IsDate, IsOptional, IsString } from 'class-validator';
 
 export class KudosFilterDTO {
   @IsOptional()
@@ -36,4 +37,18 @@ export class KudosFilterDTO {
   @IsOptional()
   @IsDate()
   updatedAt?: Date;
+
+  @IsOptional()
+  @Transform(({ value }) => {
+    switch (value) {
+      case 'true':
+        return true;
+      case 'false':
+        return false;
+      default:
+        return undefined;
+    }
+  })
+  @IsBoolean()
+  isHidden?: boolean;
 }

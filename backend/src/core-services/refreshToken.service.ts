@@ -24,7 +24,6 @@ export class RefreshTokenService {
     newToken: string;
     oldToken?: string;
   }) {
-    console.log({ userId, newToken, oldToken });
     try {
       this.cacheToken(oldToken, newToken);
       await this.saveRefreshToken(userId, newToken);

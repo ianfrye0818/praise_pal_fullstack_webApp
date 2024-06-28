@@ -53,7 +53,7 @@ export const login = async (dispatch: Dispatch<AuthAction>, signInPayload: SignI
     });
   } catch (error) {
     dispatch({ type: ActionType.LOGIN_FAILURE });
-    console.log(error);
+    console.error(error);
     throw error;
   }
 };

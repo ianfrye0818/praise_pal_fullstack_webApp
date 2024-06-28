@@ -12,7 +12,7 @@ import { Kudos } from '@prisma/client';
 
 @Injectable()
 export class KudosService {
-  private readonly selectProps = {
+  private readonly userSelectProps = {
     select: {
       userId: true,
       displayName: true,
@@ -28,9 +28,9 @@ export class KudosService {
     select: {
       id: true,
       content: true,
-      // kudosId: true,
-      // parentId: true,
-      // userId: true,
+      kudosId: true,
+      parentId: true,
+      user: this.userSelectProps,
     },
   };
 
@@ -43,8 +43,8 @@ export class KudosService {
 
   private readonly kudosSelectOptions = {
     include: {
-      sender: this.selectProps,
-      receiver: this.selectProps,
+      sender: this.userSelectProps,
+      receiver: this.userSelectProps,
       comments: this.commentSelectProps,
       userLikes: this.userLikeSelectProps,
     },
@@ -56,6 +56,7 @@ export class KudosService {
   ) {}
 
   async getAllKudos(filter?: Partial<Kudos>): Promise<Kudos[]> {
+    console.log(filter);
     try {
       return await this.prismaService.kudos.findMany({
         where: { deletedAt: null, ...filter },
@@ -131,6 +132,7 @@ export class KudosService {
   }
 
   async updateKudoById(id: string, data: UpdateKudosDTO): Promise<Kudos> {
+    console.log({ data });
     try {
       const kudo = await this.prismaService.kudos.update({
         data,

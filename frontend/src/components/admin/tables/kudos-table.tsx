@@ -1,5 +1,7 @@
-import KudoCardDropDownMenu from '@/components/kudos-card/kudo-card-dropdown-menu';
+import { DeleteKudoDialog } from '@/components/dialogs/delete-kudo-dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import {
   Table,
   TableBody,
@@ -8,7 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import useDeleteKudo from '@/hooks/api/useKudos/useDeleteKudo';
 import useGetCompanyKudos from '@/hooks/api/useKudos/useGetCompanyKudos';
+import useShowHideKudo from '@/hooks/api/useKudos/useShowHideKudos';
 import { formatDate, getShownKudos } from '@/lib/utils';
 
 interface UsersTableProps {
@@ -20,9 +24,11 @@ interface UsersTableProps {
 }
 
 export default function KudosTable({ companyId, limited = false }: UsersTableProps) {
-  const { data: kudos, isLoading, error } = useGetCompanyKudos(companyId);
+  const { data: kudos, isLoading, error } = useGetCompanyKudos({ companyId });
 
   const shownKudos = getShownKudos(kudos ?? [], limited);
+  const { mutateAsync: showHideKudo } = useShowHideKudo();
+  const { mutateAsync: deleteKudo } = useDeleteKudo();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading Kudos</div>;
@@ -37,9 +43,10 @@ export default function KudosTable({ companyId, limited = false }: UsersTablePro
             <TableRow>
               <TableHead>Sender</TableHead>
               <TableHead>Receiver</TableHead>
-              <TableHead>Message</TableHead>
+              <TableHead>Title</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>Show/Hide</TableHead>
+              <TableHead>Delete</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -70,10 +77,29 @@ export default function KudosTable({ companyId, limited = false }: UsersTablePro
                       <span className='flex gap-2 items-center'>{reciverDisplayName}</span>
                     </div>
                   </TableCell>
-                  <TableCell>{kudo.message}</TableCell>
+                  <TableCell>
+                    {kudo.title}
+                    <p>{kudo.isHidden.toString()}</p>
+                  </TableCell>
                   <TableCell>{formatDate(kudo.createdAt)}</TableCell>
                   <TableCell>
-                    <KudoCardDropDownMenu kudo={kudo} />
+                    {/* <KudoCardDropDownMenu kudo={kudo} /> */}
+                    <Switch
+                      checked={kudo.isHidden}
+                      onCheckedChange={async (isHidden: boolean) =>
+                        await showHideKudo({
+                          kudoId: kudo.id,
+                          companyId: kudo.companyId,
+                          newIsHiddenValue: isHidden,
+                          isHidden: kudo.isHidden,
+                        })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <DeleteKudoDialog kudo={kudo}>
+                      <Button variant={'destructive'}>Delete</Button>
+                    </DeleteKudoDialog>
                   </TableCell>
                 </TableRow>
               );

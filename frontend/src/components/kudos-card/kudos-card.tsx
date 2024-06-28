@@ -1,5 +1,4 @@
-import { TKudos, User } from '@/types';
-
+import { TKudos } from '@/types';
 import KudoCardDropDownMenu from './kudo-card-dropdown-menu';
 import KudoLikeButton from './kudo-like-button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -7,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { capitalizeString, formatDate, getUserDisplayName } from '@/lib/utils';
 import { MessageCircle } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
+import KudoCommentList from './kudo-comment-list';
 
 type Props = {
   kudo: TKudos;
@@ -40,6 +40,7 @@ export default function KudosCard({ kudo, commenting = false }: Props) {
         </div>
         {kudo.title && <h3 className='font-bold text-lg my-2'>{capitalizeString(kudo.title)}</h3>}
         <p>{kudo.message}</p>
+        <p>{kudo.isHidden.toString()}</p>
         <div className='mt-2 flex items-center justify-between'>
           <div className='flex m-0 gap-3 items-center'>
             <div className='flex items-center gap-1'>
@@ -48,7 +49,6 @@ export default function KudosCard({ kudo, commenting = false }: Props) {
                 kudoId={kudo.id}
                 userId={user?.userId ?? ''}
               />
-              {/* kudos comment button */}
 
               <p className='text-sm text-gray-500'>{kudo.likes}</p>
             </div>
@@ -67,6 +67,8 @@ export default function KudosCard({ kudo, commenting = false }: Props) {
           </div>
           {usersKudo && <KudoCardDropDownMenu kudo={kudo} />}
         </div>
+
+        {commenting && <KudoCommentList comments={kudo.comments} />}
       </div>
     </div>
   );

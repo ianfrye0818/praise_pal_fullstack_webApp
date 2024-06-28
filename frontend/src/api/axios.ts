@@ -83,10 +83,8 @@ apiClient.interceptors.response.use(
 
 async function fetcher<T, D = any>({ client = 'API', url }: APIProps<D>) {
   console.log(url);
-  console.log('fetching from fetcher');
   try {
     const response = await clients[client].get<T>(url);
-    console.log(response);
     return response.data;
   } catch (error) {
     handleApiError(error);

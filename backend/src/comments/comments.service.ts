@@ -12,13 +12,25 @@ import { EmailService } from '../core-services/email.service';
 
 @Injectable()
 export class CommentsService {
+  private readonly userSelectProps = {
+    select: {
+      userId: true,
+      displayName: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      companyId: true,
+      role: true,
+      createdAt: true,
+    },
+  };
   private readonly commentSelectProps = {
     select: {
       id: true,
       content: true,
       kudosId: true,
       parentId: true,
-      userId: true,
+      user: this.userSelectProps,
     },
   };
   constructor(

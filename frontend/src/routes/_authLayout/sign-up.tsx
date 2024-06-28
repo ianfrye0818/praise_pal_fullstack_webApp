@@ -7,7 +7,7 @@ export const Route = createFileRoute('/_authLayout/sign-up')({
 
 function SignUpPage() {
   return (
-    <div className='h-[calc(100dvh-80px)]w-full flex flex-col justify-center items-center'>
+    <div className='h-[calc(100dvh-96px)]w-full flex flex-col justify-center items-center'>
       <SignUpForm />
     </div>
   );

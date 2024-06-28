@@ -16,7 +16,6 @@ export default function useUpdateCompanyUser() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async ({ companyId, userToUpdateId, payload, currentUser }: UseGetUserProps) => {
-      console.log({ companyId, userToUpdateId, currentUserId: currentUser.userId });
       if (userToUpdateId === currentUser.userId) {
         return await updateCurrentUser(dispatch, companyId, userToUpdateId, payload);
       } else {

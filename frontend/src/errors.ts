@@ -30,7 +30,7 @@ const handleApiError = (error: unknown, customMessage?: string): never => {
   }
 
   if (isError(error)) {
-    console.log('error message: ', error.message);
+    console.error('error message: ', error.message);
     throw new CustomError(error.message, 500);
   }
 

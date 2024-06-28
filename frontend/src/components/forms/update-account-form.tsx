@@ -32,7 +32,6 @@ export function UpdateAccountDialog({
   const roleOptions = getRoleDropDownOptions();
 
   const onSubmit = useSubmitUpdateUserForm(currentUser, updatingUser);
-  console.log(form.formState.isValid);
 
   return (
     <>
