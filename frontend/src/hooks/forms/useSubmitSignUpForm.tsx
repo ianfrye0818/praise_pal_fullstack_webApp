@@ -3,8 +3,10 @@ import { register } from '@/api/auth-actions';
 import { signUpFormSchema } from '@/zodSchemas';
 import { UseFormReturn } from 'react-hook-form';
 import { useNavigate } from '@tanstack/react-router';
-import { CustomError } from '@/errors';
+import { isCustomError, isError } from '@/errors';
 import { useAuth } from '../useAuth';
+import { isAxiosError } from 'axios';
+import { setErrorMessage } from '@/lib/localStorage';
 
 export default function useSubmitSignUpForm(form: UseFormReturn<z.infer<typeof signUpFormSchema>>) {
   const navigate = useNavigate();
@@ -15,17 +17,16 @@ export default function useSubmitSignUpForm(form: UseFormReturn<z.infer<typeof s
       form.setError('confirmPassword', { message: 'Passwords do not match' });
       return;
     }
+
     try {
       await register(dispatch, data);
       await navigate({ to: '/' });
     } catch (error) {
-      if (error instanceof CustomError || error instanceof Error) {
-        form.setError('root', {
-          message: error.message ?? 'An error occurred. Please try again.',
-        });
-      } else {
-        form.setError('root', { message: 'An error occurred. Please try again.' });
-      }
+      console.error(['signInFormError'], error);
+      if (isAxiosError(error)) setErrorMessage(error.response?.data.message);
+      else if (isError(error) || isCustomError(error)) setErrorMessage(error.message);
+      else setErrorMessage('An error occurred. Please try again.');
+      window.location.reload();
     }
   }
 

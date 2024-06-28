@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { LucideProps } from 'lucide-react';
 import { ForwardRefExoticComponent, RefAttributes } from 'react';
 import { Control, FieldPath } from 'react-hook-form';
+import { AxiosRequestConfig } from 'axios';
 
 export interface SignInFormProps {
   email: string;
@@ -197,10 +198,17 @@ export interface SelectInputProps<T extends z.ZodTypeAny>
   name: FieldPath<z.infer<T>>;
   label?: string;
   placeholder?: string;
-  options: Option[];
+  options: SelectInputOption[];
 }
 
-type Option = {
+type SelectInputOption = {
   label: string;
   value: string;
 };
+
+export interface APIProps<D> {
+  url: string;
+  data?: D;
+  config?: AxiosRequestConfig<D>;
+  client?: HTTPClients;
+}

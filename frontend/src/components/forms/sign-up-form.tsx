@@ -28,6 +28,7 @@ export default function SignUpForm() {
   const globalError = form.formState.errors.root;
 
   const onSubmit = useSubmitSignUpForm(form);
+
   return (
     <Card className='w-full max-w-md'>
       <CardHeader className='space-y-1'>

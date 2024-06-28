@@ -1,8 +1,8 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import { errorLogout, refreshTokens } from './auth-actions';
-import { CustomError, handleApiError } from '@/errors';
-import { HTTPClients } from '@/types';
-import { BASE_API_URL, MAX_API_REQUESTS } from '@/constants';
+import { CustomError, handleApiError, isError } from '@/errors';
+import { APIProps } from '@/types';
+import { BASE_API_URL, MAX_API_RETRY_REQUESTS } from '@/constants';
 import { getAuthTokens } from '@/lib/localStorage';
 
 let retries = 0;
@@ -29,7 +29,17 @@ apiClient.interceptors.request.use((config) => {
 authClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response.status === 401 || error.response.status === 403) {
+    const { response } = error;
+    if (!response || !response.status) {
+      return Promise.reject(new CustomError('Cannot connect to server', 503));
+    }
+
+    if (
+      error.response.status &&
+      (error.response.status === 401 ||
+        error.response.status === 403 ||
+        error.response.status === 500)
+    ) {
       errorLogout(error.response.data.message);
     }
     return Promise.reject(error);
@@ -39,7 +49,7 @@ authClient.interceptors.response.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response.status === 401 && retries < MAX_API_REQUESTS) {
+    if (error.response.status === 401 && retries < MAX_API_RETRY_REQUESTS) {
       retries++;
       try {
         await refreshTokens();
@@ -57,7 +67,7 @@ apiClient.interceptors.response.use(
       return apiClient(originalRequest);
     } else if (error.response) {
       const customError = new CustomError(
-        error.response.message || 'An Error Occured',
+        error.response.data.message || 'An Error Occured',
         error.response.status
       );
       return Promise.reject(customError);
@@ -71,58 +81,57 @@ apiClient.interceptors.response.use(
   }
 );
 
-async function fetcher<T>(url: string, client: HTTPClients = 'API'): Promise<T> {
+async function fetcher<T, D = any>({ client = 'API', url }: APIProps<D>) {
+  console.log(url);
+  console.log('fetching from fetcher');
   try {
     const response = await clients[client].get<T>(url);
+    console.log(response);
     return response.data;
   } catch (error) {
-    handleApiError(error, 'Error fetching data');
-    throw error;
+    handleApiError(error);
   }
 }
 
-async function poster<D = any, T = any>(
-  url: string,
-  data?: D,
-  config?: AxiosRequestConfig<D>,
-  client: HTTPClients = 'API'
-): Promise<T | undefined> {
-  const response = await clients[client].post<T>(url, data, config);
-  return response.data;
+async function poster<D = any, T = any>({
+  client = 'API',
+  data,
+  url,
+  config,
+}: APIProps<D>): Promise<T | undefined> {
+  try {
+    const response = await clients[client].post<T>(url, data, config);
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
 }
 
-async function patcher<D = any, T = any>(
-  url: string,
-  data?: D,
-  config?: AxiosRequestConfig<D>,
-  client: HTTPClients = 'API'
-): Promise<T> {
+async function patcher<D = any, T = any>({
+  client = 'API',
+  url,
+  data,
+  config,
+}: APIProps<D>): Promise<T | undefined> {
   try {
     const response = await clients[client].patch<T>(url, data, config);
     return response.data as T;
   } catch (error) {
-    console.log(error);
-    handleApiError(error, 'Error patching data');
-    throw error;
+    handleApiError(error);
   }
 }
 
-async function deleter<D = any, T = any>(
-  url: string,
-  config?: AxiosRequestConfig<D>,
-  client: HTTPClients = 'API'
-): Promise<T> {
+async function deleter<D = any, T = any>({
+  client = 'API',
+  url,
+  config,
+}: APIProps<D>): Promise<T | undefined> {
   try {
     const response = await clients[client].delete<T>(url, config);
     return response.data as T;
   } catch (error) {
-    handleApiError(error, 'Error deleting data');
-    throw error;
+    handleApiError(error);
   }
 }
-
-// function setClient(client: HTTPClients, token: string) {
-//   clients[client].defaults.headers
-// }
 
 export { fetcher, poster, patcher, deleter };

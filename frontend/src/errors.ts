@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 
 class CustomError extends Error {
   statusCode: number;
@@ -8,21 +8,40 @@ class CustomError extends Error {
     this.statusCode = statusCode;
     Error.captureStackTrace(this, this.constructor);
   }
+
+  toJSON() {
+    return {
+      message: this.message,
+      statusCode: this.statusCode,
+    };
+  }
 }
 
 const handleApiError = (error: unknown, customMessage?: string): never => {
-  console.error(customMessage, error);
+  console.error('HandleApiError2222: ', error);
 
-  if (error instanceof AxiosError) {
-    const errorMessage = error.response?.data?.message || error.message || customMessage;
+  if (isAxiosError(error)) {
+    if (!error.response) {
+      throw new CustomError('Cannot connect to server', 503);
+    }
+    const errorMessage =
+      error.response?.data?.message || customMessage || 'Something went wrong with the request';
     throw new CustomError(errorMessage, error.response?.status || 500);
   }
 
-  if (error instanceof Error) {
+  if (isError(error)) {
+    console.log('error message: ', error.message);
     throw new CustomError(error.message, 500);
   }
 
   throw new CustomError(customMessage || 'An unknown error occured', 500);
 };
 
-export { CustomError, handleApiError };
+const isError = (error: any): error is Error => {
+  return (error as Error).message !== undefined;
+};
+const isCustomError = (error: any): error is CustomError => {
+  return (error as CustomError).message !== undefined;
+};
+
+export { CustomError, handleApiError, isError, isCustomError };

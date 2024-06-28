@@ -4,6 +4,7 @@ import NavBarLink from '@/components/sidebar/nav-bar-link';
 import SideBarFooter from './sidebar-footer';
 import { useAuth } from '@/hooks/useAuth';
 import logo from '@/assets/logo.png';
+import { ArrowLeft } from 'lucide-react';
 
 export default function AdminSideBar() {
   const { isAdmin } = useAuth().state;
@@ -22,6 +23,9 @@ export default function AdminSideBar() {
             alt='logo'
             className='w-full object-contain'
           />
+        </Link>
+        <Link>
+          <ArrowLeft />
         </Link>
         {sidebarLinks.map((link) => (
           <NavBarLink

@@ -17,6 +17,7 @@ import { Route as RootLayoutImport } from './routes/_rootLayout'
 import { Route as AuthLayoutImport } from './routes/_authLayout'
 import { Route as AuthLayoutSignUpImport } from './routes/_authLayout/sign-up'
 import { Route as AuthLayoutSignInImport } from './routes/_authLayout/sign-in'
+import { Route as RootLayoutKudosKudosIdImport } from './routes/_rootLayout/kudos/$kudosId'
 import { Route as RootLayoutAdminUsersImport } from './routes/_rootLayout/admin/users'
 import { Route as RootLayoutAdminKudosImport } from './routes/_rootLayout/admin/kudos'
 import { Route as RootLayoutAdminDashboardImport } from './routes/_rootLayout/admin/dashboard'
@@ -75,6 +76,11 @@ const RootLayoutKudosReceivedLazyRoute =
   } as any).lazy(() =>
     import('./routes/_rootLayout/kudos/received.lazy').then((d) => d.Route),
   )
+
+const RootLayoutKudosKudosIdRoute = RootLayoutKudosKudosIdImport.update({
+  path: '/kudos/$kudosId',
+  getParentRoute: () => RootLayoutRoute,
+} as any)
 
 const RootLayoutAdminUsersRoute = RootLayoutAdminUsersImport.update({
   path: '/admin/users',
@@ -163,6 +169,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RootLayoutAdminUsersImport
       parentRoute: typeof RootLayoutImport
     }
+    '/_rootLayout/kudos/$kudosId': {
+      id: '/_rootLayout/kudos/$kudosId'
+      path: '/kudos/$kudosId'
+      fullPath: '/kudos/$kudosId'
+      preLoaderRoute: typeof RootLayoutKudosKudosIdImport
+      parentRoute: typeof RootLayoutImport
+    }
     '/_rootLayout/kudos/received': {
       id: '/_rootLayout/kudos/received'
       path: '/kudos/received'
@@ -193,6 +206,7 @@ export const routeTree = rootRoute.addChildren({
     RootLayoutAdminDashboardRoute,
     RootLayoutAdminKudosRoute,
     RootLayoutAdminUsersRoute,
+    RootLayoutKudosKudosIdRoute,
     RootLayoutKudosReceivedLazyRoute,
     RootLayoutKudosSentLazyRoute,
   }),
@@ -225,6 +239,7 @@ export const routeTree = rootRoute.addChildren({
         "/_rootLayout/admin/dashboard",
         "/_rootLayout/admin/kudos",
         "/_rootLayout/admin/users",
+        "/_rootLayout/kudos/$kudosId",
         "/_rootLayout/kudos/received",
         "/_rootLayout/kudos/sent"
       ]
@@ -255,6 +270,10 @@ export const routeTree = rootRoute.addChildren({
     },
     "/_rootLayout/admin/users": {
       "filePath": "_rootLayout/admin/users.tsx",
+      "parent": "/_rootLayout"
+    },
+    "/_rootLayout/kudos/$kudosId": {
+      "filePath": "_rootLayout/kudos/$kudosId.tsx",
       "parent": "/_rootLayout"
     },
     "/_rootLayout/kudos/received": {

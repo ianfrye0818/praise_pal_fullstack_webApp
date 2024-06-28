@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import useAdminMode from '@/hooks/useAdminMode';
 import { Button } from './ui/button';
 import { ShieldCheck } from 'lucide-react';
+import logo from '@/assets/logo.png';
 
 export default function NavLinksList() {
   const { isAdmin } = useAuth().state;
@@ -17,7 +18,7 @@ export default function NavLinksList() {
         className='mb-12 cursor-pointer items-center gap-2 flex'
       >
         <img
-          src={IMAGES.logo}
+          src={logo}
           alt='logo'
           className='w-full object-contain'
         />

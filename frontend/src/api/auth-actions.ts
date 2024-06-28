@@ -1,13 +1,12 @@
 import { SignInFormProps, SignUpFormProps, UpdateUserProps } from '@/types';
 import { Dispatch } from 'react';
-
 import { ActionType, AuthAction } from '@/providers/AuthReducerProvider';
 import {
   patchUpdateUser,
   postLogout,
   postRefreshTokens,
   postRegisterUser,
-  postUser,
+  postLoginUser,
 } from './api-handlers';
 import {
   getAuthTokens,
@@ -20,7 +19,7 @@ import {
 
 const AuthActions = {
   login: async (signInPayload: SignInFormProps) => {
-    return await postUser(signInPayload);
+    return await postLoginUser(signInPayload);
   },
   register: async (signUpPaylaod: SignUpFormProps) => {
     return await postRegisterUser(signUpPaylaod);

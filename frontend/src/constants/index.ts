@@ -5,10 +5,9 @@ import {
   Mailbox,
   ShieldCheck,
   UserIcon,
-  Building2,
   ScrollText,
   LayoutDashboard,
-  X,
+  ArrowLeft,
 } from 'lucide-react';
 import { env } from '@/zodSchemas/env';
 
@@ -31,6 +30,11 @@ export const sidebarLinks: SidebarLink[] = [
 ];
 
 export const adminSidebarLinks: SidebarLink[] = [
+  // {
+  //   label: '',
+  //   route: '/',
+  //   icon: ArrowLeft,
+  // },
   {
     label: 'Dashboard',
     route: '/admin/dashboard',
@@ -41,11 +45,6 @@ export const adminSidebarLinks: SidebarLink[] = [
     route: '/admin/users',
     icon: UserIcon,
   },
-  // {
-  //   label: 'Company',
-  //   route: '/admin/company',
-  //   icon: Building2,
-  // },
   {
     label: 'Kudos',
     route: '/admin/kudos',
@@ -59,7 +58,7 @@ export const adminSideBarLink: SidebarLink = {
   route: '/admin/dashboard',
 };
 
-export const MAX_API_REQUESTS = 3;
+export const MAX_API_RETRY_REQUESTS = 3;
 export const BASE_API_URL = env.VITE_API_BASE_URL;
 
 export const IMAGES = {

@@ -1,12 +1,10 @@
 import * as z from 'zod';
 import { login } from '@/api/auth-actions';
 import { signInFormSchema } from '@/zodSchemas';
-
 import { useNavigate } from '@tanstack/react-router';
-
-import { CustomError } from '@/errors';
+import { isCustomError, isError } from '@/errors';
 import { useAuth } from '../useAuth';
-import { AxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { setErrorMessage } from '@/lib/localStorage';
 
 export default function useSubmitSignInForm() {
@@ -19,13 +17,9 @@ export default function useSubmitSignInForm() {
       await navigate({ to: '/' });
     } catch (error) {
       console.error(['signInFormError'], error);
-      if (error instanceof AxiosError) {
-        setErrorMessage(error.response?.data.message);
-      } else if (error instanceof CustomError || error instanceof Error) {
-        setErrorMessage(error.message);
-      } else {
-        setErrorMessage('An unknown error occurred.');
-      }
+      if (isAxiosError(error)) setErrorMessage(error.response?.data.message);
+      else if (isError(error) || isCustomError(error)) setErrorMessage(error.message);
+      else setErrorMessage('An error occurred. Please try again.');
       window.location.reload();
     }
   }

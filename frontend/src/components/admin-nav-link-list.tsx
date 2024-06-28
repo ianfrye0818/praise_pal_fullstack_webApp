@@ -3,7 +3,9 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import NavBarLink from './sidebar/nav-bar-link';
 import useAdminMode from '@/hooks/useAdminMode';
 import { Button } from './ui/button';
-import { X } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+
+import logo from '@/assets/logo.png';
 
 export default function AdminNavLinkList() {
   const { setAdminMode } = useAdminMode();
@@ -15,11 +17,24 @@ export default function AdminNavLinkList() {
         className='mb-12 cursor-pointer items-center gap-2 flex'
       >
         <img
-          src={IMAGES.logo}
+          src={logo}
           alt='logo'
           className='w-full object-contain'
         />
       </Link>
+      {/* <Button
+        variant={'ghost'}
+        className='justify-start p-2 '
+        onClick={async () => {
+          setAdminMode(false);
+        }}
+        asChild
+      >
+        <Link to='/'>
+          <ArrowLeft />
+          Back
+        </Link>
+      </Button> */}
       {adminSidebarLinks.map((link) => (
         <NavBarLink
           key={link.label}
@@ -27,14 +42,17 @@ export default function AdminNavLinkList() {
         />
       ))}
       <Button
+        variant={'ghost'}
+        className='justify-start p-2 '
         onClick={async () => {
           setAdminMode(false);
-          await navigate({ to: '/' });
         }}
-        className='flex gap-2 justify-start'
+        asChild
       >
-        <X />
-        Exit Admin
+        <Link to='/'>
+          <ArrowLeft />
+          Back
+        </Link>
       </Button>
     </nav>
   );

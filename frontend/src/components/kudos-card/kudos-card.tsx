@@ -1,25 +1,26 @@
-import { TKudos } from '@/types';
+import { TKudos, User } from '@/types';
 
 import KudoCardDropDownMenu from './kudo-card-dropdown-menu';
 import KudoLikeButton from './kudo-like-button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
-import { capitalizeString, formatDate } from '@/lib/utils';
-import { MessageCircle, MessageSquare } from 'lucide-react';
+import { capitalizeString, formatDate, getUserDisplayName } from '@/lib/utils';
+import { MessageCircle } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 
 type Props = {
   kudo: TKudos;
+  commenting?: boolean;
 };
 
-export default function KudosCard({ kudo }: Props) {
+export default function KudosCard({ kudo, commenting = false }: Props) {
   const { state } = useAuth();
   const user = state.user;
   const { sender, receiver } = kudo;
   const liked = kudo.userLikes.some((userLike) => userLike.userId === user?.userId);
   const usersKudo = kudo.senderId === user?.userId;
-  const senderDisplayName = sender.firstName || sender.displayName;
-  const receiverDisplayName = receiver.firstName || receiver.displayName;
+  const senderDisplayName = getUserDisplayName(sender);
+  const receiverDisplayName = getUserDisplayName(receiver);
   return (
     <div className='flex items-center p-4 bg-white shadow-md rounded-lg my-8 dark:bg-gray-800 dark:text-gray-200'>
       <Avatar>
@@ -51,11 +52,18 @@ export default function KudosCard({ kudo }: Props) {
 
               <p className='text-sm text-gray-500'>{kudo.likes}</p>
             </div>
-            <Link className='flex items-center gap-1 '>
-              <MessageCircle className='size-4 cursor-pointer text-gray-400' />
 
-              <p className='text-sm text-gray-500'>{kudo.comments.length}</p>
-            </Link>
+            {!commenting && (
+              <Link
+                className='flex items-center gap-1 '
+                to='/kudos/$kudosId'
+                params={{ kudosId: kudo.id }}
+              >
+                <MessageCircle className='size-4 cursor-pointer text-gray-400' />
+
+                <p className='text-sm text-gray-500'>{kudo.comments.length}</p>
+              </Link>
+            )}
           </div>
           {usersKudo && <KudoCardDropDownMenu kudo={kudo} />}
         </div>
