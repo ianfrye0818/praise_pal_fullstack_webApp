@@ -59,7 +59,7 @@ export class KudosService {
     try {
       return await this.prismaService.kudos.findMany({
         where: { deletedAt: null, ...filter },
-        orderBy: { id: 'desc' },
+        orderBy: { createdAt: 'desc' },
         ...this.kudosSelectOptions,
       });
     } catch (error) {

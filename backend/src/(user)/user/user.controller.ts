@@ -12,7 +12,6 @@ import { UserService } from './user.service';
 import { updateUserDTO } from './dto/createUser.dto';
 import { JwtGuard } from '../../auth/guards/jwt.guard';
 import { CompanyGuard } from '../../core-guards/company.guard';
-import { AdminGuard } from '../../core-guards/admin.guard';
 import { UpdateUserGuard } from '../../core-guards/update-user.guard';
 import { FilterUserDTO } from './dto/filterUser.dto';
 
@@ -39,7 +38,7 @@ export class UserController {
     return await this.userService.updateUserById(id, data);
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(UpdateUserGuard)
   @Delete(':id')
   async deleteUserById(@Param('id') id: string) {
     return await this.userService.softDeleteUserById(id);

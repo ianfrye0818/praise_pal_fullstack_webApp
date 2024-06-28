@@ -6,15 +6,16 @@ export class UserNotificationsService {
   constructor(private readonly prismaservice: PrismaService) {}
 
   async getNotifications(userId: string) {
-    return this.prismaservice.userNotification.findMany({
+    return this.prismaservice.userNotifications.findMany({
       where: {
         userId,
       },
       select: {
         id: true,
         userId: true,
-        read: true,
-        message: true,
+        actionType: true,
+        isRead: true,
+        createdAt: true,
       },
     });
   }
