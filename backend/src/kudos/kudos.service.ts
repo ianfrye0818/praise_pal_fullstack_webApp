@@ -9,6 +9,7 @@ import { createKudosDTO, UpdateKudosDTO } from './dto/createKudos.dto';
 import { Cron } from '@nestjs/schedule';
 import { EmailService } from '../core-services/email.service';
 import { Kudos } from '@prisma/client';
+import { KudosFilterDTO } from './dto/kudosFilter.dto';
 
 @Injectable()
 export class KudosService {
@@ -55,17 +56,19 @@ export class KudosService {
     private emailService: EmailService,
   ) {}
 
-  async getAllKudos(filter?: Partial<Kudos>): Promise<Kudos[]> {
-    console.log(filter);
+  async getAllKudos(filter: KudosFilterDTO): Promise<Kudos[]> {
+    const { limit, offset, sort, ...otherFilters } = filter;
     try {
       return await this.prismaService.kudos.findMany({
-        where: { deletedAt: null, ...filter },
-        orderBy: { createdAt: 'desc' },
+        where: { deletedAt: null, ...otherFilters },
+        orderBy: { createdAt: sort || 'desc' },
+        take: limit,
+        skip: offset,
         ...this.kudosSelectOptions,
       });
     } catch (error) {
       console.error(error);
-      throw new InternalServerErrorException('Could not retreive Kudos');
+      throw new InternalServerErrorException('Could not retrieve Kudos');
     }
   }
 

@@ -1,5 +1,8 @@
 import { AuthState } from '@/providers/AuthReducerProvider';
-import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
+import GetLastPathName from '@/providers/GetLastPathname';
+import ScrollToTop from '@/providers/ScrollToTop';
+import SetPathLocaiton from '@/providers/SetPathLocation';
+import { createRootRouteWithContext, Outlet, redirect } from '@tanstack/react-router';
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 
 interface RouterContext {
@@ -9,6 +12,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <div className='h-screen'>
       <Outlet />
+      <SetPathLocaiton />
+      <ScrollToTop />
     </div>
   ),
 });

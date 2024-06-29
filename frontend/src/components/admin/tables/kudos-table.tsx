@@ -10,29 +10,21 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import useDeleteKudo from '@/hooks/api/useKudos/useDeleteKudo';
-import useGetCompanyKudos from '@/hooks/api/useKudos/useGetCompanyKudos';
 import useShowHideKudo from '@/hooks/api/useKudos/useShowHideKudos';
 import { formatDate, getShownKudos } from '@/lib/utils';
+import { TKudos } from '@/types';
 
 interface UsersTableProps {
   limit?: number;
   page?: number;
   search?: string;
-  companyId: string;
+  kudos: TKudos[];
   limited?: boolean;
 }
 
-export default function KudosTable({ companyId, limited = false }: UsersTableProps) {
-  const { data: kudos, isLoading, error } = useGetCompanyKudos({ companyId });
-
+export default function KudosTable({ kudos, limited = false }: UsersTableProps) {
   const shownKudos = getShownKudos(kudos ?? [], limited);
   const { mutateAsync: showHideKudo } = useShowHideKudo();
-  const { mutateAsync: deleteKudo } = useDeleteKudo();
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading Kudos</div>;
-  if (!kudos) return <div>No Users found</div>;
 
   return (
     <>

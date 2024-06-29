@@ -8,6 +8,7 @@ import {
   Company,
   UpdateCompanyProps,
   UpdateKudoProps,
+  KudosQueryParams,
 } from '@/types';
 import { ApiRoutes } from './api-routes';
 import { deleter, fetcher, patcher, poster } from './axios';
@@ -59,11 +60,9 @@ export const deleteSingleUser = async (companyId: string, userId: string) =>
   deleter<void>({ url: ApiRoutes.users.deleteUserById(companyId, userId) });
 
 //kudos actions`
-export const getCompanyKudos = async (companyId: string) => {
+export const getCompanyKudos = async (queryPrams: KudosQueryParams) => {
   try {
-    console.log('fetching from api handler');
-    const kudos = await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(companyId) });
-    console.log(kudos);
+    const kudos = await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(queryPrams) });
     return kudos;
   } catch (error) {
     console.log('getcomankudos error', error);
@@ -73,11 +72,11 @@ export const getCompanyKudos = async (companyId: string) => {
 export const getsingleKudo = async (companyId: string, kudoId: string) =>
   fetcher<TKudos>({ url: ApiRoutes.kudos.findOneById(companyId, kudoId) });
 
-export const getSentKudos = async (companyId: string, senderId: string) =>
-  await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(companyId, { senderId }) });
+// export const getSentKudos = async (companyId: string, senderId: string) =>
+//   await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(companyId, { senderId }) });
 
-export const getReceivedKudos = async (companyId: string, receiverId: string) =>
-  await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(companyId, { receiverId }) });
+// export const getReceivedKudos = async (companyId: string, receiverId: string) =>
+//   await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(companyId, { receiverId }) });
 
 export const postCreateKudo = async (payload: CreateKudoFormProps) =>
   poster<CreateKudoFormProps, void>({

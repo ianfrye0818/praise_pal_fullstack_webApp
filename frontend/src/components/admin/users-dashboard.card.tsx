@@ -1,8 +1,9 @@
 import { Button } from '@/components/ui/button';
 import { Link } from '@tanstack/react-router';
-import UsersTable from './user-table';
+import UsersTable from './tables/user-table';
+import { User } from '@/types';
 
-export default function UsersDashboardCard({ companyId }: { companyId: string }) {
+export default function UsersDashboardCard({ users }: { users: User[] }) {
   return (
     <>
       <div>
@@ -17,8 +18,8 @@ export default function UsersDashboardCard({ companyId }: { companyId: string })
           </Button>
         </div>
         <UsersTable
+          users={users}
           limited
-          companyId={companyId}
         />
       </div>
     </>

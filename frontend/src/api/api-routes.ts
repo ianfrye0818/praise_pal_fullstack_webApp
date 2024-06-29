@@ -61,8 +61,7 @@ export const ApiRoutes = {
   },
   kudos: {
     baseUrl: '/kudos',
-    findAll: (companyId: string, query?: KudosQueryParams) =>
-      `/kudos?${generateQueryString(query)}&companyId=${companyId}`,
+    findAll: (query: KudosQueryParams) => `/kudos?${generateQueryString(query)}`,
     findOneById: (companyId: string, kudosId: string) => `/kudos/${kudosId}?companyId=${companyId}`,
     createKudo: (companyId: string) => `/kudos?companyId=${companyId}`,
     updateKudoById: (companyId: string, kudosId: string) =>

@@ -3,12 +3,9 @@ import useGetCompany from '@/hooks/api/useCompany/useGetCompany';
 
 import { MailIcon, PhoneIcon } from 'lucide-react';
 import { Button } from '../ui/button';
+import { Company } from '@/types';
 
-export default function CompanyCard({ companyId }: { companyId: string }) {
-  const { data: company, error, isLoading } = useGetCompany(companyId);
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  if (!company) return <div>No company found</div>;
+export default function CompanyCard({ company }: { company: Company }) {
   return (
     <>
       <Card>
