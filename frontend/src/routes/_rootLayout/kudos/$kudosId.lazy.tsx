@@ -1,9 +1,9 @@
 import KudosCard from '@/components/kudos-card/kudos-card';
 import useGetSingleKudo from '@/hooks/api/useKudos/useGetSingleKudo';
 import { useAuth } from '@/hooks/useAuth';
-import { createFileRoute } from '@tanstack/react-router';
+import { createLazyFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/_rootLayout/kudos/$kudosId')({
+export const Route = createLazyFileRoute('/_rootLayout/kudos/$kudosId')({
   component: () => <SingleKudosPage />,
 });
 

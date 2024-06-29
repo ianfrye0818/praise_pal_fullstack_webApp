@@ -13,6 +13,7 @@ import {
 import { ApiRoutes } from './api-routes';
 import { deleter, fetcher, patcher, poster } from './axios';
 import { createRefreshHeader } from '@/lib/utils';
+import { CustomError } from '@/errors';
 
 //auth actions
 export const postLoginUser = async (payload: SignInFormProps) =>
@@ -63,6 +64,7 @@ export const deleteSingleUser = async (companyId: string, userId: string) =>
 export const getCompanyKudos = async (queryPrams: KudosQueryParams) => {
   try {
     const kudos = await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(queryPrams) });
+    console.log(kudos);
     return kudos;
   } catch (error) {
     console.log('getcomankudos error', error);
@@ -109,3 +111,26 @@ export const patchUpdateCompany = async (companyId: string, payload: UpdateCompa
     url: ApiRoutes.company.updateCompanyById(companyId),
     data: payload,
   });
+
+export async function getAdminDashBoardData(user: User) {
+  try {
+    const data = await Promise.all([
+      getCompanyUsers(user.companyId),
+      getCompanyKudos({ companyId: user.companyId }),
+      getCompany(user.companyId),
+    ]);
+
+    if (!data[0] || !data[1] || !data[2]) {
+      throw new CustomError('Error fetching dashboard data', 404);
+    }
+
+    return {
+      users: data[0],
+      kudos: data[1],
+      company: data[2],
+    };
+  } catch (error) {
+    console.error(error);
+    throw new CustomError('Error fetching dashboard data', 404);
+  }
+}

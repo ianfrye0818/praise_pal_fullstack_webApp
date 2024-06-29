@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './providers/AuthReducerProvider';
 import AdminModeProvider from './providers/AdminModeProvider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import ScrollToTop from './providers/ScrollToTop';
 
 const router = createRouter({ routeTree, context: { state: undefined! } });
 const queryClient = new QueryClient({

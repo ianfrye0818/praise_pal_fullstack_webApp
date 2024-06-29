@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDate,
@@ -46,17 +46,16 @@ export class KudosFilterDTO {
   updatedAt?: Date;
 
   @IsOptional()
-  // @Transform(({ value }) => {
-  //   switch (value) {
-  //     case 'true':
-  //       return true;
-  //     case 'false':
-  //       return false;
-  //     default:
-  //       return undefined;
-  //   }
-  // })
-  @Type(() => Boolean)
+  @Transform(({ value }) => {
+    switch (value) {
+      case 'true':
+        return true;
+      case 'false':
+        return false;
+      default:
+        return undefined;
+    }
+  })
   @IsBoolean()
   isHidden?: boolean;
 
