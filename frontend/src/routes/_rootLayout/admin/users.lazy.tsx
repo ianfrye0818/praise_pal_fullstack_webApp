@@ -9,7 +9,13 @@ export const Route = createLazyFileRoute('/_rootLayout/admin/users')({
 
 function UsersAdminPage() {
   const { user } = useAuth().state;
-  const { data: users, isLoading, isError } = useGetCompanyUsers(user?.companyId as string);
+  const {
+    data: users,
+    isLoading,
+    isError,
+  } = useGetCompanyUsers({
+    companyId: user?.companyId as string,
+  });
 
   //TODO: add loading and error components
   if (isLoading) return <div>Loading...</div>;

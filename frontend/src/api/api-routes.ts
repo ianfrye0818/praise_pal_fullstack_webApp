@@ -14,8 +14,7 @@ export const ApiRoutes = {
   },
   users: {
     baseUrl: '/user',
-    findAll: (companyId: string, query?: UserQueryParams) =>
-      `/user?${generateQueryString(query)}&companyId=${companyId}`,
+    findAll: (query?: UserQueryParams) => `/user?${generateQueryString(query)}`,
     findOneById: (companyId: string, userId: string) => `/users/${userId}?companyId=${companyId}`,
     updateUserById: (companyId: string, userId: string) => `/user/${userId}?companyId=${companyId}`,
     deleteUserById: (companyId: string, userId: string) => `/user/${userId}?companyId=${companyId}`,

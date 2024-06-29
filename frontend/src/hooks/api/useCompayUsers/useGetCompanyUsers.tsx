@@ -1,11 +1,12 @@
 import { getCompanyUsers } from '@/api/api-handlers';
+import { UserQueryParams } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 
-export default function useGetCompanyUsers(companyId: string) {
+export default function useGetCompanyUsers(queryParams: UserQueryParams) {
   const query = useQuery({
-    queryKey: ['companyUsers'],
-    queryFn: async () => getCompanyUsers(companyId),
-    enabled: !!companyId,
+    queryKey: ['companyUsers', queryParams.companyId, queryParams.limit, queryParams.page],
+    queryFn: async () => getCompanyUsers(queryParams),
+    enabled: !!queryParams.companyId,
   });
 
   return query;

@@ -123,7 +123,17 @@ export interface Comment {
 
 export type HTTPClients = 'AUTH' | 'API';
 
-export interface UserQueryParams {
+interface QueryParams {
+  deletedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  limit?: number;
+  sortBy?: 'ASC' | 'DESC';
+  offset?: number;
+  page?: number;
+}
+
+export interface UserQueryParams extends QueryParams {
   userId?: string;
   displayName?: string;
   email?: string;
@@ -131,12 +141,9 @@ export interface UserQueryParams {
   firstName?: string;
   lastName?: string;
   role?: Role;
-  deletedAt?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
-export interface KudosQueryParams {
+export interface KudosQueryParams extends QueryParams {
   kudosId?: string;
   senderId?: string;
   isHidden?: boolean;
@@ -145,23 +152,17 @@ export interface KudosQueryParams {
   title?: string;
   companyId: string;
   id?: string;
-  deletedAt?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
-export interface CommentQueryParams {
+export interface CommentQueryParams extends QueryParams {
   commentId?: string;
   kudosId?: string;
   parentId?: string;
   userId?: string;
   content?: string;
-  deletedAt?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
-export interface CompanyQueryParams {
+export interface CompanyQueryParams extends QueryParams {
   companyId?: string;
   name?: string;
   address?: string;
@@ -170,19 +171,13 @@ export interface CompanyQueryParams {
   zip?: string;
   phone?: string;
   companyCode?: string;
-  deletedAt?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
-export interface UserNotificationQueryParams {
+export interface UserNotificationQueryParams extends QueryParams {
   id?: string;
   userId?: string;
   read?: boolean;
   message?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date;
 }
 
 export interface FormInputItemProps<T extends z.ZodTypeAny>

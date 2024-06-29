@@ -9,6 +9,7 @@ import {
   UpdateCompanyProps,
   UpdateKudoProps,
   KudosQueryParams,
+  UserQueryParams,
 } from '@/types';
 import { ApiRoutes } from './api-routes';
 import { deleter, fetcher, patcher, poster } from './axios';
@@ -45,8 +46,8 @@ export const postLogout = async (refreshToken: string) =>
   });
 
 //users actions
-export const getCompanyUsers = async (companyId: string) =>
-  fetcher<User[]>({ url: ApiRoutes.users.findAll(companyId) });
+export const getCompanyUsers = async (queryParams: UserQueryParams) =>
+  fetcher<User[]>({ url: ApiRoutes.users.findAll(queryParams) });
 
 export const getSingleCompanyUser = async (companyId: string, userId: string) =>
   fetcher<User>({ url: ApiRoutes.users.findOneById(companyId, userId) });
@@ -115,8 +116,8 @@ export const patchUpdateCompany = async (companyId: string, payload: UpdateCompa
 export async function getAdminDashBoardData(user: User) {
   try {
     const data = await Promise.all([
-      getCompanyUsers(user.companyId),
-      getCompanyKudos({ companyId: user.companyId }),
+      getCompanyUsers({ companyId: user.companyId, limit: 10 }),
+      getCompanyKudos({ companyId: user.companyId, limit: 10 }),
       getCompany(user.companyId),
     ]);
 
