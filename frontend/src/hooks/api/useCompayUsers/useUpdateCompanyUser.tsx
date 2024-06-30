@@ -27,7 +27,7 @@ export default function useUpdateCompanyUser() {
 
       const previousData = queryClient.getQueryData(['companyUsers']);
 
-      queryClient.setQueryData(['companyUsers'], (old: User[]) => {
+      queryClient.setQueriesData({ queryKey: ['companyUsers'], exact: false }, (old: any) => {
         return old.map((user: User) => {
           if (user.userId === newData.userId) {
             return {
@@ -41,11 +41,11 @@ export default function useUpdateCompanyUser() {
       return { previousData };
     },
     onError: (_, __, context) => {
-      queryClient.setQueryData(['companyUsers'], context?.previousData);
+      queryClient.setQueriesData({ queryKey: ['companyUsers'] }, context?.previousData);
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['companyUsers'] });
+      queryClient.invalidateQueries({ queryKey: ['companyUsers'], exact: false });
     },
   });
   return mutation;

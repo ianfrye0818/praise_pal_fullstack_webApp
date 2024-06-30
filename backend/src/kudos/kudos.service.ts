@@ -135,7 +135,6 @@ export class KudosService {
   }
 
   async updateKudoById(id: string, data: UpdateKudosDTO): Promise<Kudos> {
-    console.log({ data });
     try {
       const kudo = await this.prismaService.kudos.update({
         data,
