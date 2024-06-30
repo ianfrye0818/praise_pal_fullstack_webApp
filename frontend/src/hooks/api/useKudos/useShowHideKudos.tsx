@@ -1,10 +1,13 @@
 import { patchUpdateKudo } from '@/api/api-handlers';
 import { UpdateKudoProps } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { getPreviousKudos, updateKudosCache } from './updateKudoCache';
 
-interface useShowHideKudosProps {
+interface UseShowHideKudosProps {
   companyId: string;
   isHidden: boolean;
+  kudoId: string;
+  newIsHiddenValue: boolean;
 }
 
 export default function useShowHideKudo() {
@@ -15,38 +18,48 @@ export default function useShowHideKudo() {
       newIsHiddenValue,
       kudoId,
       isHidden,
-    }: {
-      companyId: string;
-      newIsHiddenValue: boolean;
-      kudoId: string;
-      isHidden: boolean;
-    }) => {
+    }: UseShowHideKudosProps) => {
       const payload: UpdateKudoProps = {
         isHidden: newIsHiddenValue,
         id: kudoId,
       };
       await patchUpdateKudo(companyId, payload);
     },
-    onMutate: async ({ newIsHiddenValue, kudoId: updatedKudoId }) => {
-      const previousKudos = queryClient.getQueryData(['kudos']);
-      queryClient.setQueryData(['kudos'], (old: any) => {
-        return old.map((kudo: any) => {
-          if (kudo.id === updatedKudoId) {
-            return {
-              ...kudo,
-              ...{ isHidden: newIsHiddenValue },
-            };
-          }
-          return kudo;
-        });
+    onMutate: async ({ newIsHiddenValue, kudoId: updatedKudoId, companyId }) => {
+      console.log({ newIsHiddenValue, updatedKudoId, companyId });
+      return updateKudosCache<UpdateKudoProps>({
+        companyId,
+        queryClient,
+        kudoId: updatedKudoId,
+        payload: { isHidden: newIsHiddenValue, id: updatedKudoId },
       });
-      return { previousKudos };
+      // const previousKudos = queryClient.getQueryData(['kudos']);
+      // queryClient.setQueryData(['kudos'], (old: any) => {
+      //   return old.map((kudo: any) => {
+      //     if (kudo.id === updatedKudoId) {
+      //       return {
+      //         ...kudo,
+      //         ...{ isHidden: newIsHiddenValue },
+      //       };
+      //     }
+      //     return kudo;
+      //   });
+      // });
+      // return { previousKudos };
     },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData(['kudos'], context?.previousKudos);
+    onError: (_, variables, context) => {
+      if (context?.previousHiddenKudos) {
+        queryClient.setQueryData(['kudos', variables.companyId, true], context.previousHiddenKudos);
+      }
+      if (context?.previousNonHiddenKudos) {
+        queryClient.setQueryData(
+          ['kudos', variables.companyId, false],
+          context.previousNonHiddenKudos
+        );
+      }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['kudos'] });
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({ queryKey: ['kudos', companyId], exact: false });
     },
   });
 

@@ -11,6 +11,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import useShowHideKudo from '@/hooks/api/useKudos/useShowHideKudos';
+import useUpdateKudo from '@/hooks/api/useKudos/useUpdateKudo';
 import { formatDate, getShownKudos } from '@/lib/utils';
 import { TKudos } from '@/types';
 
@@ -24,7 +25,7 @@ interface UsersTableProps {
 
 export default function KudosTable({ kudos, limited = false }: UsersTableProps) {
   const shownKudos = getShownKudos(kudos ?? [], limited);
-  const { mutateAsync: showHideKudo } = useShowHideKudo();
+  const { mutateAsync: showHideKudo } = useUpdateKudo();
 
   return (
     <>
@@ -80,10 +81,8 @@ export default function KudosTable({ kudos, limited = false }: UsersTableProps) 
                       checked={kudo.isHidden}
                       onCheckedChange={async (isHidden: boolean) =>
                         await showHideKudo({
-                          kudoId: kudo.id,
                           companyId: kudo.companyId,
-                          newIsHiddenValue: isHidden,
-                          isHidden: kudo.isHidden,
+                          payload: { isHidden, id: kudo.id },
                         })
                       }
                     />

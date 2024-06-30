@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { errorLogout, refreshTokens } from './auth-actions';
-import { CustomError, handleApiError, isError } from '@/errors';
+import { CustomError, handleApiError } from '@/errors';
 import { APIProps } from '@/types';
 import { BASE_API_URL, MAX_API_RETRY_REQUESTS } from '@/constants';
 import { getAuthTokens } from '@/lib/localStorage';

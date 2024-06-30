@@ -140,7 +140,7 @@ export interface UserQueryParams extends QueryParams {
   companyId?: string;
   firstName?: string;
   lastName?: string;
-  role?: Role;
+  roles?: Role | Role[];
 }
 
 export interface KudosQueryParams extends QueryParams {

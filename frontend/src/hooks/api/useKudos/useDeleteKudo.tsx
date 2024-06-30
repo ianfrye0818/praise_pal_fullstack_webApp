@@ -1,6 +1,7 @@
 import { deleteSingleKudo } from '@/api/api-handlers';
-import { TKudos } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateKudosCache } from './updateKudoCache';
+import { UpdateKudoProps } from '@/types';
 
 interface DeleteKudoProps {
   companyId: string;
@@ -12,18 +13,26 @@ export default function useDeleteKudo() {
   const mutation = useMutation({
     mutationFn: async ({ companyId, kudoId }: DeleteKudoProps) =>
       await deleteSingleKudo(companyId, kudoId),
-    onMutate: async ({ kudoId }) => {
-      const previousKudos = queryClient.getQueryData(['kudos']);
-      queryClient.setQueryData(['kudos'], (old: TKudos[]) => {
-        return old.filter((kudo: TKudos) => kudo.id !== kudoId);
+    onMutate: async ({ kudoId, companyId }) => {
+      return updateKudosCache<UpdateKudoProps>({
+        queryClient,
+        kudoId,
+        companyId,
       });
-      return { previousKudos };
     },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData(['kudos'], context?.previousKudos);
+    onError: (_, variables, context) => {
+      if (context?.previousHiddenKudos) {
+        queryClient.setQueryData(['kudos', variables.companyId, true], context.previousHiddenKudos);
+      }
+      if (context?.previousNonHiddenKudos) {
+        queryClient.setQueryData(
+          ['kudos', variables.companyId, false],
+          context.previousNonHiddenKudos
+        );
+      }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['kudos'] });
+    onSuccess: (_, { companyId }) => {
+      queryClient.invalidateQueries({ queryKey: ['kudos', companyId], exact: false });
     },
   });
 

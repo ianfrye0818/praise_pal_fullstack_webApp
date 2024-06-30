@@ -46,8 +46,10 @@ export const postLogout = async (refreshToken: string) =>
   });
 
 //users actions
-export const getCompanyUsers = async (queryParams: UserQueryParams) =>
-  fetcher<User[]>({ url: ApiRoutes.users.findAll(queryParams) });
+export const getCompanyUsers = async (queryParams: UserQueryParams) => {
+  console.log('queryParams', queryParams);
+  return fetcher<User[]>({ url: ApiRoutes.users.findAll(queryParams) });
+};
 
 export const getSingleCompanyUser = async (companyId: string, userId: string) =>
   fetcher<User>({ url: ApiRoutes.users.findOneById(companyId, userId) });

@@ -40,7 +40,7 @@ export default function useUpdateCompanyUser() {
       });
       return { previousData };
     },
-    onError: (error, variables, context) => {
+    onError: (_, __, context) => {
       queryClient.setQueryData(['companyUsers'], context?.previousData);
     },
 

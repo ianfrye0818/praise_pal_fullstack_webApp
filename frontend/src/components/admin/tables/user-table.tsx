@@ -19,16 +19,16 @@ interface UsersTableProps {
   page?: number;
   search?: string;
   users: User[];
-  limited?: boolean;
+
+  showUserNumber?: boolean;
 }
 
-export default function UsersTable({ users, limited = false }: UsersTableProps) {
+export default function UsersTable({ users, showUserNumber = true }: UsersTableProps) {
   const { user: currentUser } = useAuth().state;
-  const shownUsers = getShownUsers(users ?? [], currentUser, limited);
 
   return (
     <>
-      {!limited && <p className=' p-2 text-lg'>Total Users: {shownUsers.length}</p>}
+      {showUserNumber && <p className=' p-2 text-lg'>Total Users: {users.length}</p>}
       <div className='border shadow-sm rounded-lg'>
         <Table>
           <TableHeader>
@@ -41,7 +41,7 @@ export default function UsersTable({ users, limited = false }: UsersTableProps) 
             </TableRow>
           </TableHeader>
           <TableBody>
-            {shownUsers.map((user) => (
+            {users.map((user) => (
               <TableRow key={user.userId}>
                 <TableCell>
                   <div className='flex items-center gap-2'>

@@ -1,6 +1,7 @@
 import UsersTable from '@/components/admin/tables/user-table';
 import useGetCompanyUsers from '@/hooks/api/useCompayUsers/useGetCompanyUsers';
 import { useAuth } from '@/hooks/useAuth';
+import { Role } from '@/types';
 import { createLazyFileRoute } from '@tanstack/react-router';
 
 export const Route = createLazyFileRoute('/_rootLayout/admin/users')({
@@ -15,6 +16,7 @@ function UsersAdminPage() {
     isError,
   } = useGetCompanyUsers({
     companyId: user?.companyId as string,
+    roles: [Role.USER, Role.ADMIN],
   });
 
   //TODO: add loading and error components

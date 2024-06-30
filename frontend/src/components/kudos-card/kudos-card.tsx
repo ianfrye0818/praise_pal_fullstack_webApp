@@ -14,10 +14,9 @@ type Props = {
 };
 
 export default function KudosCard({ kudo, commenting = false }: Props) {
-  const { state } = useAuth();
-  const user = state.user;
+  const { user } = useAuth().state;
   const { sender, receiver } = kudo;
-  const liked = kudo.userLikes.some((userLike) => userLike.userId === user?.userId);
+  const isLiked = kudo.userLikes.some((userLike) => userLike.userId === user?.userId);
   const usersKudo = kudo.senderId === user?.userId;
   const senderDisplayName = getUserDisplayName(sender);
   const receiverDisplayName = getUserDisplayName(receiver);
@@ -45,9 +44,10 @@ export default function KudosCard({ kudo, commenting = false }: Props) {
           <div className='flex m-0 gap-3 items-center'>
             <div className='flex items-center gap-1'>
               <KudoLikeButton
-                liked={liked}
+                isLiked={isLiked}
                 kudoId={kudo.id}
-                userId={user?.userId ?? ''}
+                userId={user?.userId as string}
+                companyId={user?.companyId as string}
               />
 
               <p className='text-sm text-gray-500'>{kudo.likes}</p>

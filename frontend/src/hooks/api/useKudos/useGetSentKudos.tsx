@@ -1,16 +1,13 @@
-import { getSentKudos } from '@/api/api-handlers';
 import { useQuery } from '@tanstack/react-query';
+import { getCompanyKudos } from '@/api/api-handlers';
+import { KudosQueryParams } from '@/types';
 
-interface GetSentKudosProps {
-  companyId: string;
-  userId: string;
-}
-
-export default function useGetSentKudos({ companyId, userId }: GetSentKudosProps) {
+export default function useGetSentKudos(queryParams: KudosQueryParams) {
+  const { companyId, senderId } = queryParams;
   const query = useQuery({
-    queryKey: ['kudos', 'sent', userId],
-    queryFn: async () => await getSentKudos(companyId, userId),
-    enabled: !!companyId && !!userId,
+    queryKey: ['kudos', 'sent', senderId],
+    queryFn: async () => await getCompanyKudos(queryParams),
+    enabled: !!companyId && !!senderId,
   });
 
   return query;
