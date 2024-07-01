@@ -1,5 +1,5 @@
-import { adminSidebarLinks, IMAGES } from '@/constants';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { adminSidebarLinks } from '@/constants';
+import { Link } from '@tanstack/react-router';
 import NavBarLink from './sidebar/nav-bar-link';
 import useAdminMode from '@/hooks/useAdminMode';
 import { Button } from './ui/button';
@@ -34,15 +34,12 @@ export default function AdminNavLinkList() {
         onClick={async () => {
           setAdminMode(false);
         }}
+        asChild
       >
-        <>
-          {' '}
-          <ArrowLeft /> Back
-        </>
-        {/* <Link to='/'>
+        <Link to='/'>
           <ArrowLeft />
           Back
-        </Link> */}
+        </Link>
       </Button>
     </nav>
   );
