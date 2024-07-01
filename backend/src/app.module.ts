@@ -14,6 +14,7 @@ import { LoggingInterceptor } from './interceptors/logger.interceptor';
 import { ThrottlerModule } from '@nestjs/throttler';
 
 import { CommentsModule } from './comments/comments.module';
+import { CommentLikesModule } from './comment-likes/comment-likes.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CommentsModule } from './comments/comments.module';
       },
     ]),
     CommentsModule,
+    CommentLikesModule,
   ],
   controllers: [AppController],
   providers: [

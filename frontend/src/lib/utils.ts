@@ -1,4 +1,5 @@
 import { Role, TKudos, User } from '@/types';
+import { QueryClient } from '@tanstack/react-query';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -73,4 +74,14 @@ export function getUserDisplayName(user: User) {
   return user.firstName && user.lastName
     ? `${user.firstName} ${user.lastName[0]}.`
     : user.displayName;
+}
+
+export function getPreviousKudos(queryClient: QueryClient, companyId: string) {
+  const hiddenKudosKey = ['kudos', companyId, true];
+  const nonHiddenKudosKey = ['kudos', companyId, false];
+
+  const previousHiddenKudos = queryClient.getQueryData<TKudos[]>(hiddenKudosKey);
+  const previousNonHiddenKudos = queryClient.getQueryData<TKudos[]>(nonHiddenKudosKey);
+
+  return { previousHiddenKudos, previousNonHiddenKudos, hiddenKudosKey, nonHiddenKudosKey };
 }

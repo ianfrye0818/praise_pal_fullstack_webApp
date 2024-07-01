@@ -48,6 +48,7 @@ export class RefreshTokenService {
   }
 
   private async saveRefreshToken(userId: string, newToken: string) {
+    console.log({ userId, newToken });
     try {
       await this.prismaService.refreshToken.create({
         data: { userId, token: newToken },
