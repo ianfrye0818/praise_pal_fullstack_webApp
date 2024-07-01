@@ -16,7 +16,9 @@ export class UpdateUserGuard implements CanActivate {
     const jwtUser = request.user as ClientUser;
     const data = request.body;
 
-    if (jwtUser.role === Role.SUPER_ADMIN) return true;
+    if (jwtUser.role === Role.SUPER_ADMIN) {
+      return true;
+    }
 
     const companyId = request.params.companyId || request.query.companyId;
     const userId = request.params.id || request.query.userId;

@@ -1,18 +1,29 @@
-import { IsBoolean, IsDate, IsOptional, IsString } from 'class-validator';
+import { ActionType } from '@prisma/client';
+import { Transform } from 'class-transformer';
+import { IsEnum, IsString } from 'class-validator';
 
 export class CreateUserNotificationDTO {
   @IsString()
   userId: string;
 
+  @IsEnum(['LIKE', 'COMMENT', 'KUDOS'], {
+    message: 'Action Type Must Be LIKE, COMMENT, or KUDOS',
+  })
+  @Transform(({ value }: { value: string }) => value.toUpperCase())
+  actionType: ActionType;
+
   @IsString()
-  message: string;
+  referenceId: string;
 }
 
-export class UpdateUserNotificationDTO {
-  @IsBoolean()
-  read: boolean;
+// export class UpdateUserNotificationDTO extends PartialType(
+//   CreateUserNotificationDTO,
+// ) {
+//   @IsOptional()
+//   @IsBoolean()
+//   isRead?: boolean;
 
-  @IsOptional()
-  @IsDate()
-  deletedAt?: Date;
-}
+//   @IsOptional()
+//   @IsDate()
+//   deletedAt?: Date;
+// }

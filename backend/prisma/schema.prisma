@@ -98,11 +98,11 @@ model User_Like {
   @@id([userId, kudosId])
 }
 
-model Comment_Like {
-  userId String
-  commentId String
-  likedAt DateTime @default(now())
-}
+// model Comment_Like {
+//   userId String
+//   commentId String
+//   likedAt DateTime @default(now())
+// }
 
 
 model UserNotifications {
@@ -115,7 +115,6 @@ model UserNotifications {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-
 }
 
 

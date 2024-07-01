@@ -28,8 +28,11 @@ export class FilterUserDTO {
   lastName?: string;
 
   @IsOptional()
-  @Transform(({ value }) => {
-    return value.split(',').map((role) => role as Role);
+  @Transform(({ value }: { value: string }) => {
+    return value
+      .toUpperCase()
+      .split(',')
+      .map((role: string) => role as Role);
   })
   roles?: Role[];
 

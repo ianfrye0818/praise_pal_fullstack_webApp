@@ -3,12 +3,13 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Comment } from '@prisma/client';
+import { ActionType, Comment } from '@prisma/client';
 import { PrismaService } from '../core-services/prisma.service';
 import { ClientComment } from '../types';
 import { CreateCommentDTO, UpdateCommentDTO } from './dto/createComment.dto';
 import { Cron } from '@nestjs/schedule';
 import { EmailService } from '../core-services/email.service';
+import { UserNotificationsService } from 'src/(user)/user-notifications/user-notifications.service';
 
 @Injectable()
 export class CommentsService {
@@ -30,12 +31,14 @@ export class CommentsService {
       content: true,
       kudosId: true,
       parentId: true,
+      kudos: true,
       user: this.userSelectProps,
     },
   };
   constructor(
     private readonly prismaService: PrismaService,
     private readonly emailService: EmailService,
+    private readonly userNotificationsService: UserNotificationsService,
   ) {}
 
   async findAllComments(filter?: Partial<Comment>): Promise<ClientComment[]> {
@@ -73,6 +76,18 @@ export class CommentsService {
         data: comment,
         ...this.commentSelectProps,
       });
+      if (newComment) {
+        await this.userNotificationsService.createNotification({
+          actionType: ActionType.COMMENT,
+          referenceId: newComment.id,
+          userId: newComment.kudos.senderId,
+        });
+        await this.userNotificationsService.createNotification({
+          actionType: ActionType.COMMENT,
+          referenceId: newComment.id,
+          userId: newComment.kudos.receiverId,
+        });
+      }
       return newComment;
     } catch (error) {
       console.error(error);

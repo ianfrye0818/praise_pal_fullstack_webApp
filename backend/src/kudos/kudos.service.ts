@@ -8,8 +8,9 @@ import { PrismaService } from '../core-services/prisma.service';
 import { createKudosDTO, UpdateKudosDTO } from './dto/createKudos.dto';
 import { Cron } from '@nestjs/schedule';
 import { EmailService } from '../core-services/email.service';
-import { Kudos } from '@prisma/client';
+import { ActionType, Kudos } from '@prisma/client';
 import { KudosFilterDTO } from './dto/kudosFilter.dto';
+import { UserNotificationsService } from '../(user)/user-notifications/user-notifications.service';
 
 @Injectable()
 export class KudosService {
@@ -54,6 +55,7 @@ export class KudosService {
   constructor(
     private prismaService: PrismaService,
     private emailService: EmailService,
+    private userNotificationsService: UserNotificationsService,
   ) {}
 
   async getAllKudos(filter: KudosFilterDTO): Promise<Kudos[]> {
@@ -122,6 +124,13 @@ export class KudosService {
           ...data,
         },
       });
+      if (newKudos) {
+        await this.userNotificationsService.createNotification({
+          userId: newKudos.receiverId,
+          actionType: ActionType.KUDOS,
+          referenceId: newKudos.id,
+        });
+      }
       return newKudos;
     } catch (error) {
       console.error(error);
@@ -153,7 +162,17 @@ export class KudosService {
   async increaseLikes(id: string): Promise<Kudos> {
     try {
       const kudo = await this.getKudoById(id);
-      return await this.updateKudoById(id, { likes: kudo.likes + 1 });
+      const newKudoLike = this.updateKudoById(id, { likes: kudo.likes + 1 });
+
+      if (newKudoLike) {
+        this.userNotificationsService.createNotification({
+          userId: kudo.senderId,
+          actionType: ActionType.LIKE,
+          referenceId: kudo.id,
+        });
+      }
+
+      return newKudoLike;
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Could not like Kudo');

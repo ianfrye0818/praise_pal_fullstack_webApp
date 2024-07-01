@@ -46,7 +46,7 @@ export class UserLikesService {
       await this.KudosService.decreaseLikes(kudosId);
     } catch (error) {
       console.error(error);
-      if (error.code === 'P2002')
+      if (error.code === 'P2025')
         throw new HttpException('You already unliked this kudos', 400);
       throw new InternalServerErrorException('Could not delete like');
     }
