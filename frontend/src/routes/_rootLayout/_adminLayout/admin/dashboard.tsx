@@ -2,15 +2,9 @@ import CompanyCard from '@/components/admin/company-card';
 import KudosDashboardCard from '@/components/admin/kudos-dashboard-card';
 import UsersDashboardCard from '@/components/admin/users-dashboard.card';
 import useGetAdminDashBoardData from '@/hooks/api/useGetAdminDashBoardData';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
-export const Route = createFileRoute('/_rootLayout/admin/dashboard')({
-  beforeLoad: async ({ context }) => {
-    const { isAdmin } = context.state;
-    if (!isAdmin) {
-      throw redirect({ to: '/' });
-    }
-  },
+export const Route = createFileRoute('/_rootLayout/_adminLayout/admin/dashboard')({
   component: () => <AdminDashboard />,
 });
 

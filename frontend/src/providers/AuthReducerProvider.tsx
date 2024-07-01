@@ -143,10 +143,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const setUpLoggedInUser = async () => {
-      const storedUser = getUserToken();
-      if (storedUser) {
-        await refreshTokens();
-        dispatch({ type: ActionType.LOGIN_SUCCESS, payload: { user: storedUser } });
+      try {
+        dispatch({ type: ActionType.LOGIN_REQUEST });
+        const storedUser = getUserToken();
+        if (storedUser) {
+          await refreshTokens();
+          dispatch({ type: ActionType.LOGIN_SUCCESS, payload: { user: storedUser } });
+        }
+      } catch (error) {
+        dispatch({ type: ActionType.LOGIN_FAILURE });
       }
     };
     setUpLoggedInUser();

@@ -3,7 +3,7 @@ import useGetCompanyKudos from '@/hooks/api/useKudos/useGetCompanyKudos';
 import { useAuth } from '@/hooks/useAuth';
 import { createLazyFileRoute } from '@tanstack/react-router';
 
-export const Route = createLazyFileRoute('/_rootLayout/admin/kudos')({
+export const Route = createLazyFileRoute('/_rootLayout/_adminLayout/admin/kudos')({
   component: () => <KudosAdminPage />,
 });
 

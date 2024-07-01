@@ -17,8 +17,7 @@ export default function CompanyCard({ company }: { company: Company }) {
         <CardHeader>
           <CardTitle className='flex justify-between items-center'>
             <div className='flex flex-col gap-3'>
-              <h1>Company</h1>{' '}
-              {/* {errorMessage && <p className='italic text-red-500 text-[16px]'>{errorMessage}</p>} */}
+              <h1>Company</h1> {error && <p className='italic text-red-500 text-[16px]'>{error}</p>}
             </div>
             <UpdateCompanyDialog
               updatingCompany={company}
@@ -26,7 +25,12 @@ export default function CompanyCard({ company }: { company: Company }) {
               error={error}
               setError={setError}
             >
-              <Button variant={'secondary'}>Edit</Button>
+              <Button
+                onClick={() => setError(null)}
+                variant={'secondary'}
+              >
+                Edit
+              </Button>
             </UpdateCompanyDialog>
           </CardTitle>
         </CardHeader>

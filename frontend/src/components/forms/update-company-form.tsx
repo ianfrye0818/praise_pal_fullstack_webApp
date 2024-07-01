@@ -28,9 +28,9 @@ export function UpdateCompanyDialogForm({
   const { mutateAsync: updateCompany } = useUpdateCompany();
 
   async function onSubmit(values: z.infer<typeof updateCompanyFormSchema>) {
+    setError(null);
     try {
-      console.log(values);
-      throw new CustomError('This is a test', 500);
+      await updateCompany({ ...values, id: updatingCompany.id });
     } catch (error) {
       setError((error as unknown as CustomError).message || 'An error has occured');
     }

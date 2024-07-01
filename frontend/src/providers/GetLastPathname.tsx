@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
-import { useRouter } from '@tanstack/react-router';
+import { useRouterState, redirect } from '@tanstack/react-router';
 
 const GetLastPathName = () => {
-  const { history } = useRouter();
+  const lastPath = sessionStorage.getItem('lastPath') || null;
+
+  const { pathname } = useRouterState().location;
 
   useEffect(() => {
-    const lastPath = localStorage.getItem('lastPath');
-    if (lastPath && lastPath !== window.location.pathname) {
-      history.replace(lastPath);
+    if (lastPath && lastPath !== pathname) {
+      redirect({ to: lastPath });
     }
-  }, [history]);
-
+  });
   return null;
 };
 

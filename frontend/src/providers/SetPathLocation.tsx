@@ -5,9 +5,14 @@ export default function SetPathLocaiton() {
   const { history } = useRouter();
   const { pathname } = history.location;
 
+  const canSavePath = pathname !== '/sign-in' && pathname !== '/sign-up';
+
   useEffect(() => {
-    localStorage.setItem('lastPath', pathname);
-  }, [pathname]);
+    console.log('rendering SetPathLocaiton');
+    if (canSavePath) {
+      sessionStorage.setItem('lastPath', pathname);
+    }
+  }, [pathname, canSavePath]);
 
   return null;
 }

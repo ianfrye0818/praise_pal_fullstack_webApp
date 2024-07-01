@@ -82,7 +82,6 @@ apiClient.interceptors.response.use(
 );
 
 async function fetcher<T, D = any>({ client = 'API', url }: APIProps<D>) {
-  console.log(url);
   try {
     const response = await clients[client].get<T>(url);
     return response.data;

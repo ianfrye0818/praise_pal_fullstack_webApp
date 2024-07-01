@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 export const AdminModeContext = createContext<{
   adminMode: boolean;
@@ -9,7 +9,12 @@ export const AdminModeContext = createContext<{
 });
 
 export default function AdminModeProvider({ children }: { children: React.ReactNode }) {
-  const [adminMode, setAdminMode] = useState(false);
+  const [adminMode, setAdminMode] = useState(sessionStorage.getItem('adminMode') === 'true');
+
+  useEffect(() => {
+    sessionStorage.setItem('adminMode', adminMode.toString());
+  }, [adminMode]);
+
   return (
     <AdminModeContext.Provider value={{ adminMode, setAdminMode }}>
       {children}

@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Role } from '@/types';
 import { createLazyFileRoute } from '@tanstack/react-router';
 
-export const Route = createLazyFileRoute('/_rootLayout/admin/users')({
+export const Route = createLazyFileRoute('/_rootLayout/_adminLayout/admin/users')({
   component: () => <UsersAdminPage />,
 });
 
