@@ -104,14 +104,19 @@ export interface Company {
   deletedAt?: EpochTimeStamp | null;
 }
 
-export interface UpdateCompanyProps {
-  name?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zip?: string;
-  phone?: string;
-}
+export type UpdateCompanyProps = Partial<
+  Omit<Company, 'companyCode' | 'users' | 'kudos' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+>;
+
+// export interface UpdateCompanyProps {
+//   id: string;
+//   name?: string | null | undefined;
+//   address?: string;
+//   city?: string;
+//   state?: string;
+//   zip?: string;
+//   phone?: string;
+// }
 
 export interface Comment {
   id: string;
@@ -119,6 +124,14 @@ export interface Comment {
   parentId?: string | null | undefined;
   user: User;
   kudosId: string;
+}
+
+export interface UserNotification {
+  id: string;
+  userId: string;
+  isRead: boolean;
+  createdAt: string;
+  actionType: ActionTypes;
 }
 
 export type HTTPClients = 'AUTH' | 'API';
@@ -176,8 +189,9 @@ export interface CompanyQueryParams extends QueryParams {
 export interface UserNotificationQueryParams extends QueryParams {
   id?: string;
   userId?: string;
-  read?: boolean;
+  isRead?: boolean;
   message?: string;
+  actionTypes?: ActionTypes | ActionTypes[];
 }
 
 export interface FormInputItemProps<T extends z.ZodTypeAny>
@@ -208,4 +222,10 @@ export interface APIProps<D> {
   data?: D;
   config?: AxiosRequestConfig<D>;
   client?: HTTPClients;
+}
+
+export enum ActionTypes {
+  COMMENT = 'COMMENT',
+  LIKE = 'LIKE',
+  KUDO = 'KUDO',
 }

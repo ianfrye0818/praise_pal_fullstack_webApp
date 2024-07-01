@@ -1,4 +1,4 @@
-import { SidebarLink, TKudos, User } from '@/types';
+import { Company, SidebarLink, TKudos, User } from '@/types';
 import {
   PackageOpen,
   SendIcon,
@@ -30,11 +30,6 @@ export const sidebarLinks: SidebarLink[] = [
 ];
 
 export const adminSidebarLinks: SidebarLink[] = [
-  // {
-  //   label: '',
-  //   route: '/',
-  //   icon: ArrowLeft,
-  // },
   {
     label: 'Dashboard',
     route: '/admin/dashboard',
@@ -100,4 +95,35 @@ export const UPDATE_USER_DIALOG_DEFAULT_VALUES = (user: User) => {
     displayName: user.displayName,
     role: user.role,
   };
+};
+
+export const UPDATE_COMPANY_DIALOG_DEFAULT_VALUES = (company: Company) => {
+  return {
+    name: company.name,
+    address: company.address,
+    city: company.city,
+    state: company.state,
+    zip: company.zip,
+    phone: company.phone,
+  };
+};
+
+export const KUDOS_QUERY_OPTIONS = {
+  queryKey: ['kudos'],
+  exact: false,
+};
+
+export const USER_QUERY_OPTIONS = {
+  queryKey: ['companyUsers'],
+  exact: false,
+};
+
+export const COMPANY_QUERY_OPTIONS = {
+  queryKey: ['company'],
+  exact: false,
+};
+
+export const USER_NOTIFICATION_QUERY_OPTIONS = {
+  queryKey: ['userNotifications'],
+  exact: false,
 };

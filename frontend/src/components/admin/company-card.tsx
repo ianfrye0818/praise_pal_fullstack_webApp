@@ -1,17 +1,33 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import useGetCompany from '@/hooks/api/useCompany/useGetCompany';
 
 import { MailIcon, PhoneIcon } from 'lucide-react';
 import { Button } from '../ui/button';
-import { Company } from '@/types';
+import { Company, User } from '@/types';
+import UpdateCompanyDialog from '../dialogs/update-company-dialog';
+import { useAuth } from '@/hooks/useAuth';
+import { useState } from 'react';
 
 export default function CompanyCard({ company }: { company: Company }) {
+  const { user: currentUser } = useAuth().state;
+  const [error, setError] = useState<string | null>(null);
+
   return (
     <>
       <Card>
         <CardHeader>
           <CardTitle className='flex justify-between items-center'>
-            Company <Button variant={'secondary'}>Edit</Button>
+            <div className='flex flex-col gap-3'>
+              <h1>Company</h1>{' '}
+              {/* {errorMessage && <p className='italic text-red-500 text-[16px]'>{errorMessage}</p>} */}
+            </div>
+            <UpdateCompanyDialog
+              updatingCompany={company}
+              currentUser={currentUser as User}
+              error={error}
+              setError={setError}
+            >
+              <Button variant={'secondary'}>Edit</Button>
+            </UpdateCompanyDialog>
           </CardTitle>
         </CardHeader>
         <CardContent>

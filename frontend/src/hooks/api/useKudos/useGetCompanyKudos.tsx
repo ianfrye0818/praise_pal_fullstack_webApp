@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export default function useGetCompanyKudos(queryParams: KudosQueryParams) {
   const query = useQuery({
-    queryKey: ['kudos', queryParams.companyId, queryParams.isHidden],
+    queryKey: ['kudos', queryParams],
     queryFn: async () => {
       return getCompanyKudos(queryParams);
     },

@@ -1,7 +1,7 @@
 import { HeartIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
-import useLikeKudos from '@/hooks/api/useLikeKudos';
+import useLikeKudos from '@/hooks/api/useKudos/useLikeKudos';
 
 interface KudoLikeButtonProps {
   isLiked: boolean;

@@ -1,35 +1,34 @@
 import { postCreateKudo } from '@/api/api-handlers';
+import { KUDOS_QUERY_OPTIONS } from '@/constants';
 import { CreateKudoFormProps } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateKudosCache } from './updateKudoCache';
 
 export default function useCreateKudo() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (payload: CreateKudoFormProps) => await postCreateKudo(payload),
     onMutate: (payload) => {
-      return updateKudosCache<CreateKudoFormProps & { id: '1' }>({
-        companyId: payload.companyId,
-        queryClient,
-        payload: {
-          ...payload,
-          id: '1',
-        },
+      queryClient.cancelQueries(KUDOS_QUERY_OPTIONS);
+
+      const previousData = queryClient.getQueriesData(KUDOS_QUERY_OPTIONS);
+
+      queryClient.setQueriesData(KUDOS_QUERY_OPTIONS, (old: any) => {
+        return {
+          ...old,
+          payload: {
+            ...payload,
+            id: '1',
+          },
+        };
       });
+
+      return previousData;
     },
-    onError: (_, variables, context) => {
-      if (context?.previousHiddenKudos) {
-        queryClient.setQueryData(['kudos', variables.companyId, true], context.previousHiddenKudos);
-      }
-      if (context?.previousNonHiddenKudos) {
-        queryClient.setQueryData(
-          ['kudos', variables.companyId, false],
-          context.previousNonHiddenKudos
-        );
-      }
+    onError: (_, __, context) => {
+      queryClient.setQueriesData(KUDOS_QUERY_OPTIONS, context);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['kudos'], exact: false });
+      queryClient.invalidateQueries(KUDOS_QUERY_OPTIONS);
     },
   });
 

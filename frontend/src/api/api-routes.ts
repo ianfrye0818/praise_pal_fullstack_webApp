@@ -1,5 +1,11 @@
 import { generateQueryString } from '@/lib/utils';
-import { CommentQueryParams, CompanyQueryParams, KudosQueryParams, UserQueryParams } from '@/types';
+import {
+  CommentQueryParams,
+  CompanyQueryParams,
+  KudosQueryParams,
+  UserNotificationQueryParams,
+  UserQueryParams,
+} from '@/types';
 
 export const ApiRoutes = {
   auth: {
@@ -50,8 +56,16 @@ export const ApiRoutes = {
     baseUrl: '/company',
     findAll: (query?: CompanyQueryParams) => `/company?${generateQueryString(query)}`,
     findOneById: (companyId: string) => `/company/${companyId}`,
-    createCompany: () => '/company',
     updateCompanyById: (companyId: string) => `/company/${companyId}`,
-    deleteCompanyById: (companyId: string) => `/company/${companyId}`,
+    // will be added to SUPERADMIN panel
+    // createCompany: () => '/company',
+    // deleteCompanyById: (companyId: string) => `/company/${companyId}`,
+  },
+  userNotifications: {
+    baseUrl: '/user-notifications',
+    findAll: (query?: UserNotificationQueryParams) =>
+      `/user-notifications?${generateQueryString(query)}`,
+    markAsRead: (notificationId: string) => `/user-notifications/${notificationId}`,
+    deleteNotificationById: (notificationId: string) => `/user-notifications/${notificationId}`,
   },
 };

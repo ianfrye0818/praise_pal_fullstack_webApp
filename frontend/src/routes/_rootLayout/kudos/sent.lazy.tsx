@@ -1,7 +1,7 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 import KudosCard from '@/components/kudos-card/kudos-card';
 import { useAuth } from '@/hooks/useAuth';
-import useGetSentKudos from '@/hooks/api/useKudos/useGetSentKudos';
+import useGetCompanyKudos from '@/hooks/api/useKudos/useGetCompanyKudos';
 
 export const Route = createLazyFileRoute('/_rootLayout/kudos/sent')({
   component: () => <SentPage />,
@@ -13,7 +13,7 @@ function SentPage() {
     data: kudos,
     isLoading,
     error,
-  } = useGetSentKudos({
+  } = useGetCompanyKudos({
     companyId: user?.companyId as string,
     senderId: user?.userId as string,
     isHidden: false,

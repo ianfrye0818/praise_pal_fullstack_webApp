@@ -10,26 +10,21 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import useShowHideKudo from '@/hooks/api/useKudos/useShowHideKudos';
 import useUpdateKudo from '@/hooks/api/useKudos/useUpdateKudo';
-import { formatDate, getShownKudos } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 import { TKudos } from '@/types';
 
 interface UsersTableProps {
-  limit?: number;
-  page?: number;
-  search?: string;
   kudos: TKudos[];
-  limited?: boolean;
+  showKudosNumber?: boolean;
 }
 
-export default function KudosTable({ kudos, limited = false }: UsersTableProps) {
-  const shownKudos = getShownKudos(kudos ?? [], limited);
+export default function KudosTable({ kudos, showKudosNumber = true }: UsersTableProps) {
   const { mutateAsync: showHideKudo } = useUpdateKudo();
 
   return (
     <>
-      {!limited && <p className=' p-2 text-lg'>Total Kudos: {kudos.length}</p>}
+      {showKudosNumber && <p className=' p-2 text-lg'>Total Kudos: {kudos.length}</p>}
       <div className='border shadow-sm rounded-lg'>
         <Table>
           <TableHeader>
@@ -43,7 +38,7 @@ export default function KudosTable({ kudos, limited = false }: UsersTableProps) 
             </TableRow>
           </TableHeader>
           <TableBody>
-            {shownKudos.map((kudo) => {
+            {kudos.map((kudo) => {
               const reciverDisplayName =
                 kudo.receiver.firstName && kudo.receiver.lastName
                   ? `${kudo.receiver.firstName} ${kudo.receiver.lastName}`

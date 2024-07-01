@@ -39,7 +39,7 @@ export default function KudosCard({ kudo, commenting = false }: Props) {
         </div>
         {kudo.title && <h3 className='font-bold text-lg my-2'>{capitalizeString(kudo.title)}</h3>}
         <p>{kudo.message}</p>
-        <p>{kudo.isHidden.toString()}</p>
+        <p>{kudo.id}</p>
         <div className='mt-2 flex items-center justify-between'>
           <div className='flex m-0 gap-3 items-center'>
             <div className='flex items-center gap-1'>

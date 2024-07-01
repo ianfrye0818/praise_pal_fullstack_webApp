@@ -1,7 +1,7 @@
 import { deleteRemoveLikeKudo, postAddLikeKudo } from '@/api/api-handlers';
 import { TKudos } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { getPreviousKudos } from './useKudos/updateKudoCache';
+import { getPreviousKudos } from './updateKudoCache';
 
 interface LikeKudoProps {
   kudoId: string;

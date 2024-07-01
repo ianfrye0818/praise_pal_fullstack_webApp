@@ -25,6 +25,15 @@ export const updateUserFormSchema = z.object({
   role: z.nativeEnum(Role),
 });
 
+export const updateCompanyFormSchema = z.object({
+  name: z.string().optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  zip: z.string().optional(),
+  phone: z.string().optional(),
+});
+
 export const addKudoFormSchema = z.object({
   title: z.string().optional(),
   message: z.string().min(2, 'Please provide a valid message.'),

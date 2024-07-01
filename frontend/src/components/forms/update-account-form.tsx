@@ -30,6 +30,7 @@ export function UpdateAccountDialog({
   });
 
   const roleOptions = getRoleDropDownOptions();
+  const canUpdateRole = isAdmin && currentUser?.userId !== updatingUser.userId;
 
   const onSubmit = useSubmitUpdateUserForm(currentUser, updatingUser);
 
@@ -81,7 +82,7 @@ export function UpdateAccountDialog({
               placeholder='john@example.com'
             />
           </div>
-          {isAdmin && (
+          {canUpdateRole && (
             <FormSelectItem<typeof updateUserFormSchema>
               control={form.control}
               name='role'
@@ -92,6 +93,7 @@ export function UpdateAccountDialog({
           <DialogFooter>
             <div className='w-full flex justify-between'>
               <Button
+                type='button'
                 onClick={(e) => {
                   e.stopPropagation();
                   setDeleting(true);

@@ -1,33 +1,30 @@
 import { patchUpdateCompany } from '@/api/api-handlers';
-import { Company, UpdateCompanyProps } from '@/types';
+import { COMPANY_QUERY_OPTIONS } from '@/constants';
+import { UpdateCompanyProps } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-interface UseUpdateCompanyProps {
-  companyId: string;
-  payload: UpdateCompanyProps;
-}
-
-export default function useUpdateCompany({ companyId, payload }: UseUpdateCompanyProps) {
+export default function useUpdateCompany() {
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
-    mutationFn: async () => patchUpdateCompany(companyId, payload),
-    onMutate: async (updatedCompany: UpdateCompanyProps) => {
-      await queryClient.cancelQueries({ queryKey: ['company', companyId] });
+    mutationFn: async (payload: UpdateCompanyProps) => patchUpdateCompany(payload),
+    onMutate: async (updatedCompany) => {
+      await queryClient.cancelQueries(COMPANY_QUERY_OPTIONS);
 
-      const previousData = queryClient.getQueryData(['company', companyId]);
+      const previousData = queryClient.getQueriesData(COMPANY_QUERY_OPTIONS);
 
-      queryClient.setQueryData(['company', companyId], (old: Company) => {
+      queryClient.setQueriesData(COMPANY_QUERY_OPTIONS, (old: any) => {
         return { ...old, ...updatedCompany };
       });
 
       return { previousData };
     },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData(['company', companyId], context?.previousData);
+    onError: (_, __, context) => {
+      queryClient.setQueriesData(COMPANY_QUERY_OPTIONS, context?.previousData);
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['company', companyId] });
+      queryClient.invalidateQueries(COMPANY_QUERY_OPTIONS);
     },
   });
   return mutation;

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 export default function useGetCompanyUsers(queryParams: UserQueryParams) {
   const query = useQuery({
-    queryKey: ['companyUsers', queryParams.limit],
+    queryKey: ['companyUsers', queryParams],
     queryFn: async () => getCompanyUsers(queryParams),
     enabled: !!queryParams.companyId,
   });
