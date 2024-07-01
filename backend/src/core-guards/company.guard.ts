@@ -32,8 +32,6 @@ export class CompanyGuard implements CanActivate {
       return true;
     }
 
-    console.log({ user, companyId });
-
     if (user.companyId === companyId) {
       return true;
     }

@@ -5,14 +5,15 @@ import {
   Get,
   Param,
   Patch,
-  // Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserNotificationsService } from './user-notifications.service';
 import { JwtGuard } from '../../auth/guards/jwt.guard';
 import { UserNotificationsGuard } from './guards/user-notification.guard';
-@UseGuards(UserNotificationsGuard)
+import { FilterUserNotificationsDTO } from './dto/filterUserNotifications.dto';
+// @UseGuards(UserNotificationsGuard)
 @UseGuards(JwtGuard)
 @Controller('user-notifications')
 export class UserNotificationsController {
@@ -21,9 +22,14 @@ export class UserNotificationsController {
   ) {}
 
   @Get()
-  async getUserNotifications(@Req() req: any) {
-    return await this.userNotificationService.getNotificationById(
+  async getUserNotifications(
+    @Query() query: FilterUserNotificationsDTO,
+    @Req() req: any,
+  ) {
+    console.log(['data'], { query, reqQuery: req.query, user: req.user });
+    return await this.userNotificationService.getNotifications(
       req.user.userId,
+      query,
     );
   }
 

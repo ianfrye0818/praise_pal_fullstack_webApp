@@ -164,14 +164,6 @@ export class KudosService {
       const kudo = await this.getKudoById(id);
       const newKudoLike = this.updateKudoById(id, { likes: kudo.likes + 1 });
 
-      if (newKudoLike) {
-        this.userNotificationsService.createNotification({
-          userId: kudo.senderId,
-          actionType: ActionType.LIKE,
-          referenceId: kudo.id,
-        });
-      }
-
       return newKudoLike;
     } catch (error) {
       console.error(error);
@@ -182,7 +174,11 @@ export class KudosService {
   async decreaseLikes(id: string): Promise<Kudos> {
     try {
       const kudo = await this.getKudoById(id);
-      return await this.updateKudoById(id, { likes: kudo.likes - 1 });
+      if (kudo.likes === 0) return kudo;
+      const newKudoLike = await this.updateKudoById(id, {
+        likes: kudo.likes - 1,
+      });
+      return newKudoLike;
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Could not unlike Kudo');
@@ -194,6 +190,9 @@ export class KudosService {
       const kudo = await this.updateKudoById(id, { deletedAt: new Date() });
       if (!kudo)
         throw new NotFoundException('Could not find kudo with id ' + id);
+      await this.userNotificationsService.hardDeleteNotification({
+        referenceId: kudo.id,
+      });
       return kudo;
     } catch (error) {
       console.error(error);

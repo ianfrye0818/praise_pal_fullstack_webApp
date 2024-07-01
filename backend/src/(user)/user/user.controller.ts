@@ -25,7 +25,6 @@ export class UserController {
   @UseGuards(CompanyGuard)
   @Get()
   async findAllUsers(@Query() query: FilterUserDTO, @Req() req: Request) {
-    console.log('request query: ', req.query);
     return await this.userService.findAllUsers(query);
   }
 

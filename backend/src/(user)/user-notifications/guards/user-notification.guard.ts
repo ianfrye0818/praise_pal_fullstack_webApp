@@ -13,12 +13,9 @@ export class UserNotificationsGuard implements CanActivate {
   constructor(private userNotificationService: UserNotificationsService) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    console.log({ request });
     const user = request.user as ClientUser;
 
     const notificationId = request.params.id || request.query.id;
-
-    console.log({ user, notificationId });
 
     if (!user) {
       throw new ForbiddenException(
@@ -27,7 +24,9 @@ export class UserNotificationsGuard implements CanActivate {
     }
 
     const notificaiton =
-      await this.userNotificationService.getNotificationById(notificationId);
+      await this.userNotificationService.getSingleNotification({
+        id: notificationId,
+      });
 
     if (!notificaiton) {
       throw new NotFoundException('Notification not found');

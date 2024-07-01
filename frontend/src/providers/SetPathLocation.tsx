@@ -8,7 +8,6 @@ export default function SetPathLocaiton() {
   const canSavePath = pathname !== '/sign-in' && pathname !== '/sign-up';
 
   useEffect(() => {
-    console.log('rendering SetPathLocaiton');
     if (canSavePath) {
       sessionStorage.setItem('lastPath', pathname);
     }

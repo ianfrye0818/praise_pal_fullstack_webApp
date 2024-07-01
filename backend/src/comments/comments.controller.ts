@@ -27,7 +27,6 @@ export class CommentsController {
     @Query('kudosId') kudosId: string,
     @Query('companyId') companyId: string,
   ) {
-    console.log({ kudosId, companyId });
     return this.commentsService.findAllComments({ kudosId });
   }
 

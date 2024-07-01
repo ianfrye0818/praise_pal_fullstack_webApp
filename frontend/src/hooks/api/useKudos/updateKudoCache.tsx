@@ -42,7 +42,6 @@ export function updateKudosCache<T extends { id?: string }>({
         })
         .filter((kudo) => !kudoId || kudo.id !== kudoId);
 
-      console.log('non hidden kudos: ', { updatedKudos });
       return updatedKudos;
     });
   }

@@ -1,4 +1,4 @@
-import { IMAGES, sidebarLinks } from '@/constants';
+import { sidebarLinks } from '@/constants';
 import { Link, useNavigate } from '@tanstack/react-router';
 import NavBarLink from './sidebar/nav-bar-link';
 import { useAuth } from '@/hooks/useAuth';
@@ -6,11 +6,14 @@ import useAdminMode from '@/hooks/useAdminMode';
 import { Button } from './ui/button';
 import { ShieldCheck } from 'lucide-react';
 import logo from '@/assets/logo.png';
+import useGetUserNotifications from '@/hooks/api/userNotifications/useGetUserNotifications';
 
 export default function NavLinksList() {
   const { isAdmin } = useAuth().state;
   const { setAdminMode } = useAdminMode();
   const navigate = useNavigate();
+  const { data: userNotifications } = useGetUserNotifications();
+  console.log({ notificationAmount: userNotifications?.length, notifications: userNotifications });
   return (
     <nav className='flex flex-col gap-4'>
       <Link
@@ -25,6 +28,9 @@ export default function NavLinksList() {
       </Link>
       {sidebarLinks.map((link) => (
         <NavBarLink
+          notificationAmount={
+            link.label === 'Notifications' ? userNotifications?.length : undefined
+          }
           key={link.label}
           link={link}
         />

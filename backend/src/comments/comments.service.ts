@@ -70,24 +70,77 @@ export class CommentsService {
     }
   }
 
-  async createComment(comment: CreateCommentDTO): Promise<ClientComment> {
+  async createKudoComment(payload: CreateCommentDTO): Promise<ClientComment> {
     try {
       const newComment = await this.prismaService.comment.create({
-        data: comment,
+        data: payload,
         ...this.commentSelectProps,
       });
+
       if (newComment) {
-        await this.userNotificationsService.createNotification({
-          actionType: ActionType.COMMENT,
-          referenceId: newComment.id,
-          userId: newComment.kudos.senderId,
-        });
-        await this.userNotificationsService.createNotification({
-          actionType: ActionType.COMMENT,
-          referenceId: newComment.id,
-          userId: newComment.kudos.receiverId,
-        });
+        const senderId = newComment.kudos.senderId;
+        const receiverId = newComment.kudos.receiverId;
+        const commenterId = payload.userId;
+
+        if (commenterId === receiverId && commenterId !== senderId) {
+          await this.userNotificationsService.createNotification({
+            actionType: ActionType.COMMENT,
+            referenceId: newComment.id,
+            userId: senderId,
+          });
+        }
+
+        if (commenterId === senderId && commenterId !== receiverId) {
+          await this.userNotificationsService.createNotification({
+            actionType: ActionType.COMMENT,
+            referenceId: newComment.id,
+            userId: receiverId,
+          });
+        }
+
+        if (commenterId !== senderId && commenterId !== receiverId) {
+          await Promise.all([
+            this.userNotificationsService.createNotification({
+              actionType: ActionType.COMMENT,
+              referenceId: newComment.id,
+              userId: senderId,
+            }),
+            this.userNotificationsService.createNotification({
+              actionType: ActionType.COMMENT,
+              referenceId: newComment.id,
+              userId: receiverId,
+            }),
+          ]);
+        }
       }
+
+      return newComment;
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException('Could not create comment');
+    }
+  }
+
+  async createChildComment(payload: CreateCommentDTO): Promise<ClientComment> {
+    try {
+      const newComment = await this.prismaService.comment.create({
+        data: payload,
+        ...this.commentSelectProps,
+      });
+
+      if (newComment) {
+        const parentId = newComment.parentId;
+        const commenterId = payload.userId;
+
+        if (parentId !== commenterId) {
+          await this.userNotificationsService.createNotification({
+            actionType: ActionType.COMMENT,
+            referenceId: newComment.id,
+            userId: parentId,
+          });
+        }
+      }
+
       return newComment;
     } catch (error) {
       console.error(error);

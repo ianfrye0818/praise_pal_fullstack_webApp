@@ -102,8 +102,10 @@ export const patchUpdateCompany = async (payload: UpdateCompanyProps) =>
   });
 
 //notifications actions
-export const getUserNotifications = async (queryParams: UserNotificationQueryParams) => {
-  await fetcher<UserNotification[]>({ url: ApiRoutes.userNotifications.findAll(queryParams) });
+export const getUserNotifications = async (queryParams?: UserNotificationQueryParams) => {
+  return await fetcher<UserNotification[]>({
+    url: ApiRoutes.userNotifications.findAll(queryParams),
+  });
 };
 
 export const patchMarkNotificationAsRead = async (notificationId: string) => {

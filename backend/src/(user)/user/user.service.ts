@@ -22,7 +22,6 @@ export class UserService {
   ) {}
 
   async findAllUsers(filter: FilterUserDTO): Promise<ClientUser[]> {
-    console.log({ roles: filter.roles });
     const { limit, offset, sort, roles, ...otherFilters } = filter;
     try {
       const users = await this.prismaService.user.findMany({
@@ -35,7 +34,6 @@ export class UserService {
         take: limit,
         skip: offset,
       });
-      console.log('users length', users.length);
       const clientUsers = users.map((user) =>
         generateClientSideUserProperties(user),
       );

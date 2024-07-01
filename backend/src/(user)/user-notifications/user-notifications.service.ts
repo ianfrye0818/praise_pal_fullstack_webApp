@@ -4,6 +4,8 @@ import { CreateUserNotificationDTO } from './dto/createUserNotification.dto';
 import { Cron } from '@nestjs/schedule';
 import { EmailService } from 'src/core-services/email.service';
 import { FilterUserNotificationsDTO } from './dto/filterUserNotifications.dto';
+import { UserNotificationQueryParams } from 'src/routes';
+import { UserNotifications } from '@prisma/client';
 
 @Injectable()
 export class UserNotificationsService {
@@ -13,8 +15,6 @@ export class UserNotificationsService {
   ) {}
 
   async getNotifications(userId: string, filter: FilterUserNotificationsDTO) {
-    console.log({ notificationFilter: filter });
-
     const { limit, offset, sort, actionTypes, ...otherFilters } = filter;
 
     return this.prismaservice.userNotifications.findMany({
@@ -30,6 +30,7 @@ export class UserNotificationsService {
       select: {
         id: true,
         userId: true,
+        referenceId: true,
         actionType: true,
         isRead: true,
         createdAt: true,
@@ -37,11 +38,9 @@ export class UserNotificationsService {
     });
   }
 
-  async getNotificationById(id: string) {
-    return this.prismaservice.userNotifications.findUnique({
-      where: {
-        id,
-      },
+  async getSingleNotification(filter: Partial<UserNotifications>) {
+    return this.prismaservice.userNotifications.findFirst({
+      where: filter,
     });
   }
 
@@ -59,6 +58,12 @@ export class UserNotificationsService {
       data: {
         isRead: true,
       },
+    });
+  }
+
+  async hardDeleteNotification(filter: Partial<UserNotifications>) {
+    return this.prismaservice.userNotifications.deleteMany({
+      where: filter,
     });
   }
 

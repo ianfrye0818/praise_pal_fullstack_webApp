@@ -1,9 +1,4 @@
-import {
-  RouterProvider,
-  createRouter,
-  createMemoryHistory,
-  createBrowserHistory,
-} from '@tanstack/react-router';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import { useAuth } from './hooks/useAuth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -11,11 +6,7 @@ import { AuthProvider } from './providers/AuthReducerProvider';
 import AdminModeProvider from './providers/AdminModeProvider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-const memoryHistory = createBrowserHistory({
-  createHref: (path) => path,
-});
-const router = createRouter({ routeTree, context: { state: undefined! }, history: memoryHistory });
-console.log('memory history: ', { memoryHistory });
+const router = createRouter({ routeTree, context: { state: undefined! } });
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -28,7 +19,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Register the router instance for type safety
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
