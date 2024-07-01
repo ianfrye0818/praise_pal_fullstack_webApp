@@ -24,13 +24,11 @@ export default function KudosCard({ kudo, commenting = false }: Props) {
     <div className='flex items-center p-4 bg-white shadow-md rounded-lg my-8 dark:bg-gray-800 dark:text-gray-200'>
       <Avatar>
         <AvatarImage />
-        <AvatarFallback className='bg-blue-500 text-zinc-100'>
-          {senderDisplayName[0].toUpperCase()}
-        </AvatarFallback>
+        <AvatarFallback className='avatar'>{senderDisplayName[0].toUpperCase()}</AvatarFallback>
       </Avatar>
       <div className='ml-4 flex-1'>
         <div className='flex justify-between items-center'>
-          <p className='font-bold'>
+          <p className='font-bold text-customBlue'>
             {' '}
             {kudo.isAnonymous ? 'Someone Special' : capitalizeString(senderDisplayName)} sent kudos
             to {capitalizeString(receiverDisplayName)}
@@ -39,7 +37,6 @@ export default function KudosCard({ kudo, commenting = false }: Props) {
         </div>
         {kudo.title && <h3 className='font-bold text-lg my-2'>{capitalizeString(kudo.title)}</h3>}
         <p>{kudo.message}</p>
-        <p>{kudo.id}</p>
         <div className='mt-2 flex items-center justify-between'>
           <div className='flex m-0 gap-3 items-center'>
             <div className='flex items-center gap-1'>

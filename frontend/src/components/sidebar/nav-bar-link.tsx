@@ -9,13 +9,12 @@ type Props = {
 export default function NavBarLink({ link, notificationAmount, ...props }: Props) {
   const notificationLink = link.label === 'Notifications';
   const showNotificationNumber = notificationLink && notificationAmount && notificationAmount > 0;
-  console.log(showNotificationNumber);
 
   return (
     <Link
       {...props}
       activeProps={{
-        className: 'bg-blue-500 text-white',
+        className: 'bg-navLink text-navLink-foreground',
       }}
       className='flex gap-3 items-center p-3 rounded-md relative'
       key={link.label}

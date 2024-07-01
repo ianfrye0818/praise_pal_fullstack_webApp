@@ -9,7 +9,7 @@ export default function SideBarFooter() {
   if (!user) return <div>Footer</div>;
 
   return (
-    <footer className='footer'>
+    <footer>
       <div className='mt-auto flex items-center gap-2 relative'>
         <UpdateUserDialog
           updatingUser={user}
@@ -30,7 +30,7 @@ export default function SideBarFooter() {
 function UserDialogTrigger({ name }: { name: string }) {
   return (
     <Avatar>
-      <AvatarFallback className='bg-blue-500 text-zinc-100'>{name[0].toUpperCase()}</AvatarFallback>
+      <AvatarFallback>{name[0].toUpperCase()}</AvatarFallback>
     </Avatar>
   );
 }

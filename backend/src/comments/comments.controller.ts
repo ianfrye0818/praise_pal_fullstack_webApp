@@ -38,7 +38,12 @@ export class CommentsController {
 
   @Post()
   async createComment(@Body() comment: CreateCommentDTO) {
-    return this.commentsService.createComment(comment);
+    return this.commentsService.createKudoComment(comment);
+  }
+
+  @Post(':commentId')
+  async createReplay(@Body() comment: CreateCommentDTO) {
+    return this.commentsService.createChildComment(comment);
   }
 
   @Patch(':commentId')
