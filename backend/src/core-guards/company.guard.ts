@@ -28,8 +28,11 @@ export class CompanyGuard implements CanActivate {
     if (!companyId) {
       throw new HttpException('Company ID is required', 400);
     }
+    if (user.role === Role.SUPER_ADMIN) {
+      return true;
+    }
 
-    if (user.role === Role.SUPER_ADMIN || user.companyId === companyId) {
+    if (user.companyId === companyId) {
       return true;
     }
 

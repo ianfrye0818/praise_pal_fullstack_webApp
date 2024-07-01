@@ -10,7 +10,7 @@ import { TKudos } from '@/types';
 
 import { useState } from 'react';
 import EditKudosDialog from '../dialogs/edit-kudos-dialog';
-import { CustomDialog } from '../dialogs/delete-kudo-dialog';
+import { DeleteKudoDialog } from '../dialogs/delete-kudo-dialog';
 
 interface KudoCardDropDownMenuProps {
   kudo: TKudos;
@@ -45,7 +45,7 @@ export default function KudoCardDropDownMenu({ kudo }: KudoCardDropDownMenuProps
           />
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <CustomDialog
+          <DeleteKudoDialog
             kudo={kudo}
             setMenuOpen={setMenuOpen}
           />

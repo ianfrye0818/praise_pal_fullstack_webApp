@@ -1,5 +1,6 @@
 import { patchUpdateUser } from '@/api/api-handlers';
 import { updateCurrentUser } from '@/api/auth-actions';
+import { USER_QUERY_OPTIONS } from '@/constants';
 import { useAuth } from '@/hooks/useAuth';
 import { User } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -16,7 +17,6 @@ export default function useUpdateCompanyUser() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async ({ companyId, userToUpdateId, payload, currentUser }: UseGetUserProps) => {
-      console.log({ companyId, userToUpdateId, currentUserId: currentUser.userId });
       if (userToUpdateId === currentUser.userId) {
         return await updateCurrentUser(dispatch, companyId, userToUpdateId, payload);
       } else {
@@ -24,11 +24,11 @@ export default function useUpdateCompanyUser() {
       }
     },
     onMutate: async (newData: Partial<User>) => {
-      await queryClient.cancelQueries({ queryKey: ['companyUsers'] });
+      await queryClient.cancelQueries(USER_QUERY_OPTIONS);
 
-      const previousData = queryClient.getQueryData(['companyUsers']);
+      const previousData = queryClient.getQueriesData(USER_QUERY_OPTIONS);
 
-      queryClient.setQueryData(['companyUsers'], (old: User[]) => {
+      queryClient.setQueriesData(USER_QUERY_OPTIONS, (old: any) => {
         return old.map((user: User) => {
           if (user.userId === newData.userId) {
             return {
@@ -41,12 +41,12 @@ export default function useUpdateCompanyUser() {
       });
       return { previousData };
     },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData(['companyUsers'], context?.previousData);
+    onError: (_, __, context) => {
+      queryClient.setQueriesData(USER_QUERY_OPTIONS, context?.previousData);
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['companyUsers'] });
+      queryClient.invalidateQueries(USER_QUERY_OPTIONS);
     },
   });
   return mutation;

@@ -19,7 +19,10 @@ export default function UpdateUserDialog({
   return (
     <Dialog
       open={open}
-      onOpenChange={(open) => setOpen(open)}
+      onOpenChange={(open) => {
+        setOpen(open);
+        setDeleting(false);
+      }}
     >
       <DialogTrigger>{trigger}</DialogTrigger>
 

@@ -5,12 +5,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../../core-services/prisma.service';
 import { KudosService } from '../../kudos/kudos.service';
+import { UserNotificationsService } from '../user-notifications/user-notifications.service';
 
 @Injectable()
 export class UserLikesService {
   constructor(
     private prismaService: PrismaService,
-    private KudosService: KudosService,
+    private kudosService: KudosService,
+    private userNotificationsService: UserNotificationsService,
   ) {}
 
   async createLike({ userId, kudosId }: { userId: string; kudosId: string }) {
@@ -22,7 +24,16 @@ export class UserLikesService {
         },
       });
 
-      await this.KudosService.increaseLikes(kudosId);
+      const updateKudo = await this.kudosService.increaseLikes(kudosId);
+      console.log({ updateKudo, kudosId, userId });
+
+      if (updateKudo.senderId !== userId) {
+        await this.userNotificationsService.createNotification({
+          userId: updateKudo.senderId,
+          referenceId: kudosId,
+          actionType: 'LIKE',
+        });
+      }
     } catch (error) {
       console.error(error);
       if (error.code === 'P2002') {
@@ -43,10 +54,17 @@ export class UserLikesService {
         },
       });
 
-      await this.KudosService.decreaseLikes(kudosId);
+      const updateKudos = await this.kudosService.decreaseLikes(kudosId);
+
+      if (updateKudos.senderId !== userId) {
+        await this.userNotificationsService.hardDeleteNotification({
+          referenceId: kudosId,
+          userId: updateKudos.senderId,
+        });
+      }
     } catch (error) {
       console.error(error);
-      if (error.code === 'P2002')
+      if (error.code === 'P2025')
         throw new HttpException('You already unliked this kudos', 400);
       throw new InternalServerErrorException('Could not delete like');
     }

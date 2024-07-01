@@ -8,6 +8,10 @@ import {
   Company,
   UpdateCompanyProps,
   UpdateKudoProps,
+  KudosQueryParams,
+  UserQueryParams,
+  UserNotification,
+  UserNotificationQueryParams,
 } from '@/types';
 import { ApiRoutes } from './api-routes';
 import { deleter, fetcher, patcher, poster } from './axios';
@@ -43,11 +47,11 @@ export const postLogout = async (refreshToken: string) =>
   });
 
 //users actions
-export const getCompanyUsers = async (companyId: string) =>
-  fetcher<User[]>({ url: ApiRoutes.users.findAll(companyId) });
+export const getCompanyUsers = async (queryParams: UserQueryParams) =>
+  await fetcher<User[]>({ url: ApiRoutes.users.findAll(queryParams) });
 
 export const getSingleCompanyUser = async (companyId: string, userId: string) =>
-  fetcher<User>({ url: ApiRoutes.users.findOneById(companyId, userId) });
+  await fetcher<User>({ url: ApiRoutes.users.findOneById(companyId, userId) });
 
 export const patchUpdateUser = async (companyId: string, userId: string, payload: Partial<User>) =>
   await patcher<Partial<User>, User>({
@@ -56,31 +60,17 @@ export const patchUpdateUser = async (companyId: string, userId: string, payload
   });
 
 export const deleteSingleUser = async (companyId: string, userId: string) =>
-  deleter<void>({ url: ApiRoutes.users.deleteUserById(companyId, userId) });
+  await deleter<void>({ url: ApiRoutes.users.deleteUserById(companyId, userId) });
 
 //kudos actions`
-export const getCompanyKudos = async (companyId: string) => {
-  try {
-    console.log('fetching from api handler');
-    const kudos = await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(companyId) });
-    console.log(kudos);
-    return kudos;
-  } catch (error) {
-    console.log('getcomankudos error', error);
-  }
-};
+export const getCompanyKudos = async (queryPrams: KudosQueryParams) =>
+  await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(queryPrams) });
 
 export const getsingleKudo = async (companyId: string, kudoId: string) =>
-  fetcher<TKudos>({ url: ApiRoutes.kudos.findOneById(companyId, kudoId) });
-
-export const getSentKudos = async (companyId: string, senderId: string) =>
-  await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(companyId, { senderId }) });
-
-export const getReceivedKudos = async (companyId: string, receiverId: string) =>
-  await fetcher<TKudos[]>({ url: ApiRoutes.kudos.findAll(companyId, { receiverId }) });
+  await fetcher<TKudos>({ url: ApiRoutes.kudos.findOneById(companyId, kudoId) });
 
 export const postCreateKudo = async (payload: CreateKudoFormProps) =>
-  poster<CreateKudoFormProps, void>({
+  await poster<CreateKudoFormProps, void>({
     url: ApiRoutes.kudos.createKudo(payload.companyId),
     data: payload,
   });
@@ -96,17 +86,32 @@ export const deleteSingleKudo = async (companyId: string, kudoId: string) =>
 
 //likes actions
 export const postAddLikeKudo = async (kudoId: string) =>
-  poster<void, void>({ url: ApiRoutes.userLikes.createLike(kudoId) });
+  await poster<void, void>({ url: ApiRoutes.userLikes.createLike(kudoId) });
 
 export const deleteRemoveLikeKudo = async (kudoId: string) =>
-  deleter<void>({ url: ApiRoutes.userLikes.deleteLike(kudoId) });
+  await deleter<void>({ url: ApiRoutes.userLikes.deleteLike(kudoId) });
 
 //company actions
 export const getCompany = async (companyId: string) =>
-  fetcher<Company>({ url: ApiRoutes.company.findOneById(companyId) });
+  await fetcher<Company>({ url: ApiRoutes.company.findOneById(companyId) });
 
-export const patchUpdateCompany = async (companyId: string, payload: UpdateCompanyProps) =>
-  patcher<UpdateCompanyProps, void>({
-    url: ApiRoutes.company.updateCompanyById(companyId),
+export const patchUpdateCompany = async (payload: UpdateCompanyProps) =>
+  await patcher<UpdateCompanyProps, void>({
+    url: ApiRoutes.company.updateCompanyById(payload.id as string),
     data: payload,
   });
+
+//notifications actions
+export const getUserNotifications = async (queryParams?: UserNotificationQueryParams) => {
+  return await fetcher<UserNotification[]>({
+    url: ApiRoutes.userNotifications.findAll(queryParams),
+  });
+};
+
+export const patchMarkNotificationAsRead = async (notificationId: string) => {
+  await patcher<void, void>({ url: ApiRoutes.userNotifications.markAsRead(notificationId) });
+};
+
+export const deleteNotificationById = async (notificationId: string) => {
+  await deleter<void>({ url: ApiRoutes.userNotifications.deleteNotificationById(notificationId) });
+};

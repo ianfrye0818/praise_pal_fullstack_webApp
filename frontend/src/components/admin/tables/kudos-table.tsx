@@ -1,5 +1,7 @@
-import KudoCardDropDownMenu from '@/components/kudos-card/kudo-card-dropdown-menu';
+import { DeleteKudoDialog } from '@/components/dialogs/delete-kudo-dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import {
   Table,
   TableBody,
@@ -8,42 +10,35 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import useGetCompanyKudos from '@/hooks/api/useKudos/useGetCompanyKudos';
-import { formatDate, getShownKudos } from '@/lib/utils';
+import useUpdateKudo from '@/hooks/api/useKudos/useUpdateKudo';
+import { formatDate } from '@/lib/utils';
+import { TKudos } from '@/types';
 
 interface UsersTableProps {
-  limit?: number;
-  page?: number;
-  search?: string;
-  companyId: string;
-  limited?: boolean;
+  kudos: TKudos[];
+  showKudosNumber?: boolean;
 }
 
-export default function KudosTable({ companyId, limited = false }: UsersTableProps) {
-  const { data: kudos, isLoading, error } = useGetCompanyKudos(companyId);
-
-  const shownKudos = getShownKudos(kudos ?? [], limited);
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading Kudos</div>;
-  if (!kudos) return <div>No Users found</div>;
+export default function KudosTable({ kudos, showKudosNumber = true }: UsersTableProps) {
+  const { mutateAsync: showHideKudo } = useUpdateKudo();
 
   return (
     <>
-      {!limited && <p className=' p-2 text-lg'>Total Kudos: {kudos.length}</p>}
+      {showKudosNumber && <p className=' p-2 text-lg'>Total Kudos: {kudos.length}</p>}
       <div className='border shadow-sm rounded-lg'>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Sender</TableHead>
               <TableHead>Receiver</TableHead>
-              <TableHead>Message</TableHead>
+              <TableHead>Title</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>Show/Hide</TableHead>
+              <TableHead>Delete</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {shownKudos.map((kudo) => {
+            {kudos.map((kudo) => {
               const reciverDisplayName =
                 kudo.receiver.firstName && kudo.receiver.lastName
                   ? `${kudo.receiver.firstName} ${kudo.receiver.lastName}`
@@ -70,10 +65,27 @@ export default function KudosTable({ companyId, limited = false }: UsersTablePro
                       <span className='flex gap-2 items-center'>{reciverDisplayName}</span>
                     </div>
                   </TableCell>
-                  <TableCell>{kudo.message}</TableCell>
+                  <TableCell>
+                    {kudo.title}
+                    <p>{kudo.isHidden.toString()}</p>
+                  </TableCell>
                   <TableCell>{formatDate(kudo.createdAt)}</TableCell>
                   <TableCell>
-                    <KudoCardDropDownMenu kudo={kudo} />
+                    {/* <KudoCardDropDownMenu kudo={kudo} /> */}
+                    <Switch
+                      checked={kudo.isHidden}
+                      onCheckedChange={async (isHidden: boolean) =>
+                        await showHideKudo({
+                          companyId: kudo.companyId,
+                          payload: { isHidden, id: kudo.id },
+                        })
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <DeleteKudoDialog kudo={kudo}>
+                      <Button variant={'destructive'}>Delete</Button>
+                    </DeleteKudoDialog>
                   </TableCell>
                 </TableRow>
               );

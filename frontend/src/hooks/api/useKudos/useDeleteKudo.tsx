@@ -1,4 +1,5 @@
 import { deleteSingleKudo } from '@/api/api-handlers';
+import { KUDOS_QUERY_OPTIONS } from '@/constants';
 import { TKudos } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -7,22 +8,25 @@ interface DeleteKudoProps {
   kudoId: string;
 }
 
-export default function useDeleteKudo({ companyId, kudoId }: DeleteKudoProps) {
+export default function useDeleteKudo() {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: async () => await deleteSingleKudo(companyId, kudoId),
-    onMutate: async () => {
-      const previousKudos = queryClient.getQueryData(['kudos']);
-      queryClient.setQueryData(['kudos'], (old: TKudos[]) => {
+    mutationFn: async ({ companyId, kudoId }: DeleteKudoProps) =>
+      await deleteSingleKudo(companyId, kudoId),
+    onMutate: async ({ kudoId }) => {
+      await queryClient.cancelQueries(KUDOS_QUERY_OPTIONS);
+      const previousData = queryClient.getQueriesData(KUDOS_QUERY_OPTIONS);
+
+      queryClient.setQueriesData(KUDOS_QUERY_OPTIONS, (old: any) => {
         return old.filter((kudo: TKudos) => kudo.id !== kudoId);
       });
-      return { previousKudos };
+      return { previousData };
     },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData(['kudos'], context?.previousKudos);
+    onError: (_, __, context) => {
+      queryClient.setQueriesData(KUDOS_QUERY_OPTIONS, context?.previousData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['kudos'] });
+      queryClient.invalidateQueries(KUDOS_QUERY_OPTIONS);
     },
   });
 

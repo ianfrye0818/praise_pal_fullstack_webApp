@@ -37,4 +37,8 @@ export class UpdateKudosDTO extends PartialType(createKudosDTO) {
   @IsOptional()
   @IsInt()
   likes?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isHidden?: boolean;
 }

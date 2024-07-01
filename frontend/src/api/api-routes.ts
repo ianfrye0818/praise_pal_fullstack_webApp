@@ -1,39 +1,11 @@
-// export const ApiRoutes = {
-//   login: '/login',
-//   regsiter: '/regiter',
-//   logout: '/logout',
-//   refresh: '/refresh',
-//   kudos: {
-//     base: '/kudos',
-//     company: (companyId: string) => `/kudos?companyId=${companyId}`,
-//     single: (companyId: string, kudoId: string) => `/kudos/${companyId}/${kudoId}`,
-//     sent: (companyId: string, userId: string) => `/kudos/${companyId}/sender/${userId}`,
-//     received: (companyId: string, userId: string) => `/kudos/${companyId}/recipient/${userId}`,
-//     create: (companyId: string) => `/kudos/${companyId}`,
-//     update: (companyId: string, kudoId: string) => `/kudos/${companyId}/${kudoId}`,
-//     delete: (companyId: string, kudoId: string) => `/kudos/${companyId}/${kudoId}`,
-//   },
-//   company: {
-//     base: '/company',
-//     single: (companyId: string) => `/company/${companyId}`,
-//     update: (companyId: string) => `/company/${companyId}`,
-//   },
-//   userLikes: {
-//     base: '/likes',
-//     add: (kudoId: string) => `/likes/${kudoId}`,
-//     remove: (kudoId: string) => `/likes/${kudoId}`,
-//   },
-//   users: {
-//     base: '/users',
-//     company: (companyId: string) => `/user/company/${companyId}`,
-//     single: (companyId: string, userId: string) => `/users/${companyId}/${userId}`,
-//     update: (companyId: string, userId: string) => `/users/${companyId}/${userId}`,
-//     delete: (companyId: string, userId: string) => `/users/${companyId}/${userId}`,
-//   },
-// };
-
 import { generateQueryString } from '@/lib/utils';
-import { CommentQueryParams, CompanyQueryParams, KudosQueryParams, UserQueryParams } from '@/types';
+import {
+  CommentQueryParams,
+  CompanyQueryParams,
+  KudosQueryParams,
+  UserNotificationQueryParams,
+  UserQueryParams,
+} from '@/types';
 
 export const ApiRoutes = {
   auth: {
@@ -48,8 +20,7 @@ export const ApiRoutes = {
   },
   users: {
     baseUrl: '/user',
-    findAll: (companyId: string, query?: UserQueryParams) =>
-      `/user?${generateQueryString(query)}&companyId=${companyId}`,
+    findAll: (query?: UserQueryParams) => `/user?${generateQueryString(query)}`,
     findOneById: (companyId: string, userId: string) => `/users/${userId}?companyId=${companyId}`,
     updateUserById: (companyId: string, userId: string) => `/user/${userId}?companyId=${companyId}`,
     deleteUserById: (companyId: string, userId: string) => `/user/${userId}?companyId=${companyId}`,
@@ -61,8 +32,7 @@ export const ApiRoutes = {
   },
   kudos: {
     baseUrl: '/kudos',
-    findAll: (companyId: string, query?: KudosQueryParams) =>
-      `/kudos?${generateQueryString(query)}&companyId=${companyId}`,
+    findAll: (query: KudosQueryParams) => `/kudos?${generateQueryString(query)}`,
     findOneById: (companyId: string, kudosId: string) => `/kudos/${kudosId}?companyId=${companyId}`,
     createKudo: (companyId: string) => `/kudos?companyId=${companyId}`,
     updateKudoById: (companyId: string, kudosId: string) =>
@@ -86,8 +56,16 @@ export const ApiRoutes = {
     baseUrl: '/company',
     findAll: (query?: CompanyQueryParams) => `/company?${generateQueryString(query)}`,
     findOneById: (companyId: string) => `/company/${companyId}`,
-    createCompany: () => '/company',
     updateCompanyById: (companyId: string) => `/company/${companyId}`,
-    deleteCompanyById: (companyId: string) => `/company/${companyId}`,
+    // will be added to SUPERADMIN panel
+    // createCompany: () => '/company',
+    // deleteCompanyById: (companyId: string) => `/company/${companyId}`,
+  },
+  userNotifications: {
+    baseUrl: '/user-notifications',
+    findAll: (query?: UserNotificationQueryParams) =>
+      `/user-notifications?${generateQueryString(query)}`,
+    markAsRead: (notificationId: string) => `/user-notifications/${notificationId}`,
+    deleteNotificationById: (notificationId: string) => `/user-notifications/${notificationId}`,
   },
 };

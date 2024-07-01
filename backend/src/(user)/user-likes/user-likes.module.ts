@@ -6,8 +6,10 @@ import { PrismaService } from '../../core-services/prisma.service';
 import { EmailService } from '../../core-services/email.service';
 import { UserService } from '../user/user.service';
 import { SkipThrottle } from '@nestjs/throttler';
+import { UserNotificationsModule } from '../user-notifications/user-notifications.module';
 @SkipThrottle()
 @Module({
+  imports: [UserNotificationsModule],
   controllers: [UserLikesController],
   providers: [
     UserLikesService,

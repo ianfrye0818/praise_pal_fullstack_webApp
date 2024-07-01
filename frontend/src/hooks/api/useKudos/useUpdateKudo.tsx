@@ -1,17 +1,21 @@
 import { patchUpdateKudo } from '@/api/api-handlers';
-import { UpdateKudoProps } from '@/types';
+import { KUDOS_QUERY_OPTIONS } from '@/constants';
+import { TKudos, UpdateKudoProps } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function useUpdateKudo() {
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: async ({ companyId, payload }: { companyId: string; payload: UpdateKudoProps }) => {
       await patchUpdateKudo(companyId, payload);
     },
     onMutate: async ({ payload }) => {
-      const previousKudos = queryClient.getQueryData(['kudos']);
-      queryClient.setQueryData(['kudos'], (old: any) => {
-        return old.map((kudo: any) => {
+      await queryClient.cancelQueries(KUDOS_QUERY_OPTIONS);
+      const previousData = queryClient.getQueriesData(KUDOS_QUERY_OPTIONS);
+
+      queryClient.setQueriesData(KUDOS_QUERY_OPTIONS, (old: any) => {
+        return old.map((kudo: TKudos) => {
           if (kudo.id === payload.id) {
             return {
               ...kudo,
@@ -21,13 +25,14 @@ export default function useUpdateKudo() {
           return kudo;
         });
       });
-      return { previousKudos };
+      return { previousData };
     },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData(['kudos'], context?.previousKudos);
+
+    onError: (_, __, context) => {
+      queryClient.setQueriesData(KUDOS_QUERY_OPTIONS, context?.previousData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['kudos'] });
+      queryClient.invalidateQueries(KUDOS_QUERY_OPTIONS);
     },
   });
 

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -14,6 +15,7 @@ import { JwtGuard } from '../../auth/guards/jwt.guard';
 import { CompanyGuard } from '../../core-guards/company.guard';
 import { UpdateUserGuard } from '../../core-guards/update-user.guard';
 import { FilterUserDTO } from './dto/filterUser.dto';
+import { Request } from 'express';
 
 @UseGuards(JwtGuard)
 @Controller('user')
@@ -22,7 +24,7 @@ export class UserController {
 
   @UseGuards(CompanyGuard)
   @Get()
-  async findAllUsers(@Query('query') query: FilterUserDTO) {
+  async findAllUsers(@Query() query: FilterUserDTO, @Req() req: Request) {
     return await this.userService.findAllUsers(query);
   }
 

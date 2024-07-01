@@ -27,7 +27,9 @@ import { CheckBoxInputItem } from '../forms/form-checkbox-input-item';
 export default function AddKudosDialog() {
   const [open, setOpen] = useState(false);
   const { user } = useAuth().state;
-  const { data: users } = useGetCompanyUsers(user!.companyId);
+  const { data: users } = useGetCompanyUsers({
+    companyId: user?.companyId,
+  });
 
   const form = useForm<z.infer<typeof addKudoFormSchema>>({
     resolver: zodResolver(addKudoFormSchema),

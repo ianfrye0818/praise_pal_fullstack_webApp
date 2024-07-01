@@ -24,7 +24,6 @@ interface ComboBoxProps {
 export default function ComboBox({ field, form, users, currentUser }: ComboBoxProps) {
   const [open, setOpen] = useState(false);
   users = users.filter((r) => r.userId !== currentUser?.userId);
-  console.log(users);
 
   return (
     <Popover

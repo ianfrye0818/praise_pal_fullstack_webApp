@@ -95,8 +95,8 @@ export default function EditKudosDialog({ kudo, setMenuOpen }: EditKudosDialogPr
                 Cancel
               </Button>
               <Button
-                onClick={form.handleSubmit((values) => {
-                  onSubmit(values);
+                onClick={form.handleSubmit(async (values) => {
+                  await onSubmit(values);
                   handleCloseMenus();
                 })}
                 type='submit'

@@ -1,5 +1,4 @@
-import { TKudos, User } from '@/types';
-
+import { TKudos } from '@/types';
 import KudoCardDropDownMenu from './kudo-card-dropdown-menu';
 import KudoLikeButton from './kudo-like-button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -7,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { capitalizeString, formatDate, getUserDisplayName } from '@/lib/utils';
 import { MessageCircle } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
+import KudoCommentList from './kudo-comment-list';
 
 type Props = {
   kudo: TKudos;
@@ -14,10 +14,9 @@ type Props = {
 };
 
 export default function KudosCard({ kudo, commenting = false }: Props) {
-  const { state } = useAuth();
-  const user = state.user;
+  const { user } = useAuth().state;
   const { sender, receiver } = kudo;
-  const liked = kudo.userLikes.some((userLike) => userLike.userId === user?.userId);
+  const isLiked = kudo.userLikes.some((userLike) => userLike.userId === user?.userId);
   const usersKudo = kudo.senderId === user?.userId;
   const senderDisplayName = getUserDisplayName(sender);
   const receiverDisplayName = getUserDisplayName(receiver);
@@ -25,13 +24,11 @@ export default function KudosCard({ kudo, commenting = false }: Props) {
     <div className='flex items-center p-4 bg-white shadow-md rounded-lg my-8 dark:bg-gray-800 dark:text-gray-200'>
       <Avatar>
         <AvatarImage />
-        <AvatarFallback className='bg-blue-500 text-zinc-100'>
-          {senderDisplayName[0].toUpperCase()}
-        </AvatarFallback>
+        <AvatarFallback className='avatar'>{senderDisplayName[0].toUpperCase()}</AvatarFallback>
       </Avatar>
       <div className='ml-4 flex-1'>
         <div className='flex justify-between items-center'>
-          <p className='font-bold'>
+          <p className='font-bold text-customBlue'>
             {' '}
             {kudo.isAnonymous ? 'Someone Special' : capitalizeString(senderDisplayName)} sent kudos
             to {capitalizeString(receiverDisplayName)}
@@ -44,11 +41,11 @@ export default function KudosCard({ kudo, commenting = false }: Props) {
           <div className='flex m-0 gap-3 items-center'>
             <div className='flex items-center gap-1'>
               <KudoLikeButton
-                liked={liked}
+                isLiked={isLiked}
                 kudoId={kudo.id}
-                userId={user?.userId ?? ''}
+                userId={user?.userId as string}
+                companyId={user?.companyId as string}
               />
-              {/* kudos comment button */}
 
               <p className='text-sm text-gray-500'>{kudo.likes}</p>
             </div>
@@ -67,6 +64,8 @@ export default function KudosCard({ kudo, commenting = false }: Props) {
           </div>
           {usersKudo && <KudoCardDropDownMenu kudo={kudo} />}
         </div>
+
+        {commenting && <KudoCommentList comments={kudo.comments} />}
       </div>
     </div>
   );

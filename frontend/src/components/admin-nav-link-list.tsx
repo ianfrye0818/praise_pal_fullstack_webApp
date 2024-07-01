@@ -1,5 +1,5 @@
-import { adminSidebarLinks, IMAGES } from '@/constants';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { adminSidebarLinks } from '@/constants';
+import { Link } from '@tanstack/react-router';
 import NavBarLink from './sidebar/nav-bar-link';
 import useAdminMode from '@/hooks/useAdminMode';
 import { Button } from './ui/button';
@@ -9,7 +9,6 @@ import logo from '@/assets/logo.png';
 
 export default function AdminNavLinkList() {
   const { setAdminMode } = useAdminMode();
-  const navigate = useNavigate();
   return (
     <nav className='flex flex-col gap-4'>
       <Link
@@ -22,19 +21,7 @@ export default function AdminNavLinkList() {
           className='w-full object-contain'
         />
       </Link>
-      {/* <Button
-        variant={'ghost'}
-        className='justify-start p-2 '
-        onClick={async () => {
-          setAdminMode(false);
-        }}
-        asChild
-      >
-        <Link to='/'>
-          <ArrowLeft />
-          Back
-        </Link>
-      </Button> */}
+
       {adminSidebarLinks.map((link) => (
         <NavBarLink
           key={link.label}

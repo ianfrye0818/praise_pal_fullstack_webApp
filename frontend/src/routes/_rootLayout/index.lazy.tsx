@@ -1,7 +1,8 @@
 import KudosCard from '@/components/kudos-card/kudos-card';
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { useAuth } from '@/hooks/useAuth';
+
 import useGetCompanyKudos from '@/hooks/api/useKudos/useGetCompanyKudos';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Route = createLazyFileRoute('/_rootLayout/')({
   component: () => <HomePage />,
@@ -9,13 +10,19 @@ export const Route = createLazyFileRoute('/_rootLayout/')({
 
 function HomePage() {
   const { user } = useAuth().state;
-  const { data: kudos, error, isLoading } = useGetCompanyKudos(user?.companyId as string);
+  const {
+    data: kudos,
+    error,
+    isLoading,
+  } = useGetCompanyKudos({ companyId: user?.companyId as string, isHidden: false });
 
+  // TODO: replace with loading and error componetns
   if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error</div>;
 
-  if (error) return <div>Error: {error.message}</div>;
-
+  //TODO: replace with no kudos component
   if (!kudos || !kudos.length) return <div>No Kudos</div>;
+
   return (
     <div>
       {kudos.map((kudo) => (
@@ -27,3 +34,5 @@ function HomePage() {
     </div>
   );
 }
+
+export default Route;

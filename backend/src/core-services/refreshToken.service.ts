@@ -24,7 +24,6 @@ export class RefreshTokenService {
     newToken: string;
     oldToken?: string;
   }) {
-    console.log({ userId, newToken, oldToken });
     try {
       this.cacheToken(oldToken, newToken);
       await this.saveRefreshToken(userId, newToken);
@@ -49,9 +48,16 @@ export class RefreshTokenService {
   }
 
   private async saveRefreshToken(userId: string, newToken: string) {
-    await this.prismaService.refreshToken.create({
-      data: { userId, token: newToken },
-    });
+    try {
+      await this.prismaService.refreshToken.create({
+        data: { userId, token: newToken },
+      });
+    } catch (error) {
+      if (error.code === 'p2003') {
+        throw new HttpException('Error Refreshing Token', 401);
+      }
+      throw new HttpException('Something went wrong refreshing token', 500);
+    }
   }
 
   private scheduleOldTokenDeletion(oldToken: string) {

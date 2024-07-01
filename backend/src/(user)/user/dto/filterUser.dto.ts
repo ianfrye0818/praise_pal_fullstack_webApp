@@ -1,5 +1,6 @@
 import { Role } from '@prisma/client';
-import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsDate, IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class FilterUserDTO {
   @IsOptional()
@@ -27,8 +28,13 @@ export class FilterUserDTO {
   lastName?: string;
 
   @IsOptional()
-  @IsEnum(Role)
-  role?: Role;
+  @Transform(({ value }: { value: string }) => {
+    return value
+      .toUpperCase()
+      .split(',')
+      .map((role: string) => role as Role);
+  })
+  roles?: Role[];
 
   @IsOptional()
   @IsDate()
@@ -41,4 +47,18 @@ export class FilterUserDTO {
   @IsOptional()
   @IsDate()
   updatedAt?: Date;
+
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  limit?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  offset?: number;
+
+  @IsOptional()
+  @IsEnum(['asc', 'desc'])
+  sort?: 'asc' | 'desc';
 }

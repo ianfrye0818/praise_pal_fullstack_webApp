@@ -1,6 +1,6 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
 import KudosCard from '@/components/kudos-card/kudos-card';
-import useGetRecievedKudos from '@/hooks/api/useKudos/useGetReceivedKudos';
+import useGetCompanyKudos from '@/hooks/api/useKudos/useGetCompanyKudos';
 import { useAuth } from '@/hooks/useAuth';
 
 export const Route = createLazyFileRoute('/_rootLayout/kudos/received')({
@@ -13,16 +13,18 @@ function ReceivedPage() {
     data: kudos,
     isLoading,
     error,
-  } = useGetRecievedKudos({
+  } = useGetCompanyKudos({
     companyId: user?.companyId as string,
-    userId: user?.userId as string,
+    receiverId: user?.userId as string,
+    isHidden: false,
   });
 
+  //TODO: add loading and error components
   if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
 
-  if (error) return <div>Error: {error.message}</div>;
-
-  if (!kudos || !kudos.length) return <div>No Kudos</div>;
+  //TODO: add no kudos found component
+  if (!kudos || kudos.length === 0) return <div>No kudos found</div>;
 
   return (
     <div>

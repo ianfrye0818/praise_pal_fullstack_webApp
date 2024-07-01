@@ -8,11 +8,13 @@ import { PrismaService } from '../core-services/prisma.service';
 import { createKudosDTO, UpdateKudosDTO } from './dto/createKudos.dto';
 import { Cron } from '@nestjs/schedule';
 import { EmailService } from '../core-services/email.service';
-import { Kudos } from '@prisma/client';
+import { ActionType, Kudos } from '@prisma/client';
+import { KudosFilterDTO } from './dto/kudosFilter.dto';
+import { UserNotificationsService } from '../(user)/user-notifications/user-notifications.service';
 
 @Injectable()
 export class KudosService {
-  private readonly selectProps = {
+  private readonly userSelectProps = {
     select: {
       userId: true,
       displayName: true,
@@ -28,9 +30,9 @@ export class KudosService {
     select: {
       id: true,
       content: true,
-      // kudosId: true,
-      // parentId: true,
-      // userId: true,
+      kudosId: true,
+      parentId: true,
+      user: this.userSelectProps,
     },
   };
 
@@ -43,8 +45,8 @@ export class KudosService {
 
   private readonly kudosSelectOptions = {
     include: {
-      sender: this.selectProps,
-      receiver: this.selectProps,
+      sender: this.userSelectProps,
+      receiver: this.userSelectProps,
       comments: this.commentSelectProps,
       userLikes: this.userLikeSelectProps,
     },
@@ -53,18 +55,22 @@ export class KudosService {
   constructor(
     private prismaService: PrismaService,
     private emailService: EmailService,
+    private userNotificationsService: UserNotificationsService,
   ) {}
 
-  async getAllKudos(filter?: Partial<Kudos>): Promise<Kudos[]> {
+  async getAllKudos(filter: KudosFilterDTO): Promise<Kudos[]> {
+    const { limit, offset, sort, ...otherFilters } = filter;
     try {
       return await this.prismaService.kudos.findMany({
-        where: { deletedAt: null, ...filter },
-        orderBy: { createdAt: 'desc' },
+        where: { deletedAt: null, ...otherFilters },
+        orderBy: { createdAt: sort || 'desc' },
+        take: limit,
+        skip: offset,
         ...this.kudosSelectOptions,
       });
     } catch (error) {
       console.error(error);
-      throw new InternalServerErrorException('Could not retreive Kudos');
+      throw new InternalServerErrorException('Could not retrieve Kudos');
     }
   }
 
@@ -118,6 +124,13 @@ export class KudosService {
           ...data,
         },
       });
+      if (newKudos) {
+        await this.userNotificationsService.createNotification({
+          userId: newKudos.receiverId,
+          actionType: ActionType.KUDOS,
+          referenceId: newKudos.id,
+        });
+      }
       return newKudos;
     } catch (error) {
       console.error(error);
@@ -149,7 +162,9 @@ export class KudosService {
   async increaseLikes(id: string): Promise<Kudos> {
     try {
       const kudo = await this.getKudoById(id);
-      return await this.updateKudoById(id, { likes: kudo.likes + 1 });
+      const newKudoLike = this.updateKudoById(id, { likes: kudo.likes + 1 });
+
+      return newKudoLike;
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Could not like Kudo');
@@ -159,7 +174,11 @@ export class KudosService {
   async decreaseLikes(id: string): Promise<Kudos> {
     try {
       const kudo = await this.getKudoById(id);
-      return await this.updateKudoById(id, { likes: kudo.likes - 1 });
+      if (kudo.likes === 0) return kudo;
+      const newKudoLike = await this.updateKudoById(id, {
+        likes: kudo.likes - 1,
+      });
+      return newKudoLike;
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException('Could not unlike Kudo');
@@ -171,6 +190,9 @@ export class KudosService {
       const kudo = await this.updateKudoById(id, { deletedAt: new Date() });
       if (!kudo)
         throw new NotFoundException('Could not find kudo with id ' + id);
+      await this.userNotificationsService.hardDeleteNotification({
+        referenceId: kudo.id,
+      });
       return kudo;
     } catch (error) {
       console.error(error);

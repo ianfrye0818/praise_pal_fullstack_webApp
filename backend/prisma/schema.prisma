@@ -77,6 +77,7 @@ model Comment {
   kudosId   String
   parentId  String?
   userId    String
+   likes       Int       @default(0)
   content   String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -97,6 +98,12 @@ model User_Like {
   @@id([userId, kudosId])
 }
 
+// model Comment_Like {
+//   userId String
+//   commentId String
+//   likedAt DateTime @default(now())
+// }
+
 
 model UserNotifications {
   id        String    @id @default(cuid())
@@ -108,7 +115,6 @@ model UserNotifications {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-
 }
 
 

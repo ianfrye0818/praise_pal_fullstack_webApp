@@ -22,13 +22,22 @@ export class UserService {
   ) {}
 
   async findAllUsers(filter: FilterUserDTO): Promise<ClientUser[]> {
+    const { limit, offset, sort, roles, ...otherFilters } = filter;
     try {
       const users = await this.prismaService.user.findMany({
-        where: { deletedAt: null, ...filter },
+        where: {
+          deletedAt: filter.deletedAt || null,
+          role: { in: roles },
+          ...otherFilters,
+        },
+        orderBy: { createdAt: sort || 'desc' },
+        take: limit,
+        skip: offset,
       });
       const clientUsers = users.map((user) =>
         generateClientSideUserProperties(user),
       );
+
       return clientUsers;
     } catch (error) {
       console.error(error);

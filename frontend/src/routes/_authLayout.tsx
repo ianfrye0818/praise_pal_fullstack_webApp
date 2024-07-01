@@ -1,17 +1,22 @@
 import { IMAGES } from '@/constants';
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { useAuth } from '@/hooks/useAuth';
+import { createFileRoute, Outlet, Navigate } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_authLayout')({
-  beforeLoad: ({ context }) => {
-    const { isAuthenticated, loading } = context.state;
-    if (!loading && isAuthenticated) {
-      throw redirect({ to: '/' });
-    }
-  },
   component: () => <AuthLayout />,
 });
 
 function AuthLayout() {
+  const { loading, isAuthenticated } = useAuth().state;
+  const lastPath = sessionStorage.getItem('lastPath') || null;
+
+  if (isAuthenticated) {
+    if (lastPath) {
+      return <Navigate to={lastPath} />;
+    }
+    return <Navigate to='/' />;
+  }
+
   return (
     <main className='h-full w-full'>
       <header className='h-[96px]  p-1'>

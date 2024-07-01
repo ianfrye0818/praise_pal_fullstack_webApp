@@ -64,7 +64,7 @@ export type TKudos = {
   sender: User;
   receiver: User;
   userLikes: UserLike[];
-  comments: Omit<Comment, 'userId' | 'parentId' | 'kudoId'>[];
+  comments: Comment[];
   createdAt: string;
 };
 
@@ -79,6 +79,7 @@ export interface CreateKudoFormProps {
 
 export type UpdateKudoProps = Partial<Omit<CreateKudoFormProps, 'senderId' | 'companyId'>> & {
   id: string;
+  isHidden?: boolean;
 };
 
 export interface UserLike {
@@ -103,63 +104,78 @@ export interface Company {
   deletedAt?: EpochTimeStamp | null;
 }
 
-export interface UpdateCompanyProps {
-  name?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zip?: string;
-  phone?: string;
-}
+export type UpdateCompanyProps = Partial<
+  Omit<Company, 'companyCode' | 'users' | 'kudos' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+>;
 
-interface Comment {
+// export interface UpdateCompanyProps {
+//   id: string;
+//   name?: string | null | undefined;
+//   address?: string;
+//   city?: string;
+//   state?: string;
+//   zip?: string;
+//   phone?: string;
+// }
+
+export interface Comment {
   id: string;
   content: string;
-  parentId?: string | null;
-  userId: string;
+  parentId?: string | null | undefined;
+  user: User;
   kudosId: string;
+}
+
+export interface UserNotification {
+  id: string;
+  userId: string;
+  isRead: boolean;
+  createdAt: string;
+  actionType: ActionTypes;
 }
 
 export type HTTPClients = 'AUTH' | 'API';
 
-export interface UserQueryParams {
+interface QueryParams {
+  deletedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  limit?: number;
+  sortBy?: 'ASC' | 'DESC';
+  offset?: number;
+  page?: number;
+}
+
+export interface UserQueryParams extends QueryParams {
   userId?: string;
   displayName?: string;
   email?: string;
   companyId?: string;
   firstName?: string;
   lastName?: string;
-  role?: Role;
-  deletedAt?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
+  roles?: Role | Role[];
 }
 
-export interface KudosQueryParams {
+export interface KudosQueryParams extends QueryParams {
   kudosId?: string;
   senderId?: string;
+  isHidden?: boolean;
   receiverId?: string;
   message?: string;
   title?: string;
-  companyId?: string;
+  companyId: string;
   id?: string;
-  deletedAt?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
-export interface CommentQueryParams {
+export interface CommentQueryParams extends QueryParams {
   commentId?: string;
   kudosId?: string;
   parentId?: string;
   userId?: string;
   content?: string;
-  deletedAt?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
-export interface CompanyQueryParams {
+export interface CompanyQueryParams extends QueryParams {
   companyId?: string;
   name?: string;
   address?: string;
@@ -168,19 +184,14 @@ export interface CompanyQueryParams {
   zip?: string;
   phone?: string;
   companyCode?: string;
-  deletedAt?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
-export interface UserNotificationQueryParams {
+export interface UserNotificationQueryParams extends QueryParams {
   id?: string;
   userId?: string;
-  read?: boolean;
+  isRead?: boolean;
   message?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-  deletedAt?: Date;
+  actionTypes?: ActionTypes | ActionTypes[];
 }
 
 export interface FormInputItemProps<T extends z.ZodTypeAny>
@@ -211,4 +222,10 @@ export interface APIProps<D> {
   data?: D;
   config?: AxiosRequestConfig<D>;
   client?: HTTPClients;
+}
+
+export enum ActionTypes {
+  COMMENT = 'COMMENT',
+  LIKE = 'LIKE',
+  KUDO = 'KUDO',
 }

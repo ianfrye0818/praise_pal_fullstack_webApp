@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { errorLogout, refreshTokens } from './auth-actions';
-import { CustomError, handleApiError, isError } from '@/errors';
+import { CustomError, handleApiError } from '@/errors';
 import { APIProps } from '@/types';
 import { BASE_API_URL, MAX_API_RETRY_REQUESTS } from '@/constants';
 import { getAuthTokens } from '@/lib/localStorage';
@@ -82,11 +82,8 @@ apiClient.interceptors.response.use(
 );
 
 async function fetcher<T, D = any>({ client = 'API', url }: APIProps<D>) {
-  console.log(url);
-  console.log('fetching from fetcher');
   try {
     const response = await clients[client].get<T>(url);
-    console.log(response);
     return response.data;
   } catch (error) {
     handleApiError(error);

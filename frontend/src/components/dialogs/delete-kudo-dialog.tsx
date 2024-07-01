@@ -13,37 +13,43 @@ import useDeleteKudo from '@/hooks/api/useKudos/useDeleteKudo';
 import { TKudos } from '@/types';
 
 interface DialogDemoProps {
-  setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setMenuOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   kudo: TKudos;
+  children?: React.ReactNode;
 }
 
-export function CustomDialog({ setMenuOpen, kudo }: DialogDemoProps) {
+export function DeleteKudoDialog({ setMenuOpen, kudo, children }: DialogDemoProps) {
   const [open, setOpen] = useState(false);
   function handleCloseMenu() {
     setOpen(false);
-    setMenuOpen(false);
+    if (setMenuOpen) {
+      setMenuOpen(false);
+    }
   }
 
-  const { mutate: deleteKudo } = useDeleteKudo({
-    kudoId: kudo.id,
-    companyId: kudo.companyId,
-  });
+  const { mutate: deleteKudo } = useDeleteKudo();
 
   return (
     <Dialog
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-        setMenuOpen(open);
+        if (setMenuOpen) {
+          setMenuOpen(open);
+        }
       }}
     >
       <DialogTrigger asChild>
-        <Button
-          variant='ghost'
-          className='w-full px-2 flex justify-start'
-        >
-          Delete Kudo
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <Button
+            variant='ghost'
+            className='w-full px-2 flex justify-start'
+          >
+            Delete Kudo
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -66,7 +72,7 @@ export function CustomDialog({ setMenuOpen, kudo }: DialogDemoProps) {
             <Button
               className='bg-red-500 hover:bg-red-600'
               onClick={() => {
-                deleteKudo();
+                deleteKudo({ kudoId: kudo.id, companyId: kudo.companyId });
                 handleCloseMenu();
               }}
             >

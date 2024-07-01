@@ -1,4 +1,5 @@
 import { deleteSingleUser } from '@/api/api-handlers';
+import { USER_QUERY_OPTIONS } from '@/constants';
 import { User } from '@/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -14,23 +15,23 @@ export default function useDeleteCompanyUser() {
       await deleteSingleUser(companyId, userId),
     //optimistic update
     onMutate: async (newData: Partial<User>) => {
-      await queryClient.cancelQueries({ queryKey: ['companyUsers'] });
+      await queryClient.cancelQueries(USER_QUERY_OPTIONS);
 
       const previousData = queryClient.getQueryData(['companyUsers']);
 
-      queryClient.setQueryData(['companyUsers'], (old: User[]) => {
+      queryClient.setQueriesData(USER_QUERY_OPTIONS, (old: any) => {
         return old.filter((user: User) => {
           user.userId !== newData.userId;
         });
       });
       return { previousData };
     },
-    onError: (error, variables, context) => {
-      queryClient.setQueryData(['companyUsers'], context?.previousData);
+    onError: (_, __, context) => {
+      queryClient.setQueriesData(USER_QUERY_OPTIONS, context?.previousData);
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['companyUsers'] });
+      queryClient.invalidateQueries(USER_QUERY_OPTIONS);
     },
   });
   return mutation;
